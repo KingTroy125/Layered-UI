@@ -46,7 +46,7 @@ const StatsSection = () => {
 
           {/* Description */}
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl px-4">
-            Tailark is evolving to be more than just the models. It supports an entire ecosystem of APIs and platforms helping developers and businesses innovate.
+            Layered UI is evolving to be more than just the models. It supports an entire ecosystem of APIs and platforms helping developers and businesses innovate.
           </p>
         </div>
       </div>
