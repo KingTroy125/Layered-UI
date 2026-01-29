@@ -31,7 +31,7 @@ const StatsSection = () => {
             </div>
             
             <Badge variant="hero" className="group">
-              <span className="text-sm font-normal">Tailark in numbers</span>
+              <span className="text-sm font-normal">Layered UI in numbers</span>
             </Badge>
             
             <div className="flex items-center">
