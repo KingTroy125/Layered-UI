@@ -89,7 +89,7 @@ export const blocks: Block[] = [
         preview: '/preview/stats/five',
         code: loadCode('app/preview/stats/five/page.tsx'),
     },
-     {
+    {
         slug: 'stats',
         title: 'six',
         category: 'stats',
