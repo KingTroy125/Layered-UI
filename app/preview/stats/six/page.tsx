@@ -4,7 +4,7 @@ const stats = [
   {
     percentage: "+1200",
     title: "Stars on GitHub",
-    description: "Tailark has gained significant traction in the developer community with over 1200 stars, reflecting strong adoption and community support.",
+    description: "Layered UI has gained significant traction in the developer community with over 1200 stars, reflecting strong adoption and community support.",
   },
   {
     percentage: "56%",
