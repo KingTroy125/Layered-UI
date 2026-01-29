@@ -14,7 +14,7 @@ const stats = [
   {
     percentage: "+500",
     title: "Powered Apps",
-    description: "Tailark powers over 500 applications, enabling developers and businesses to innovate and scale their solutions.",
+    description: "Layered UI powers over 500 applications, enabling developers and businesses to innovate and scale their solutions.",
   },
 ];
 
