@@ -222,6 +222,13 @@ export const blocks: Block[] = [
         preview: '/preview/cta/one',
         code: loadCode('app/preview/cta/one/page.tsx'),
     },
+    {
+        slug: 'cta',
+        title: 'two',
+        category: 'cta',
+        preview: '/preview/cta/two',
+        code: loadCode('app/preview/cta/two/page.tsx'),
+    },
 
     {
         slug: 'login',
