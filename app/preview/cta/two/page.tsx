@@ -107,15 +107,16 @@ export default function CTASection() {
             Layered UI powers innovation
           </h2>
           <p className="text-muted-foreground text-sm md:text-base font-medium leading-[18.20px] md:leading-relaxed break-words max-w-2xl">
-            Experience how teams accelerate development, automate workflows, and transform ideas into production-ready applications using Tailark's advanced API ecosystem and intelligent automation tools
+            Build your next project faster with beautiful, accessible, and customizable components that are
+            designed to work together seamlessly.
           </p>
         </div>
         <Link href="https://layered-blocks.vercel.app" target="_blank" rel="noopener noreferrer">
           <Button
-            className="px-8 py-3 bg-black text-white text-base font-semibold rounded-full shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 active:scale-95"
+            className="px-8 py-3 bg-black text-white text-base font-semibold rounded-full shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-gray-200"
             size="lg"
           >
-            Get started today
+            Get started
           </Button>
         </Link>
       </div>
