@@ -51,6 +51,30 @@ const headingVariants: Variants = {
   },
 };
 
+// Text effect animation - character by character reveal
+const textEffectVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const charVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  },
+};
+
 const descriptionVariants: Variants = {
   hidden: { opacity: 0, y: 15 },
   visible: {
@@ -91,6 +115,49 @@ const imageVariants: Variants = {
   },
 };
 
+// Animated group variants for staggered container animations
+const animatedGroupVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const groupItemVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Text effect component that animates characters
+function AnimatedText({ text }: { text: string }) {
+  return (
+    <motion.div
+      className="inline-block"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={textEffectVariants}
+    >
+      {text.split('').map((char, index) => (
+        <motion.span key={index} variants={charVariants}>
+          {char}
+        </motion.span>
+      ))}
+    </motion.div>
+  );
+}
+
 export default function FullHeroPage() {
   return (
     <main>
@@ -103,45 +170,67 @@ export default function FullHeroPage() {
             viewport={{ once: true, amount: 0.3 }}
             variants={containerVariants}
           >
-            {/* Badge */}
+            {/* Badge - Animated Group */}
             <motion.div
               className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
-              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={animatedGroupVariants}
             >
-              <motion.div className="flex items-center" variants={lineVariants}>
+              <motion.div className="flex items-center" variants={groupItemVariants}>
                 <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
               </motion.div>
 
-              <motion.div variants={badgeVariants}>
+              <motion.div variants={groupItemVariants}>
                 <Badge variant="hero" className="group">
                   <span className="text-sm font-normal">Join us</span>
                 </Badge>
               </motion.div>
 
-              <motion.div className="flex items-center" variants={lineVariants}>
+              <motion.div className="flex items-center" variants={groupItemVariants}>
                 <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
               </motion.div>
             </motion.div>
 
-            {/* Heading */}
-            <motion.h1
-              className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl"
-              variants={headingVariants}
+            {/* Heading - Text Effect Animation */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.05,
+                    delayChildren: 0.2,
+                  },
+                },
+              }}
             >
-              Modern Software testing reimagined
-            </motion.h1>
+              <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">
+                <AnimatedText text="Modern Software testing reimagined" />
+              </h1>
+            </motion.div>
 
             {/* Description */}
             <motion.p
               className="text-muted-foreground mx-auto my-8 max-w-2xl text-xl"
               variants={descriptionVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
             >
               Streamline your testing process with our all-in-one platform, designed to boost
               efficiency and collaboration across teams.
             </motion.p>
 
             {/* CTA Button */}
-            <motion.div variants={buttonVariants}>
+            <motion.div
+              variants={buttonVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
               <Button asChild size="lg" className="rounded-full">
                 <Link href="#">
                   <span>Get Started</span>
