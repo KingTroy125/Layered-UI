@@ -50,6 +50,40 @@ const headingVariants: Variants = {
   },
 };
 
+// Text effect animation - word by word reveal with character effect
+const textEffectVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const charVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  },
+};
+
+const wordVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+};
+
 const descriptionVariants: Variants = {
   hidden: { opacity: 0, y: 15 },
   visible: {
@@ -90,6 +124,56 @@ const imageVariants: Variants = {
   },
 };
 
+// Animated group variants for staggered container animations
+const animatedGroupVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const groupItemVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Text effect component that animates characters
+function AnimatedText({ text }: { text: string }) {
+  const words = text.split(' ');
+
+  return (
+    <motion.span
+      className="inline-block"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={textEffectVariants}
+    >
+      {words.map((word, wordIndex) => (
+        <motion.span key={wordIndex} variants={wordVariants} className="inline-block">
+          {word.split('').map((char, charIndex) => (
+            <motion.span key={charIndex} variants={charVariants}>
+              {char}
+            </motion.span>
+          ))}
+          <span className="inline-block">&nbsp;</span>
+        </motion.span>
+      ))}
+    </motion.span>
+  );
+}
+
 export default function Hero() {
   return (
     <section className="relative py-16 sm:py-20 md:py-28 overflow-hidden">
@@ -101,39 +185,45 @@ export default function Hero() {
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
         >
-          {/* Badge */}
+          {/* Badge - Animated Group */}
           <motion.div
             className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
-            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={animatedGroupVariants}
           >
-            <motion.div className="flex items-center" variants={lineVariants}>
+            <motion.div className="flex items-center" variants={groupItemVariants}>
               <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
             </motion.div>
 
-            <motion.div variants={badgeVariants}>
+            <motion.div variants={groupItemVariants}>
               <Badge variant="hero" className="group">
                 <span className="text-sm font-normal">Join us</span>
               </Badge>
             </motion.div>
 
-            <motion.div className="flex items-center" variants={lineVariants}>
+            <motion.div className="flex items-center" variants={groupItemVariants}>
               <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
             </motion.div>
           </motion.div>
 
-          {/* Heading */}
+          {/* Heading - Text Effect Animation */}
           <motion.h2
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-foreground max-w-4xl mb-6"
-            variants={headingVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
           >
-            Ready to transform
-            <br />
-            your financial management?
+            <AnimatedText text="Ready to transform your financial management?" />
           </motion.h2>
 
           {/* Description */}
           <motion.p
             className="max-w-2xl text-muted-foreground text-sm sm:text-base font-normal leading-relaxed mb-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
             variants={descriptionVariants}
           >
             Streamline your business's financial management with our intuitive,
@@ -142,7 +232,12 @@ export default function Hero() {
           </motion.p>
 
           {/* CTA Button */}
-          <motion.div variants={buttonVariants}>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={buttonVariants}
+          >
             <Button
               size="lg"
               variant="default"
@@ -155,6 +250,9 @@ export default function Hero() {
           {/* Dashboard Image */}
           <motion.div
             className="mt-12 sm:mt-16 w-full max-w-5xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
             variants={imageVariants}
           >
             <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl">
