@@ -216,6 +216,14 @@ export const blocks: Block[] = [
     },
 
     {
+        slug: 'comparator',
+        title: 'one',
+        category: 'comparator',
+        preview: '/preview/comparator/one',
+        code: loadCode('app/preview/comparator/one/page.tsx'),
+    },
+
+    {
         slug: 'cta',
         title: 'one',
         category: 'cta',
