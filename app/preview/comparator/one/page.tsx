@@ -60,11 +60,6 @@ export default function PricingComparator() {
                                 <p className="text-sm text-muted-foreground mt-2">Forever</p>
                             </div>
                             <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10 bg-primary/5 text-center relative overflow-visible">
-                                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                    <Badge variant="hero" className="group">
-                                        <span className="text-xs font-normal">Popular</span>
-                                    </Badge>
-                                </div>
                                 <p className="text-foreground font-normal text-lg">Pro</p>
                                 <p className="text-4xl sm:text-5xl font-normal text-primary mt-3">$29</p>
                                 <p className="text-sm text-muted-foreground mt-2">Per month</p>
