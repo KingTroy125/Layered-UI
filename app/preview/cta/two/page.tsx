@@ -103,17 +103,17 @@ export default function CTASection() {
       </div>
       <div className="relative z-10 flex flex-col justify-start items-center gap-9 max-w-4xl mx-auto">
         <div className="flex flex-col justify-start items-center gap-4 text-center">
-          <h2 className="text-foreground text-4xl md:text-5xl lg:text-[68px] font-semibold leading-tight md:leading-tight lg:leading-[76px] break-words max-w-[435px]">
+          <h2 className="text-foreground text-4xl md:text-5xl lg:text-6xl font-normal leading-tight md:leading-tight lg:leading-[76px] break-words max-w-[435px]">
             Layered UI powers innovation
           </h2>
-          <p className="text-muted-foreground text-sm md:text-base font-medium leading-[18.20px] md:leading-relaxed break-words max-w-2xl">
+          <p className="text-muted-foreground text-sm md:text-base font-normal leading-[18.20px] md:leading-relaxed break-words max-w-2xl">
             Build your next project faster with beautiful, accessible, and customizable components that are
             designed to work together seamlessly.
           </p>
         </div>
         <Link href="https://layered-blocks.vercel.app" target="_blank" rel="noopener noreferrer">
           <Button
-            className="px-8 py-3 bg-black text-white text-base font-semibold rounded-full shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+            className="px-8 py-3 bg-black text-white text-base font-normal rounded-full shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 active:scale-95 dark:bg-white dark:text-black dark:hover:bg-gray-200"
             size="lg"
           >
             Get started
