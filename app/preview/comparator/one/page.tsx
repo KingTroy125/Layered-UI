@@ -1,177 +1,131 @@
-import { Button } from '@/components/ui/button'
-import { Cpu, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Check, Minus } from 'lucide-react'
 
-const tableData = [
-    {
-        feature: 'Feature 1',
-        free: true,
-        pro: true,
-        startup: true,
-    },
-    {
-        feature: 'Feature 2',
-        free: true,
-        pro: true,
-        startup: true,
-    },
-    {
-        feature: 'Feature 3',
-        free: false,
-        pro: true,
-        startup: true,
-    },
-    {
-        feature: 'Tokens',
-        free: '',
-        pro: '20 Users',
-        startup: 'Unlimited',
-    },
-    {
-        feature: 'Video calls',
-        free: '',
-        pro: '12 Weeks',
-        startup: '56',
-    },
-    {
-        feature: 'Support',
-        free: '',
-        pro: 'Secondes',
-        startup: 'Unlimited',
-    },
-    {
-        feature: 'Security',
-        free: '',
-        pro: '20 Users',
-        startup: 'Unlimited',
-    },
+const features = [
+    { name: 'Integrations', free: '5', pro: 'Unlimited' },
+    { name: 'API Calls', free: '10K/mo', pro: '500K/mo' },
+    { name: 'Team Members', free: '2', pro: '20' },
+    { name: 'Support', free: 'Email', pro: 'Priority' },
+    { name: 'Analytics Dashboard', free: false, pro: true },
+    { name: 'Custom Webhooks', free: false, pro: true },
+    { name: 'Advanced Security', free: false, pro: true },
+    { name: 'API Access', free: false, pro: true },
 ]
 
 export default function PricingComparator() {
     return (
-        <section className="py-16 md:py-32">
-            <div className="mx-auto max-w-5xl px-6">
-                <div className="w-full overflow-auto lg:overflow-visible">
-                    <table className="w-[200vw] border-separate border-spacing-x-3 md:w-full dark:[--color-muted:var(--color-zinc-900)]">
-                        <thead className="bg-background sticky top-0">
-                            <tr className="*:py-4 *:text-left *:font-medium">
-                                <th className="lg:w-2/5"></th>
-                                <th className="space-y-3">
-                                    <span className="block">Free</span>
+        <section className="relative py-16 sm:py-20 md:py-28 overflow-visible">
+            {/* Header */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-16">
+                <div className="flex flex-col items-center text-center gap-6 sm:gap-8">
+                    {/* Badge with gradient lines */}
+                    <div className="flex items-center justify-center gap-2 sm:gap-3">
+                        <div className="flex items-center">
+                            <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent"></div>
+                        </div>
+                        
+                        <Badge variant="hero" className="group">
+                            <span className="text-sm font-normal">Pricing Plans</span>
+                        </Badge>
+                        
+                        <div className="flex items-center">
+                            <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent"></div>
+                        </div>
+                    </div>
 
-                                    <Button asChild variant="outline" size="sm">
-                                        <Link href="#">Get Started</Link>
+                    {/* Heading */}
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-foreground px-4">
+                        Simple, transparent pricing
+                    </h2>
+
+                    {/* Description */}
+                    <p className="text-base sm:text-lg text-muted-foreground max-w-2xl px-4">
+                        Choose the perfect plan for your needs. Always flexible to scale with your growth.
+                    </p>
+                </div>
+            </div>
+
+            {/* Pricing Table */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="rounded-3xl border border-primary/20 bg-card overflow-hidden @container">
+                    <div className="overflow-x-auto">
+                        {/* Header Row */}
+                        <div className="grid grid-cols-3 border-b border-primary/10">
+                            <div className="p-6 sm:p-8"></div>
+                            <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10 text-center">
+                                <p className="text-foreground font-normal text-lg">Free</p>
+                                <p className="text-4xl sm:text-5xl font-normal text-primary mt-3">$0</p>
+                                <p className="text-sm text-muted-foreground mt-2">Forever</p>
+                            </div>
+                            <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10 bg-primary/5 text-center relative overflow-visible">
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                                    <Badge variant="hero" className="group">
+                                        <span className="text-xs font-normal">Popular</span>
+                                    </Badge>
+                                </div>
+                                <p className="text-foreground font-normal text-lg">Pro</p>
+                                <p className="text-4xl sm:text-5xl font-normal text-primary mt-3">$29</p>
+                                <p className="text-sm text-muted-foreground mt-2">Per month</p>
+                            </div>
+                        </div>
+
+                        {/* Features */}
+                        {features.map((feature) => (
+                            <div key={feature.name} className="grid grid-cols-3 border-t border-primary/10">
+                                <div className="p-6 sm:p-8 text-sm text-foreground font-normal">
+                                    {feature.name}
+                                </div>
+                                <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10 flex items-center justify-center">
+                                    {typeof feature.free === 'boolean' ? (
+                                        feature.free ? (
+                                            <Check className="w-5 h-5 text-primary" />
+                                        ) : (
+                                            <Minus className="w-5 h-5 text-muted-foreground/50" />
+                                        )
+                                    ) : (
+                                        <span className="text-sm text-muted-foreground">{feature.free}</span>
+                                    )}
+                                </div>
+                                <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10 bg-primary/5 flex items-center justify-center">
+                                    {typeof feature.pro === 'boolean' ? (
+                                        feature.pro ? (
+                                            <Check className="w-5 h-5 text-primary" />
+                                        ) : (
+                                            <Minus className="w-5 h-5 text-muted-foreground/50" />
+                                        )
+                                    ) : (
+                                        <span className="text-sm text-foreground font-normal">{feature.pro}</span>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* CTA Row */}
+                        <div className="grid grid-cols-3 border-t border-primary/10">
+                            <div className="p-6 sm:p-8"></div>
+                            <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10">
+                                <Link href="#" className="block">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full rounded-full font-normal hover:border-primary/40 hover:bg-primary/5 transition-all duration-300"
+                                    >
+                                        Get Started
                                     </Button>
-                                </th>
-                                <th className="bg-muted rounded-t-(--radius) space-y-3 px-4">
-                                    <span className="block">Pro</span>
-                                    <Button asChild size="sm">
-                                        <Link href="#">Get Started</Link>
+                                </Link>
+                            </div>
+                            <div className="min-w-32 p-6 sm:p-8 border-l border-primary/10 bg-primary/5">
+                                <Link href="#" className="block">
+                                    <Button
+                                        className="w-full bg-black text-white rounded-full font-normal hover:bg-gray-800 transition-all duration-300 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                                    >
+                                        Upgrade
                                     </Button>
-                                </th>
-                                <th className="space-y-3">
-                                    <span className="block">Startup</span>
-                                    <Button asChild variant="outline" size="sm">
-                                        <Link href="#">Get Started</Link>
-                                    </Button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-caption text-sm">
-                            <tr className="*:py-3">
-                                <td className="flex items-center gap-2 font-medium">
-                                    <Cpu className="size-4" />
-                                    <span>Features</span>
-                                </td>
-                                <td></td>
-                                <td className="bg-muted border-none px-4"></td>
-                                <td></td>
-                            </tr>
-                            {tableData.slice(-4).map((row, index) => (
-                                <tr key={index} className="*:border-b *:py-3">
-                                    <td className="text-muted-foreground">{row.feature}</td>
-                                    <td>
-                                        {row.free === true ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                                            </svg>
-                                        ) : (
-                                            row.free
-                                        )}
-                                    </td>
-                                    <td className="bg-muted border-none px-4">
-                                        <div className="-mb-3 border-b py-3">
-                                            {row.pro === true ? (
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                                                    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                                                </svg>
-                                            ) : (
-                                                row.pro
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {row.startup === true ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                                            </svg>
-                                        ) : (
-                                            row.startup
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                            <tr className="*:pb-3 *:pt-8">
-                                <td className="flex items-center gap-2 font-medium">
-                                    <Sparkles className="size-4" />
-                                    <span>AI Models</span>
-                                </td>
-                                <td></td>
-                                <td className="bg-muted border-none px-4"></td>
-                                <td></td>
-                            </tr>
-                            {tableData.map((row, index) => (
-                                <tr key={index} className="*:border-b *:py-3">
-                                    <td className="text-muted-foreground">{row.feature}</td>
-                                    <td>
-                                        {row.free === true ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                                            </svg>
-                                        ) : (
-                                            row.free
-                                        )}
-                                    </td>
-                                    <td className="bg-muted border-none px-4">
-                                        <div className="-mb-3 border-b py-3">
-                                            {row.pro === true ? (
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                                                    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                                                </svg>
-                                            ) : (
-                                                row.pro
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {row.startup === true ? (
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
-                                            </svg>
-                                        ) : (
-                                            row.startup
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                            <tr className="*:py-6">
-                                <td></td>
-                                <td></td>
-                                <td className="bg-muted rounded-b-(--radius) border-none px-4"></td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
