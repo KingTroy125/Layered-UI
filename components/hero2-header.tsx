@@ -1,6 +1,31 @@
 'use client'
 
 import { ChevronRight } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Badge } from '@/components/ui/badge'
+
+const animatedGroupVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+}
+
+const groupItemVariants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+}
 
 export function Hero2() {
   return (
@@ -9,13 +34,28 @@ export function Hero2() {
         <div className="z-10 flex flex-col">
           <div className="grid grid-cols-1">
             <div className="flex flex-col items-center gap-8 text-center">
-              {/* Badge/Announcement */}
-              <a
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-gray-200 dark:border-gray-800 bg-white dark:bg-black hover:border-gray-400 dark:hover:border-gray-600 transition-all text-sm"
+              {/* Badge - Animated Group */}
+              <motion.div
+                className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={animatedGroupVariants}
               >
-                <span className="text-black dark:text-white font-medium">Introducing Latest Components</span>
-                <ChevronRight className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-              </a>
+                <motion.div className="flex items-center" variants={groupItemVariants}>
+                  <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
+                </motion.div>
+
+                <motion.div variants={groupItemVariants}>
+                  <Badge variant="hero" className="group">
+                    <span className="text-sm font-normal">Layered UI 1.0</span>
+                  </Badge>
+                </motion.div>
+
+                <motion.div className="flex items-center" variants={groupItemVariants}>
+                  <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+                </motion.div>
+              </motion.div>
 
               {/* Main Heading */}
               <div className="flex flex-col gap-4 items-center">
@@ -54,22 +94,18 @@ export function Hero2() {
                 <span className="font-semibold text-black dark:text-white">shadcn/ui</span>.
               </p>
 
-              {/* Designed By */}
-              <div className="mt-8 flex flex-wrap gap-1 overflow-hidden text-sm font-medium text-gray-700 dark:text-gray-300 justify-center">
-              </div>
-
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href="/hero-section"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg bg-black dark:bg-white text-white dark:text-black font-medium hover:opacity-90 transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-black dark:bg-white text-white dark:text-black font-medium hover:opacity-90 transition-all"
                 >
                   Browse Components
                   <ChevronRight className="w-4 h-4" />
                 </a>
                 <a
                   href="#"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-lg border border-gray-200 dark:border-gray-800 text-black dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-900 transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-gray-200 dark:border-gray-800 text-black dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-900 transition-all"
                 >
                   Browse Templates
                   <ChevronRight className="w-4 h-4" />
