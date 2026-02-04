@@ -3,6 +3,8 @@
 import { ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
+import { useRef, useCallback, useState, useEffect } from 'react'
+import { useTheme } from 'next-themes'
 
 const animatedGroupVariants = {
   hidden: { opacity: 0 },
@@ -28,8 +30,170 @@ const groupItemVariants = {
 }
 
 export function Hero2() {
+  const containerRef = useRef(null)
+  const [mounted, setMounted] = useState(false)
+  const { resolvedTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const isDark = mounted && resolvedTheme === 'dark'
+
+  const handleMouseMove = useCallback((e) => {
+    if (!containerRef.current) return
+
+    requestAnimationFrame(() => {
+      const rect = containerRef.current.getBoundingClientRect()
+      const x = e.clientX - rect.left
+      const y = e.clientY - rect.top
+
+      containerRef.current.style.setProperty('--mouse-x', `${x}px`)
+      containerRef.current.style.setProperty('--mouse-y', `${y}px`)
+    })
+  }, [])
+
   return (
-    <section className="mx-4 max-w-7xl border-x px-4 py-16 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]">
+    <section
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      className="relative mx-4 max-w-7xl border-x px-4 py-16 overflow-hidden rounded-3xl transition-colors duration-500 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]"
+      style={{
+        background: isDark ? '#0a0a0a' : '#ffffff',
+      }}
+    >
+      {/* Vertical Lines Pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.015]"
+        style={{
+          backgroundImage: isDark
+            ? 'linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)'
+            : 'linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px)',
+          backgroundSize: '80px 100%',
+        }}
+      />
+
+      {/* Subtle Grain Texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Circular blur effect - Top Left */}
+      <div
+        className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 pointer-events-none"
+        style={{
+          background: isDark
+            ? `radial-gradient(circle, rgba(80, 80, 100, 0.3) 0%, transparent 70%)`
+            : `radial-gradient(circle, rgba(100, 100, 120, 0.15) 0%, transparent 70%)`,
+          filter: 'blur(80px)',
+        }}
+      />
+
+      {/* Circular blur effect - Top Right */}
+      <div
+        className="absolute -top-1/4 -right-1/4 w-1/2 h-1/2 pointer-events-none"
+        style={{
+          background: isDark
+            ? `radial-gradient(circle, rgba(60, 60, 80, 0.25) 0%, transparent 70%)`
+            : `radial-gradient(circle, rgba(80, 80, 100, 0.12) 0%, transparent 70%)`,
+          filter: 'blur(100px)',
+        }}
+      />
+
+      {/* Circular blur effect - Bottom Center */}
+      <div
+        className="absolute -bottom-1/4 left-1/2 -translate-x-1/2 w-3/4 h-1/2 pointer-events-none"
+        style={{
+          background: isDark
+            ? `radial-gradient(circle, rgba(70, 70, 90, 0.2) 0%, transparent 70%)`
+            : `radial-gradient(circle, rgba(90, 90, 110, 0.1) 0%, transparent 70%)`,
+          filter: 'blur(120px)',
+        }}
+      />
+
+      {/* Circular blur effect - Bottom Left */}
+      <div
+        className="absolute bottom-0 -left-1/3 w-1/2 h-2/3 pointer-events-none"
+        style={{
+          background: isDark
+            ? `radial-gradient(circle at center, rgba(50, 50, 70, 0.35) 0%, transparent 65%)`
+            : `radial-gradient(circle at center, rgba(100, 100, 130, 0.12) 0%, transparent 65%)`,
+          filter: 'blur(90px)',
+        }}
+      />
+
+      {/* Circular blur effect - Bottom Right */}
+      <div
+        className="absolute bottom-0 -right-1/3 w-1/2 h-2/3 pointer-events-none"
+        style={{
+          background: isDark
+            ? `radial-gradient(circle at center, rgba(40, 40, 60, 0.3) 0%, transparent 70%)`
+            : `radial-gradient(circle at center, rgba(90, 90, 120, 0.1) 0%, transparent 70%)`,
+          filter: 'blur(100px)',
+        }}
+      />
+
+      {/* Large Background Text - Mobile */}
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden md:hidden pb-4">
+        <motion.span
+          className="text-[100px] sm:text-[140px] font-black tracking-tighter text-center text-transparent bg-clip-text select-none whitespace-nowrap"
+          style={{
+            backgroundImage: isDark
+              ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%)'
+              : 'linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.04) 50%, transparent 100%)',
+            letterSpacing: '-0.03em',
+            lineHeight: '0.9',
+          }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+        >
+          Layered
+        </motion.span>
+      </div>
+
+      {/* Large Background Text - Tablet */}
+      <div className="absolute inset-0 hidden md:flex lg:hidden items-end justify-center pointer-events-none overflow-hidden pb-6">
+        <motion.span
+          className="text-[200px] font-black tracking-tighter text-center text-transparent bg-clip-text select-none"
+          style={{
+            backgroundImage: isDark
+              ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%)'
+              : 'linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%)',
+            letterSpacing: '-0.03em',
+            lineHeight: '0.9',
+          }}
+          initial={{ opacity: 0, y: 80 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+        >
+          Layered
+        </motion.span>
+      </div>
+
+      {/* Large Background Text - Desktop */}
+      <div className="absolute inset-0 hidden lg:flex items-end justify-center pointer-events-none overflow-hidden pb-8">
+        <motion.span
+          className="text-[320px] font-black tracking-tighter text-center text-transparent bg-clip-text select-none"
+          style={{
+            backgroundImage: isDark
+              ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%)'
+              : 'linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0%, rgba(0, 0, 0, 0.06) 50%, transparent 100%)',
+            letterSpacing: '-0.03em',
+            lineHeight: '0.9',
+          }}
+          initial={{ opacity: 0, y: 120 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+        >
+          Layered
+        </motion.span>
+      </div>
+
+      {/* Content */}
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 overflow-hidden">
         <div className="z-10 flex flex-col">
           <div className="grid grid-cols-1">

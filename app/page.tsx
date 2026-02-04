@@ -6,10 +6,13 @@ import { Hero2 } from '@/components/hero2-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 import { Button } from '@/components/ui/button';
+import { MobileNotification } from '@/components/moblie-notification';
+import { FloatingTemplatesBadge } from '@/components/FloatingTemplatesBadge';
 
 export default function Hero() {
   return (
     <>
+      <MobileNotification />
       <SiteHeader />
       <section>
         <Hero2 />
@@ -102,6 +105,7 @@ export default function Hero() {
             ))}
           </div>
         </div>
+        <FloatingTemplatesBadge />
       </section>
       <SiteFooter />
     </>
