@@ -161,7 +161,7 @@ function AnimatedText({ text }: { text: string }) {
 export default function FullHeroPage() {
   return (
     <main>
-      <section className="bg-muted/50 dark:bg-background overflow-hidden">
+      <section className="bg-background overflow-hidden">
         <div className="relative mx-auto max-w-5xl px-6 pt-28 lg:pt-24">
           <motion.div
             className="relative z-10 mx-auto max-w-2xl text-center"
@@ -184,7 +184,7 @@ export default function FullHeroPage() {
 
               <motion.div variants={groupItemVariants}>
                 <Badge variant="hero" className="group">
-                  <span className="text-sm font-normal">Join us</span>
+                  <span className="text-sm font-normal">Layered UI</span>
                 </Badge>
               </motion.div>
 
@@ -207,21 +207,20 @@ export default function FullHeroPage() {
                 },
               }}
             >
-              <h1 className="text-balance text-4xl font-semibold md:text-5xl lg:text-6xl">
-                <AnimatedText text="Modern Software testing reimagined" />
+              <h1 className="text-balance text-4xl font-normal md:text-5xl lg:text-6xl">
+                <AnimatedText text="Build faster with Layered" />
               </h1>
             </motion.div>
 
             {/* Description */}
             <motion.p
-              className="text-muted-foreground mx-auto my-8 max-w-2xl text-xl"
+              className="text-muted-foreground mx-auto my-8 max-w-2xl text-base md:text-lg font-normal"
               variants={descriptionVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
             >
-              Streamline your testing process with our all-in-one platform, designed to boost
-              efficiency and collaboration across teams.
+              Experience how teams accelerate development, automate workflows, and transform ideas into production-ready applications using our advanced API ecosystem.
             </motion.p>
 
             {/* CTA Button */}
@@ -231,9 +230,9 @@ export default function FullHeroPage() {
               whileInView="visible"
               viewport={{ once: true }}
             >
-              <Button asChild size="lg" className="rounded-full">
+              <Button asChild size="lg" className="rounded-full bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 font-normal">
                 <Link href="#">
-                  <span>Get Started</span>
+                  <span>Get started today</span>
                 </Link>
               </Button>
             </motion.div>
