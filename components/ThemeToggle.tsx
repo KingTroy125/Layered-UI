@@ -8,10 +8,15 @@ import { Button } from '@/components/ui/button'
 
 export const ThemeToggle = () => {
     const { theme, setTheme } = useTheme()
+    const [mounted, setMounted] = React.useState(false)
+
+    React.useEffect(() => {
+        setMounted(true)
+    }, [])
 
     return (
         <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} variant="ghost" className="size-8 rounded-full">
-            {theme === 'dark' ? <Sun /> : <Moon />}
+            {mounted && (theme === 'dark' ? <Sun /> : <Moon />)}
         </Button>
     )
 }
