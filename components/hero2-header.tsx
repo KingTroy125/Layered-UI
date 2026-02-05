@@ -143,8 +143,8 @@ export function Hero2(): ReactNode {
           className="text-[100px] sm:text-[140px] font-black tracking-tighter text-center text-transparent bg-clip-text select-none whitespace-nowrap"
           style={{
             backgroundImage: isDark
-              ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 50%, transparent 100%)'
-              : 'linear-gradient(90deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.04) 50%, transparent 100%)',
+              ? 'linear-gradient(90deg, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%)'
+              : 'linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.08) 50%, transparent 100%)',
             letterSpacing: '-0.03em',
             lineHeight: '0.9',
           }}
