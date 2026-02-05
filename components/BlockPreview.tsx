@@ -40,7 +40,7 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
     const [cachedHeight, setCachedHeight] = useState<number | null>(null)
     const [isIframeCached, setIsIframeCached] = useState(false)
 
-    const terminalCode = `pnpm dlx shadcn@kingtroy125 add https://layered-blocks.vercel.app/r/${category}-${titleToNumber(title)}.json`
+    const terminalCode = `pnpm dlx shadcn@latest add @layered/${category}-${titleToNumber(title)}`
 
     const { copied, copy } = useCopyToClipboard({ code: code as string, title, category, eventName: 'block_copy' })
     const { copied: cliCopied, copy: cliCopy } = useCopyToClipboard({ code: terminalCode, title, category, eventName: 'block_cli_copy' })
