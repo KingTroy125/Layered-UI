@@ -3,7 +3,7 @@
 import { ChevronRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
-import { useRef, useCallback, useState, useEffect } from 'react'
+import { useRef, useCallback, useState, useEffect, ReactNode } from 'react'
 import { useTheme } from 'next-themes'
 
 const animatedGroupVariants = {
@@ -29,9 +29,9 @@ const groupItemVariants = {
   },
 }
 
-export function Hero2() {
-  const containerRef = useRef(null)
-  const [mounted, setMounted] = useState(false)
+export function Hero2(): ReactNode {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [mounted, setMounted] = useState<boolean>(false)
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {
@@ -40,10 +40,11 @@ export function Hero2() {
 
   const isDark = mounted && resolvedTheme === 'dark'
 
-  const handleMouseMove = useCallback((e) => {
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>): void => {
     if (!containerRef.current) return
 
     requestAnimationFrame(() => {
+      if (!containerRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
       const x = e.clientX - rect.left
       const y = e.clientY - rect.top
