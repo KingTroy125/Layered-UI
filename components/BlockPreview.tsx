@@ -40,7 +40,7 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
     const [cachedHeight, setCachedHeight] = useState<number | null>(null)
     const [isIframeCached, setIsIframeCached] = useState(false)
 
-    const terminalCode = `pnpm dlx shadcn@latest add @layered/${category}-${titleToNumber(title)}`
+    const terminalCode = `pnpm dlx shadcn@latest add @layeredui/${category}-${titleToNumber(title)}`
 
     const { copied, copy } = useCopyToClipboard({ code: code as string, title, category, eventName: 'block_copy' })
     const { copied: cliCopied, copy: cliCopy } = useCopyToClipboard({ code: terminalCode, title, category, eventName: 'block_cli_copy' })
@@ -231,7 +231,7 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
                                     aria-label="copy code">
                                     {cliCopied ? <Check className="size-4" /> : <Terminal className="!size-3.5" />}
                                     <span className="hidden font-mono text-xs md:block">
-                                        pnpm dlx shadcn@kingtroy125 add {category}-{titleToNumber(title)}
+                                        pnpm dlx shadcn@latest add @layeredui/{category}-{titleToNumber(title)}
                                     </span>
                                 </Button>
                                 <Separator
