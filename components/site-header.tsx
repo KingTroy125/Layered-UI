@@ -31,7 +31,7 @@ export const SiteHeader = () => {
                                 Blocks
                             </Link>
                         </Button>
-                        {/*<div className="relative flex items-center">
+                        <div className="relative flex items-center">
                             <Button
                                 asChild
                                 size="sm"
@@ -43,8 +43,8 @@ export const SiteHeader = () => {
                                     Snippets
                                 </Link>
                             </Button>
-                            <span className="rounded-full border border-green-300 bg-green-200 px-1.5 py-px text-xs text-green-900 dark:border-green-700 dark:bg-green-500/20 dark:text-green-50">New</span>
-                        </div>*/}
+                            <span className="rounded-full border border-blue-300 bg-blue-200 px-1.5 py-px text-xs text-blue-900 dark:border-red-700 dark:bg-red-500/20 dark:text-red-50">New</span>
+                        </div>
                     </div>
                 </div>
                 <div className="-mr-2 flex items-center">

@@ -2,9 +2,7 @@
 // Source: https://github.com/origin-space/originui/blob/main/components/code-block.tsx
 'use client'
 
-function cn(...classes: (string | undefined | null | false)[]): string {
-    return classes.filter(Boolean).join(' ')
-}
+import { cn } from '@/lib/utils'
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime'
 import { JSX, useLayoutEffect, useState } from 'react'
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime'

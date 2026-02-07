@@ -7,6 +7,7 @@ export interface Block {
     category: string
     preview: string
     code: string
+    relatedCode?: { label: string; code: string }[]
 }
 
 function loadCode(filePath: string): string {
