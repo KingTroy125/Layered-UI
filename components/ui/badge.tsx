@@ -27,9 +27,26 @@ function Badge({
   className,
   variant,
   asChild = false,
+  showLines = false,
+  lineClassName,
   ...props
-}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"span"> & 
+  VariantProps<typeof badgeVariants> & { 
+    asChild?: boolean
+    showLines?: boolean
+    lineClassName?: string
+  }) {
   const Comp = asChild ? Slot : "span"
+
+  if (showLines) {
+    return (
+      <div className="flex items-center gap-2 sm:gap-3">
+        <div className={cn("w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent", lineClassName)} />
+        <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
+        <div className={cn("w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent", lineClassName)} />
+      </div>
+    )
+  }
 
   return <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
 }

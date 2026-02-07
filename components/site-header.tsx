@@ -21,8 +21,8 @@ export const SiteHeader = () => {
     return (
         <header className="border-b dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]">
             <div className="mx-auto flex max-w-7xl justify-between px-4 py-4 sm:px-6 lg:px-4">
-                {/* Logo */}
-                <div className="flex items-center">
+                {/* Logo & Desktop Navigation */}
+                <div className="flex gap-6">
                     <Link
                         href="/"
                         className="flex w-fit items-center gap-2"
@@ -30,30 +30,30 @@ export const SiteHeader = () => {
                         <Logo />
                         <span className="sr-only font-bold">ns UI</span>
                     </Link>
-                </div>
 
-                {/* Desktop Navigation */}
-                <nav className="hidden md:flex gap-1 items-center">
-                    <Button asChild size="sm" variant="ghost" className={cn('text-foreground/75 rounded-full', isActive('/hero-section') && 'text-foreground')}>
-                        <Link href="/hero-section" className="!text-sm">
-                            Blocks
-                        </Link>
-                    </Button>
-                    <div className="relative flex items-center">
-                        <Button
-                            asChild
-                            size="sm"
-                            variant="ghost"
-                            className={cn('text-foreground/75 rounded-full', isActive('/snippets/button') && 'text-foreground')}>
-                            <Link
-                                href="/snippets/button"
-                                className="!text-sm">
-                                Snippets
+                    {/* Desktop Navigation */}
+                    <nav className="hidden md:flex gap-1 items-center">
+                        <Button asChild size="sm" variant="ghost" className={cn('text-foreground/75 rounded-full', isActive('/hero-section') && 'text-foreground')}>
+                            <Link href="/hero-section" className="!text-sm">
+                                Blocks
                             </Link>
                         </Button>
-                        <span className="rounded-full border border-blue-300 bg-blue-200 px-1.5 py-px text-xs text-blue-900 dark:border-red-700 dark:bg-red-500/20 dark:text-red-50">New</span>
-                    </div>
-                </nav>
+                        <div className="relative flex items-center">
+                            <Button
+                                asChild
+                                size="sm"
+                                variant="ghost"
+                                className={cn('text-foreground/75 rounded-full', isActive('/snippets/button') && 'text-foreground')}>
+                                <Link
+                                    href="/snippets/button"
+                                    className="!text-sm">
+                                    Snippets
+                                </Link>
+                            </Button>
+                            <span className="rounded-full border border-blue-300 bg-blue-200 px-1.5 py-px text-xs text-blue-900 dark:border-red-700 dark:bg-red-500/20 dark:text-red-50">New</span>
+                        </div>
+                    </nav>
+                </div>
 
                 {/* Desktop Right Actions */}
                 <div className="hidden md:flex -mr-2 items-center">
