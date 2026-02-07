@@ -26,17 +26,6 @@ const badgeVariants: Variants = {
   },
 };
 
-const lineVariants: Variants = {
-  hidden: { scaleX: 0 },
-  visible: {
-    scaleX: 1,
-    transition: {
-      duration: 0.8,
-      ease: 'easeInOut',
-    },
-  },
-};
-
 const headingVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
@@ -124,30 +113,6 @@ const imageVariants: Variants = {
   },
 };
 
-// Animated group variants for staggered container animations
-const animatedGroupVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.1,
-    },
-  },
-};
-
-const groupItemVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.5,
-      ease: 'easeOut',
-    },
-  },
-};
-
 // Text effect component that animates characters
 function AnimatedText({ text }: { text: string }) {
   const words = text.split(' ');
@@ -185,27 +150,17 @@ export default function Hero() {
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
         >
-          {/* Badge - Animated Group */}
+          {/* Badge with built-in lines */}
           <motion.div
-            className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
+            className="mb-6 sm:mb-8"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={animatedGroupVariants}
+            variants={badgeVariants}
           >
-            <motion.div className="flex items-center" variants={groupItemVariants}>
-              <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
-            </motion.div>
-
-            <motion.div variants={groupItemVariants}>
-              <Badge variant="hero" className="group">
-                <span className="text-sm font-normal">Join us</span>
-              </Badge>
-            </motion.div>
-
-            <motion.div className="flex items-center" variants={groupItemVariants}>
-              <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
-            </motion.div>
+            <Badge variant="hero" showLines className="group">
+              <span className="text-sm font-normal">Join us</span>
+            </Badge>
           </motion.div>
 
           {/* Heading - Text Effect Animation */}
