@@ -3,11 +3,24 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Box, Layers, Zap, CheckCircle } from "lucide-react"
+import { Box, Layers, Zap, CheckCircle, Star } from "lucide-react"
 import NumberFlow from "@number-flow/react"
 import { AnimatePresence, motion } from "motion/react"
+import { cn } from "@/lib/utils"
 
-const plans = [
+type Plan = {
+  name: string
+  info: string
+  price: {
+    monthly: number
+    yearly: number
+  }
+  features: string[]
+  icon: typeof Box
+  highlighted?: boolean
+}
+
+const plans: Plan[] = [
   {
     name: "Basic plan",
     info: "Perfect for small businesses or startups, our Starter Plan gives you the essential tools to manage your finances with ease",
@@ -63,8 +76,7 @@ const plans = [
 ]
 
 const PricingSection2 = () => {
-  const [isYearly, setIsYearly] = useState(false)
-  const frequency = isYearly ? "yearly" : "monthly"
+  const [frequency, setFrequency] = useState<"monthly" | "yearly">("monthly")
 
   return (
     <section className="relative py-16 sm:py-20 md:py-28 overflow-hidden">
@@ -106,24 +118,24 @@ const PricingSection2 = () => {
           <div
             className="absolute top-2 bottom-2 bg-card rounded-full shadow-md transition-all duration-300 ease-out"
             style={{
-              left: isYearly ? "50%" : "0.5rem",
-              right: isYearly ? "0.5rem" : "50%",
+              left: frequency === "yearly" ? "50%" : "0.5rem",
+              right: frequency === "yearly" ? "0.5rem" : "50%",
             }}
           />
 
           <button
-            onClick={() => setIsYearly(false)}
+            onClick={() => setFrequency("monthly")}
             className={`relative z-10 px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors ${
-              !isYearly ? "text-foreground" : "text-muted-foreground"
+              frequency === "monthly" ? "text-foreground" : "text-muted-foreground"
             }`}
           >
             Monthly
           </button>
 
           <button
-            onClick={() => setIsYearly(true)}
+            onClick={() => setFrequency("yearly")}
             className={`relative z-10 px-6 sm:px-8 py-3 rounded-full font-medium text-sm sm:text-base transition-colors ${
-              isYearly ? "text-foreground" : "text-muted-foreground"
+              frequency === "yearly" ? "text-foreground" : "text-muted-foreground"
             }`}
           >
             Yearly
@@ -134,105 +146,114 @@ const PricingSection2 = () => {
       {/* Pricing Cards */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {plans.map((plan, index) => {
-            const Icon = plan.icon
-            const discountPercentage = Math.round(
-              ((plan.price.monthly - plan.price.yearly) / plan.price.monthly) * 100
-            )
-
-            return (
-              <div
-                key={index}
-                className="relative flex flex-col bg-card rounded-3xl p-6 sm:p-8 border border-border transition-all duration-300 group hover:-translate-y-2 hover:border-primary/30 hover:shadow-[var(--shadow-card)]"
-              >
-                {/* Hover glow effect */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                {/* Badges */}
-                <AnimatePresence mode="wait">
-                  <div className="absolute top-6 right-6 z-10 flex items-center gap-2">
-                    {plan.highlighted && (
-                      <motion.div
-                        className="flex items-center gap-1 rounded-full border bg-background px-3 py-1 text-xs font-medium"
-                        key="popular-badge"
-                        layout
-                        transition={{ duration: 0.1 }}
-                      >
-                        Popular
-                      </motion.div>
-                    )}
-
-                    {isYearly && plan.price.monthly > plan.price.yearly && (
-                      <motion.div
-                        animate={{ opacity: 1 }}
-                        className="flex items-center gap-1 rounded-full border bg-primary px-3 py-1 text-primary-foreground text-xs font-medium"
-                        exit={{ opacity: 0 }}
-                        initial={{ opacity: 0 }}
-                        key="discount-badge"
-                        layout
-                        transition={{ duration: 0.15 }}
-                      >
-                        {discountPercentage}% off
-                      </motion.div>
-                    )}
-                  </div>
-                </AnimatePresence>
-
-                {/* Header with icon and name */}
-                <div className="relative z-10 flex items-center gap-4 mb-8">
-                  {/* Icon */}
-                  <div className="w-16 h-16 rounded-full flex items-center justify-center border border-border bg-secondary/50 backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:border-primary/50 group-hover:bg-primary/10">
-                    <Icon className="w-6 h-6 text-primary" />
-                  </div>
-
-                  {/* Plan Name */}
-                  <h3 className="text-xl font-normal text-foreground">{plan.name}</h3>
-                </div>
-
-                {/* Price */}
-                <div className="relative z-10 mb-6">
-                  <div className="flex items-end gap-2">
-                    <NumberFlow
-                      className="text-4xl sm:text-5xl font-normal text-foreground"
-                      format={{
-                        style: "currency",
-                        currency: "USD",
-                        notation: "compact",
-                      }}
-                      value={plan.price[frequency]}
-                    />
-                    <span className="text-base text-muted-foreground mb-2">/Month</span>
-                  </div>
-                  <p className="mt-2 text-xs text-muted-foreground">billed {frequency}</p>
-                </div>
-
-                {/* Description */}
-                <p className="relative z-10 text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
-                  {plan.info}
-                </p>
-
-                {/* Features */}
-                <div className="relative z-10 space-y-3 mb-8 flex-1">
-                  {plan.features.map((feature, idx) => (
-                    <div className="flex items-center gap-2" key={idx}>
-                      <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                      <p className="text-sm text-muted-foreground">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTA Button */}
-                <div className="relative z-10">
-                  <Button className="w-full rounded-full py-6 font-medium bg-card border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-                    Get started
-                  </Button>
-                </div>
-              </div>
-            )
-          })}
+          {plans.map((plan) => (
+            <PricingCard key={plan.name} plan={plan} frequency={frequency} />
+          ))}
         </div>
       </div>
     </section>
+  )
+}
+
+type PricingCardProps = {
+  plan: Plan
+  frequency: "monthly" | "yearly"
+}
+
+function PricingCard({ plan, frequency }: PricingCardProps) {
+  const Icon = plan.icon
+
+  return (
+    <div
+      className={cn(
+        "relative flex flex-col bg-card rounded-3xl p-6 sm:p-8 border border-border transition-all duration-300 group hover:-translate-y-2 hover:border-primary/30 hover:shadow-[var(--shadow-card)]",
+        plan.highlighted && "scale-105"
+      )}
+    >
+      {/* Hover glow effect */}
+      <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+      {/* Badges */}
+      <AnimatePresence mode="wait">
+        <div className="absolute top-6 sm:top-8 right-6 sm:right-8 z-10 flex items-center gap-2">
+          {plan.highlighted && (
+            <motion.div
+              className="flex items-center gap-1 rounded-full border bg-background px-3 py-1 text-xs font-medium shadow-sm"
+              key="popular-badge"
+              layout
+              transition={{ duration: 0.1 }}
+            >
+              <Star className="size-3 fill-current" />
+              Popular
+            </motion.div>
+          )}
+
+          {frequency === "yearly" && plan.price.monthly > plan.price.yearly && (
+            <motion.div
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-1 rounded-full border bg-primary px-3 py-1 text-primary-foreground text-xs font-medium shadow-sm"
+              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }}
+              key="discount-badge"
+              layout
+              transition={{ duration: 0.15 }}
+            >
+              {Math.round(((plan.price.monthly - plan.price.yearly) / plan.price.monthly) * 100)}% off
+            </motion.div>
+          )}
+        </div>
+      </AnimatePresence>
+
+      {/* Header with icon and name */}
+      <div className="relative z-10 flex items-center gap-4 mb-8">
+        {/* Icon */}
+        <div className="w-16 h-16 rounded-full flex items-center justify-center border border-border bg-secondary/50 backdrop-blur-sm transition-all duration-300 group-hover:scale-110 group-hover:border-primary/50 group-hover:bg-primary/10">
+          <Icon className="w-6 h-6 text-primary" />
+        </div>
+
+        {/* Plan Name */}
+        <h3 className="text-xl font-normal text-foreground">{plan.name}</h3>
+      </div>
+
+      {/* Price */}
+      <div className="relative z-10 mb-6">
+        <div className="flex items-end gap-2">
+          <NumberFlow
+            className="text-4xl sm:text-5xl font-normal text-foreground"
+            format={{
+              style: "currency",
+              currency: "USD",
+              notation: "compact",
+            }}
+            value={plan.price[frequency]}
+          />
+          <span className="text-base text-muted-foreground mb-2">/Month</span>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground font-normal">billed {frequency}</p>
+      </div>
+
+      {/* Description */}
+      <p className="relative z-10 text-sm sm:text-base text-muted-foreground leading-relaxed mb-6">
+        {plan.info}
+      </p>
+
+      {/* Features */}
+      <div className="relative z-10 space-y-3 mb-8 flex-1">
+        {plan.features.map((feature) => (
+          <div className="flex items-center gap-2" key={feature}>
+            <CheckCircle className="size-3.5 text-foreground flex-shrink-0" />
+            <p className="text-sm text-muted-foreground">{feature}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA Button */}
+      <div className="relative z-10">
+        <Button className="w-full rounded-full py-6 font-medium bg-card border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+          Get started
+        </Button>
+      </div>
+    </div>
   )
 }
 
