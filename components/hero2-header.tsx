@@ -1,12 +1,12 @@
 'use client'
 
 import { ChevronRight } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, type Variants } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
 import { useRef, useCallback, useState, useEffect, ReactNode } from 'react'
 import { useTheme } from 'next-themes'
 
-const animatedGroupVariants = {
+const animatedGroupVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
@@ -17,7 +17,7 @@ const animatedGroupVariants = {
   },
 }
 
-const groupItemVariants = {
+const groupItemVariants: Variants = {
   hidden: { opacity: 0, scale: 0.95 },
   visible: {
     opacity: 1,
@@ -27,6 +27,106 @@ const groupItemVariants = {
       ease: 'easeOut',
     },
   },
+}
+
+// Text effect animation - word by word reveal
+const textEffectVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.3,
+    },
+  },
+}
+
+const charVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const wordVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+}
+
+const descriptionVariants: Variants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      delay: 0.5,
+      ease: 'easeOut',
+    },
+  },
+}
+
+const buttonGroupVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.6,
+    },
+  },
+}
+
+const buttonItemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: 'easeOut',
+    },
+  },
+}
+
+// Text effect component that animates characters word by word
+function AnimatedText({ text }: { text: string }) {
+  const words = text.split(' ')
+
+  return (
+    <motion.span
+      className="inline-block"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+      variants={textEffectVariants}
+    >
+      {words.map((word, wordIndex) => (
+        <motion.span
+          key={wordIndex}
+          variants={wordVariants}
+          className="inline-block"
+        >
+          {word.split('').map((char, charIndex) => (
+            <motion.span key={charIndex} variants={charVariants}>
+              {char}
+            </motion.span>
+          ))}
+          <span className="inline-block">&nbsp;</span>
+        </motion.span>
+      ))}
+    </motion.span>
+  )
 }
 
 export function Hero2(): ReactNode {
@@ -198,7 +298,21 @@ export function Hero2(): ReactNode {
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 overflow-hidden">
         <div className="z-10 flex flex-col">
           <div className="grid grid-cols-1">
-            <div className="flex flex-col items-center gap-8 text-center">
+            <motion.div 
+              className="flex flex-col items-center gap-8 text-center"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.1,
+                  },
+                },
+              }}
+            >
               {/* Badge - Animated Group */}
               <motion.div
                 className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
@@ -222,17 +336,55 @@ export function Hero2(): ReactNode {
                 </motion.div>
               </motion.div>
 
-              {/* Main Heading */}
-              <div className="flex flex-col gap-4 items-center">
-                <div className="w-full">
+              {/* Main Heading - Text Effect Animation */}
+              <motion.div 
+                className="flex flex-col gap-4 items-center"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={{
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.1,
+                      delayChildren: 0.2,
+                    },
+                  },
+                }}
+              >
+                <motion.div 
+                  className="w-full"
+                  variants={{
+                    hidden: { opacity: 0 },
+                    visible: { opacity: 1 },
+                  }}
+                >
                   <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black dark:text-white leading-tight text-center">
-                    Layered Blocks for
+                    <AnimatedText text="Layered Blocks for" />
                   </h1>
                   <div className="flex items-center justify-center gap-2 mt-4 flex-col">
-                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black dark:text-white">
-                      Design Engineers
-                    </h1>
-                    <div className="w-full max-w-sm overflow-hidden">
+                    <motion.h1 
+                      className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black dark:text-white"
+                      variants={{
+                        hidden: { opacity: 0, y: 10 },
+                        visible: {
+                          opacity: 1,
+                          y: 0,
+                          transition: {
+                            duration: 0.6,
+                            delay: 0.6,
+                          },
+                        },
+                      }}
+                    >
+                      <AnimatedText text="Design Engineers" />
+                    </motion.h1>
+                    <motion.div 
+                      className="w-full max-w-sm overflow-hidden"
+                      initial={{ opacity: 0, scaleX: 0 }}
+                      whileInView={{ opacity: 1, scaleX: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.8, delay: 0.8 }}
+                    >
                       <svg aria-hidden="true" className="w-full h-auto" height="22" viewBox="0 0 283 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M1.24715 19.3744C72.4051 10.3594 228.122 -4.71194 281.724 7.12332" stroke="url(#paint0_linear_pl)" strokeWidth="4"></path>
                         <defs>
@@ -242,13 +394,19 @@ export function Hero2(): ReactNode {
                           </linearGradient>
                         </defs>
                       </svg>
-                    </div>
+                    </motion.div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
               {/* Description */}
-              <p className="text-gray-600 dark:text-gray-400 max-w-2xl text-base md:text-lg leading-relaxed">
+              <motion.p 
+                className="text-gray-600 dark:text-gray-400 max-w-2xl text-base md:text-lg leading-relaxed"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={descriptionVariants}
+              >
                 Free and open-source component blocks and layouts built with{' '}
                 <span className="font-semibold text-black dark:text-white">React</span>,{' '}
                 <span className="font-semibold text-black dark:text-white">Typescript</span>,{' '}
@@ -257,26 +415,34 @@ export function Hero2(): ReactNode {
                 <br />
                 Perfect companion for{' '}
                 <span className="font-semibold text-black dark:text-white">shadcn/ui</span>.
-              </p>
+              </motion.p>
 
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
+              {/* CTA Buttons - Animated Group */}
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-4 justify-center"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={buttonGroupVariants}
+              >
+                <motion.a
                   href="/hero-section"
                   className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full bg-black dark:bg-white text-white dark:text-black font-medium hover:opacity-90 transition-all"
+                  variants={buttonItemVariants}
                 >
                   Browse Components
                   <ChevronRight className="w-4 h-4" />
-                </a>
-                <a
+                </motion.a>
+                <motion.a
                   href="#"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-gray-200 dark:border-gray-800 text-black dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-900 transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3 rounded-full border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white font-medium hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
+                  variants={buttonItemVariants}
                 >
                   Browse Templates
                   <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
+                </motion.a>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
