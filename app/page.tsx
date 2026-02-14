@@ -52,6 +52,12 @@ export default function Hero() {
                 livePreviewUrl: "https://opencal-nextjs.vercel.app/",
                 githubUrl: "",
               },
+              {
+                title: "Qupo Landing Page",
+                imageUrl: "./Templates/Qupo.png",
+                livePreviewUrl: "https://nextjs-template-qupo.vercel.app/",
+                githubUrl: "",
+              },
             ].map((template, index) => (
               <div key={index} className="group relative overflow-hidden rounded-lg aspect-video">
                 <img
