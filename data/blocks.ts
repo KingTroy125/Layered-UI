@@ -170,6 +170,7 @@ export const blocks: Block[] = [
         preview: '/preview/footer/five',
         code: loadCode('app/preview/footer/five/page.tsx'),
     },
+
     {
         slug: 'pricing',
         title: 'one',
