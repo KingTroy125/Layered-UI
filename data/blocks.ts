@@ -77,6 +77,14 @@ export const blocks: Block[] = [
     },
 
     {
+        slug: 'integrations',
+        title: 'one',
+        category: 'integrations',
+        preview: '/preview/integrations/one',
+        code: loadCode('app/preview/integrations/one/page.tsx'),
+    },
+
+    {
         slug: 'stats',
         title: 'one',
         category: 'stats',
