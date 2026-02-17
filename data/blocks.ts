@@ -178,6 +178,13 @@ export const blocks: Block[] = [
         preview: '/preview/footer/five',
         code: loadCode('app/preview/footer/five/page.tsx'),
     },
+    {
+        slug: 'footer',
+        title: 'six',
+        category: 'footer',
+        preview: '/preview/footer/six',
+        code: loadCode('app/preview/footer/six/page.tsx'),
+    },
 
     {
         slug: 'pricing',
