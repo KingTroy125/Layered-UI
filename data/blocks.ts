@@ -52,6 +52,13 @@ export const blocks: Block[] = [
         preview: '/preview/navbar/two',
         code: loadCode('app/preview/navbar/two/page.tsx'),
     },
+    {
+        slug: 'navbar',
+        title: 'three',
+        category: 'navbar',
+        preview: '/preview/navbar/three',
+        code: loadCode('app/preview/navbar/three/page.tsx'),
+    },
 
     {
         slug: 'logo-cloud',
