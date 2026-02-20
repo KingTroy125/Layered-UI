@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { cn } from "@/lib/utils";
 import {
   Avatar,
@@ -80,7 +81,6 @@ const groupItemVariants: Variants = {
   },
 };
 
-// Text effect animation - word by word reveal
 const textEffectVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -151,7 +151,6 @@ const cardVariants: Variants = {
   },
 };
 
-// Text effect component that animates characters word by word
 function AnimatedText({ text }: { text: string }) {
   const words = text.split(" ");
 
@@ -186,15 +185,15 @@ export function TestimonialsSection() {
     <section className="relative py-16 sm:py-20 md:py-28 overflow-hidden">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="mb-12 sm:mb-16 flex flex-col items-center text-center gap-6 sm:gap-8"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
         >
-          {/* Badge - Animated Group */}
-          <motion.div 
+          {/* Badge */}
+          <motion.div
             className="flex items-center justify-center gap-2 sm:gap-3"
             initial="hidden"
             whileInView="visible"
@@ -216,8 +215,8 @@ export function TestimonialsSection() {
             </motion.div>
           </motion.div>
 
-          {/* Heading - Text Effect Animation */}
-          <motion.h2 
+          {/* Heading */}
+          <motion.h2
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-foreground px-4"
             initial="hidden"
             whileInView="visible"
@@ -227,7 +226,7 @@ export function TestimonialsSection() {
           </motion.h2>
 
           {/* Description */}
-          <motion.p 
+          <motion.p
             className="text-muted-foreground text-sm sm:text-base font-normal max-w-2xl"
             initial="hidden"
             whileInView="visible"
@@ -239,7 +238,7 @@ export function TestimonialsSection() {
         </motion.div>
 
         {/* Testimonials Grid */}
-        <motion.div 
+        <motion.div
           className="mx-auto -mt-10 grid w-full max-w-6xl gap-6 md:grid-cols-3 md:gap-6"
           initial="hidden"
           whileInView="visible"
@@ -247,14 +246,8 @@ export function TestimonialsSection() {
           variants={cardsContainerVariants}
         >
           {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.name}
-              variants={cardVariants}
-            >
-              <TestimonialCard
-                index={index}
-                testimonial={testimonial}
-              />
+            <motion.div key={testimonial.name} variants={cardVariants}>
+              <TestimonialCard index={index} testimonial={testimonial} />
             </motion.div>
           ))}
         </motion.div>
@@ -265,15 +258,13 @@ export function TestimonialsSection() {
 
 export default TestimonialsSection;
 
-function TestimonialCard({
-  testimonial,
-  index,
-  className,
-  ...props
-}: React.ComponentProps<"figure"> & {
+type TestimonialCardProps = {
   testimonial: Testimonial;
   index: number;
-}) {
+  className?: string;
+};
+
+function TestimonialCard({ testimonial, index, className }: TestimonialCardProps) {
   const { quote, name, role, company, image } = testimonial;
 
   return (
@@ -289,7 +280,6 @@ function TestimonialCard({
       }
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      {...props}
     >
       {/* Quote Icon */}
       <motion.div
@@ -305,7 +295,7 @@ function TestimonialCard({
       </motion.div>
 
       {/* Quote */}
-      <motion.blockquote 
+      <motion.blockquote
         className="flex-1"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -318,17 +308,14 @@ function TestimonialCard({
       </motion.blockquote>
 
       {/* Author */}
-      <motion.figcaption 
+      <motion.figcaption
         className="flex items-center gap-3"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6, delay: 0.4 }}
       >
-        <motion.div
-          whileHover={{ scale: 1.1 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
           <Avatar className="size-10 rounded-full ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
             <AvatarImage alt={`${name}'s profile picture`} src={image} />
             <AvatarFallback>{name.charAt(0)}</AvatarFallback>
