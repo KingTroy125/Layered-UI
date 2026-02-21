@@ -23,19 +23,41 @@ const Cta2Section = () => {
   return (
     <>
       <div className="relative min-h-[70vh] w-full pb-24 md:pb-32">
-
+        {/* Full-width subtle grid — foreground adapts to light/dark */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            backgroundSize: "3rem 3rem",
+            backgroundImage:
+              "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
+          }}
+          aria-hidden
+        />
 
         {/* Inner CTA container */}
         <div className="relative mx-auto flex min-h-[70vh] max-w-7xl flex-col items-center justify-center px-4 pt-24 pb-24 md:pt-32 md:pb-32">
+          {/* Focused grid with radial mask */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              maskImage:
+                "radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse 80% 60% at 50% 50%, black, transparent)",
+              backgroundSize: "3rem 3rem",
+              backgroundImage:
+                "linear-gradient(hsl(var(--foreground) / 0.06) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.06) 1px, transparent 1px)",
+            }}
+            aria-hidden
+          />
 
-
-          {/* Left animated line */}
+          {/* Left animated line — text-foreground makes currentColor theme-aware */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
             viewport={{ once: true }}
-            className="absolute left-0 hidden h-full w-24 md:block"
+            className="absolute left-0 hidden h-full w-24 md:block text-foreground"
           >
             <svg
               className="h-full w-full"
@@ -53,7 +75,7 @@ const Cta2Section = () => {
                   cx="0"
                   cy="0"
                   r="12"
-                  fill="url(#left-teal-grad)"
+                  fill="url(#left-fg-grad)"
                 />
               </g>
               <defs>
@@ -69,14 +91,14 @@ const Cta2Section = () => {
                   gradientUnits="userSpaceOnUse"
                   x1="0" y1="12" x2="0" y2="170"
                 >
-                  <stop offset="0%" stopColor="var(--line-color)" stopOpacity="0" />
-                  <stop offset="10%" stopColor="var(--line-color)" stopOpacity="1" />
-                  <stop offset="90%" stopColor="var(--line-color)" stopOpacity="1" />
-                  <stop offset="100%" stopColor="var(--line-color)" stopOpacity="0" />
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                  <stop offset="10%" stopColor="currentColor" stopOpacity="0.3" />
+                  <stop offset="90%" stopColor="currentColor" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
                 </linearGradient>
-                <radialGradient id="left-teal-grad" fx="1">
-                  <stop offset="0%" stopColor="var(--orb-color)" />
-                  <stop offset="100%" stopColor="transparent" />
+                <radialGradient id="left-fg-grad" fx="1">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
                 </radialGradient>
               </defs>
             </svg>
@@ -88,7 +110,7 @@ const Cta2Section = () => {
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.4, ease: "easeInOut" }}
             viewport={{ once: true }}
-            className="absolute right-0 hidden h-full w-24 md:block"
+            className="absolute right-0 hidden h-full w-24 md:block text-foreground"
           >
             <svg
               className="h-full w-full"
@@ -106,7 +128,7 @@ const Cta2Section = () => {
                   cx="0"
                   cy="0"
                   r="12"
-                  fill="url(#right-teal-grad)"
+                  fill="url(#right-fg-grad)"
                 />
               </g>
               <defs>
@@ -122,14 +144,14 @@ const Cta2Section = () => {
                   gradientUnits="userSpaceOnUse"
                   x1="0" y1="12" x2="0" y2="170"
                 >
-                  <stop offset="0%" stopColor="var(--line-color)" stopOpacity="0" />
-                  <stop offset="10%" stopColor="var(--line-color)" stopOpacity="1" />
-                  <stop offset="90%" stopColor="var(--line-color)" stopOpacity="1" />
-                  <stop offset="100%" stopColor="var(--line-color)" stopOpacity="0" />
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0" />
+                  <stop offset="10%" stopColor="currentColor" stopOpacity="0.3" />
+                  <stop offset="90%" stopColor="currentColor" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
                 </linearGradient>
-                <radialGradient id="right-teal-grad" fx="1">
-                  <stop offset="0%" stopColor="var(--orb-color)" />
-                  <stop offset="100%" stopColor="transparent" />
+                <radialGradient id="right-fg-grad" fx="1">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="1" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
                 </radialGradient>
               </defs>
             </svg>
@@ -144,7 +166,7 @@ const Cta2Section = () => {
             className="relative z-10 flex items-center justify-center gap-2 sm:gap-3"
           >
             <div className="flex items-center">
-              <div className="w-8 sm:w-12 md:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
+              <div className="w-8 sm:w-12 md:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent"></div>
             </div>
 
             <Badge variant="hero" className="group">
@@ -152,7 +174,7 @@ const Cta2Section = () => {
             </Badge>
 
             <div className="flex items-center">
-              <div className="w-8 sm:w-12 md:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+              <div className="w-8 sm:w-12 md:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent"></div>
             </div>
           </motion.div>
 
@@ -189,10 +211,7 @@ const Cta2Section = () => {
           >
             <Link
               href="#"
-              className="group flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-all duration-300 md:text-[1rem]
-                border border-border/60 bg-card/40 text-foreground
-                shadow-[0_0_0_1px_var(--btn-ring),inset_0_1px_0_var(--btn-inset)]
-                hover:border-primary/40 hover:bg-card/60 backdrop-blur-sm"
+              className="group flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold transition-all duration-300 md:text-[1rem] border border-border/60 bg-card/40 text-foreground shadow-[0_0_0_1px_hsl(var(--primary)/0.08),inset_0_1px_0_hsl(var(--primary)/0.05)] hover:border-primary/40 hover:bg-card/60 backdrop-blur-sm"
             >
               <TextGlitch text="Get Started" />
             </Link>
@@ -200,51 +219,36 @@ const Cta2Section = () => {
         </div>
       </div>
 
-      <style>{`
-        /* ── Theme-adaptive CSS variables ── */
+      <style>
+        {`
+.leftrightline {
+  offset-anchor: 10px 0px;
+  animation: leftrightline-animation-path;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-duration: 3s;
+}
 
-        /* Light mode */
-        :root {
-          --grid-line:         transparent;
-          --grid-line-focused: transparent;
-          --line-color:        rgba(0, 0, 0, 0.5);
-          --orb-color:         rgba(0, 0, 0, 0.9);
-          --btn-ring:          rgba(0, 0, 0, 0.06);
-          --btn-inset:         rgba(255, 255, 255, 0.6);
-        }
+.left-line {
+  offset-path: path("M 1 12 v 65 l 28 24 v 80");
+}
+.right-line {
+  offset-path: path("M 29 12 v 65 l -28 24 v 80");
+}
 
-        /* Dark mode */
-        .dark {
-          --grid-line:         rgba(255, 255, 255, 0.04);
-          --grid-line-focused: rgba(255, 255, 255, 0.06);
-          --line-color:        rgba(255, 255, 255, 0.5);
-          --orb-color:         rgba(255, 255, 255, 0.95);
-          --btn-ring:          rgba(255, 255, 255, 0.08);
-          --btn-inset:         rgba(255, 255, 255, 0.05);
-        }
-
-        /* ── Animated orb along SVG paths ── */
-        .leftrightline {
-          offset-anchor: 10px 0px;
-          animation: leftrightline-animation-path;
-          animation-iteration-count: infinite;
-          animation-timing-function: linear;
-          animation-duration: 3s;
-        }
-
-        .left-line {
-          offset-path: path("M 1 12 v 65 l 28 24 v 80");
-        }
-        .right-line {
-          offset-path: path("M 29 12 v 65 l -28 24 v 80");
-        }
-
-        @keyframes leftrightline-animation-path {
-          0%   { offset-distance: 0%; }
-          60%  { offset-distance: 100%; }
-          100% { offset-distance: 100%; }
-        }
-      `}</style>
+@keyframes leftrightline-animation-path {
+  0% {
+    offset-distance: 0%;
+  }
+  60% {
+    offset-distance: 100%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}
+        `}
+      </style>
     </>
   )
 }

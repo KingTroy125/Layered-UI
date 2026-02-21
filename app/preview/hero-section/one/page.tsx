@@ -39,7 +39,6 @@ const headingVariants: Variants = {
   },
 };
 
-// Text effect animation - word by word reveal with character effect
 const textEffectVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -113,7 +112,6 @@ const imageVariants: Variants = {
   },
 };
 
-// Text effect component that animates characters
 function AnimatedText({ text }: { text: string }) {
   const words = text.split(' ');
 
@@ -150,25 +148,34 @@ export default function Hero() {
           viewport={{ once: true, amount: 0.3 }}
           variants={containerVariants}
         >
-          {/* Badge with built-in lines */}
+          {/* Badge with lines */}
           <motion.div
-            className="mb-6 sm:mb-8"
+            className="mb-6 sm:mb-8 flex items-center justify-center gap-2 sm:gap-3"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={badgeVariants}
           >
-            <Badge variant="hero" showLines className="group">
+            <div className="flex items-center">
+              <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
+            </div>
+
+            <Badge variant="hero" className="group">
               <span className="text-sm font-normal">Join us</span>
             </Badge>
+
+            <div className="flex items-center">
+              <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
+            </div>
           </motion.div>
 
-          {/* Heading - Text Effect Animation */}
+          {/* Heading */}
           <motion.h2
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-foreground max-w-4xl mb-6"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
+            variants={headingVariants}
           >
             <AnimatedText text="Ready to transform your financial management?" />
           </motion.h2>
@@ -216,7 +223,6 @@ export default function Hero() {
                 alt="Dashboard preview"
                 className="w-full h-auto object-cover"
               />
-              {/* Gradient overlay for polish */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
             </div>
           </motion.div>
