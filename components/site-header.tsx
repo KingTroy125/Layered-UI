@@ -44,14 +44,17 @@ export const SiteHeader = () => {
                                 size="sm"
                                 variant="ghost"
                                 className={cn('text-foreground/75 rounded-full', isActive('/snippets/button') && 'text-foreground')}>
-                                <Link
-                                    href="/snippets/button"
-                                    className="!text-sm">
+                                <Link href="/snippets/button" className="!text-sm">
                                     Snippets
                                 </Link>
                             </Button>
                             <span className="rounded-full border border-blue-300 bg-blue-200 px-1.5 py-px text-xs text-blue-900 dark:border-red-700 dark:bg-red-500/20 dark:text-red-50">New</span>
                         </div>
+                        <Button asChild size="sm" variant="ghost" className={cn('text-foreground/75 rounded-full', isActive('/doc') && 'text-foreground')}>
+                            <Link href="/doc" className="!text-sm">
+                                Doc
+                            </Link>
+                        </Button>
                     </nav>
                 </div>
 
@@ -94,10 +97,10 @@ export const SiteHeader = () => {
             {mobileMenuOpen && (
                 <div className="md:hidden border-t">
                     <nav className="flex flex-col px-4 py-3 space-y-1">
-                        <Button 
-                            asChild 
-                            size="sm" 
-                            variant="ghost" 
+                        <Button
+                            asChild
+                            size="sm"
+                            variant="ghost"
                             className={cn('text-foreground/75 justify-start rounded-lg', isActive('/hero-section') && 'text-foreground bg-accent')}
                             onClick={closeMobileMenu}>
                             <Link href="/hero-section" className="!text-sm">
@@ -111,19 +114,28 @@ export const SiteHeader = () => {
                                 variant="ghost"
                                 className={cn('text-foreground/75 justify-start rounded-lg flex-1', isActive('/snippets/button') && 'text-foreground bg-accent')}
                                 onClick={closeMobileMenu}>
-                                <Link
-                                    href="/snippets/button"
-                                    className="!text-sm">
+                                <Link href="/snippets/button" className="!text-sm">
                                     Snippets
                                 </Link>
                             </Button>
                             <span className="rounded-full border border-blue-300 bg-blue-200 px-1.5 py-px text-xs text-blue-900 dark:border-red-700 dark:bg-red-500/20 dark:text-red-50">New</span>
                         </div>
+                        {/* Added missing Doc link */}
+                        <Button
+                            asChild
+                            size="sm"
+                            variant="ghost"
+                            className={cn('text-foreground/75 justify-start rounded-lg', isActive('/doc') && 'text-foreground bg-accent')}
+                            onClick={closeMobileMenu}>
+                            <Link href="/doc" className="!text-sm">
+                                Doc
+                            </Link>
+                        </Button>
                         <Button
                             asChild
                             variant="ghost"
                             size="sm"
-                            className="text-foreground justify-start gap-1 rounded-lg"
+                            className="text-foreground/75 justify-start gap-1 rounded-lg"
                             onClick={closeMobileMenu}>
                             <Link
                                 href="https://github.com/KingTroy125/layered-blocks"
