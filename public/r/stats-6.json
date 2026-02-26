@@ -4,6 +4,9 @@
   "type": "registry:block",
   "title": "Stats Block 6",
   "description": "Shadcn/ui website stats block for LayeredUI",
+  "dependencies": [
+    "framer-motion"
+  ],
   "files": [
     {
       "path": "app/preview/stats/six/page.tsx",
