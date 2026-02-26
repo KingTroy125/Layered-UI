@@ -14,6 +14,8 @@ import CodeBlock from './code-block'
 import Link from 'next/link'
 import { OpenInV0Button } from './open-in-v0'
 import { isUrlCached } from '@/lib/serviceWorker'
+import { HeartIcon, type HeartIconHandle } from '@/components/animation-logos/HeartIcon'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export interface BlockPreviewProps {
     code?: string
@@ -39,6 +41,7 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
     const [shouldLoadIframe, setShouldLoadIframe] = useState(false)
     const [cachedHeight, setCachedHeight] = useState<number | null>(null)
     const [isIframeCached, setIsIframeCached] = useState(false)
+    const [loved, setLoved] = useState(false)
 
     const terminalCode = `pnpm dlx shadcn@latest add @layeredui/${category}-${titleToNumber(title)}`
 
@@ -51,6 +54,7 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
     const iframeRef = useRef<HTMLIFrameElement>(null)
     const observer = useRef<IntersectionObserver | null>(null)
     const blockRef = useRef<HTMLDivElement>(null)
+    const heartIconRef = useRef<HeartIconHandle>(null)
 
     useEffect(() => {
         observer.current = new IntersectionObserver(
@@ -149,6 +153,11 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
         }
     }, [preview, shouldLoadIframe])
 
+    const handleLove = () => {
+        setLoved((prev) => !prev)
+        heartIconRef.current?.startAnimation()
+    }
+
     return (
         <section className="group mb-16 border-b [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]">
             <div className="relative border-y">
@@ -246,7 +255,30 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
                                     className="!h-4"
                                     orientation="vertical"
                                 />
-
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Button
+                                                onClick={handleLove}
+                                                size="sm"
+                                                variant="ghost"
+                                                aria-label="love this block"
+                                                className={cn('size-8 transition-colors', loved && 'text-red-500')}>
+                                                <HeartIcon
+                                                    ref={heartIconRef}
+                                                    size={14}
+                                                    filled={loved}
+                                                    className={cn('transition-colors', loved && 'text-red-500')}
+                                                />
+                                            </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>{loved ? 'Loved' : 'Love it'}</TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+                                <Separator
+                                    className="!h-4"
+                                    orientation="vertical"
+                                />
                                 <Button
                                     onClick={copy}
                                     size="sm"
