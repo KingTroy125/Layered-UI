@@ -236,7 +236,6 @@ export const blocks: Block[] = [
         preview: '/preview/faqs/one',
         code: loadCode('app/preview/faqs/one/page.tsx'),
     },
-
     {
         slug: 'faqs',
         title: 'two',
@@ -244,7 +243,6 @@ export const blocks: Block[] = [
         preview: '/preview/faqs/two',
         code: loadCode('app/preview/faqs/two/page.tsx'),
     },
-
     {
         slug: 'faqs',
         title: 'three',
