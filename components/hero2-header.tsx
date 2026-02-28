@@ -359,7 +359,7 @@ export function Hero2(): ReactNode {
                   }}
                 >
                   <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black dark:text-white leading-tight text-center">
-                    <AnimatedText text="Layered Blocks for" />
+                    <AnimatedText text="Layered UI for" />
                   </h1>
                   <div className="flex items-center justify-center gap-2 mt-4 flex-col">
                     <motion.h1 
