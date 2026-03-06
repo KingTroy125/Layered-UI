@@ -144,13 +144,6 @@ export const blocks: Block[] = [
     },
     {
         slug: 'testimonials',
-        title: 'two',
-        category: 'testimonials',
-        preview: '/preview/testimonials/two',
-        code: loadCode('app/preview/testimonials/two/page.tsx'),
-    },
-    {
-        slug: 'testimonials',
         title: 'six',
         category: 'testimonials',
         preview: '/preview/testimonials/six',
