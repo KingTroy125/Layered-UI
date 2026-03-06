@@ -118,7 +118,6 @@ export default function NotFoundPage() {
             asChild
           >
             <a href="#">
-              <HomeIcon className="w-4 h-4" />
               Go Home
             </a>
           </Button>
@@ -130,7 +129,6 @@ export default function NotFoundPage() {
             asChild
           >
             <a href="#">
-              <CompassIcon className="w-4 h-4" />
               Explore
             </a>
           </Button>
