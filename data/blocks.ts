@@ -25,17 +25,17 @@ export const blocks: Block[] = [
     },
     {
         slug: 'hero-section',
-        title: 'two',
-        category: 'hero-section',
-        preview: '/preview/hero-section/two',
-        code: loadCode('app/preview/hero-section/two/page.tsx'),
-    },
-    {
-        slug: 'hero-section',
         title: 'three',
         category: 'hero-section',
         preview: '/preview/hero-section/three',
         code: loadCode('app/preview/hero-section/three/page.tsx'),
+    },
+    {
+        slug: 'hero-section',
+        title: 'two',
+        category: 'hero-section',
+        preview: '/preview/hero-section/two',
+        code: loadCode('app/preview/hero-section/two/page.tsx'),
     },
 
     {
