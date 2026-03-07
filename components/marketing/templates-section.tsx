@@ -11,6 +11,7 @@ const templates = [
     title: "Vaulto",
     imageUrl: "./Templates/Vaulto.png",
     livePreviewUrl: "https://vaulto-nextjs-template.vercel.app/",
+    githubUrl: "",
     tag: "SaaS",
   },
   {
