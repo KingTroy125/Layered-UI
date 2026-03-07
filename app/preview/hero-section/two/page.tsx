@@ -1,20 +1,16 @@
 'use client';
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
-import { Sparkles } from "lucide-react";
-import { motion, type Variants } from "framer-motion";
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { motion, type Variants } from 'framer-motion';
 
-// Animation variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1,
-      delayChildren: 0.2,
     },
   },
 };
@@ -26,7 +22,7 @@ const badgeVariants: Variants = {
     scale: 1,
     transition: {
       duration: 0.6,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 };
@@ -37,19 +33,32 @@ const lineVariants: Variants = {
     scaleX: 1,
     transition: {
       duration: 0.8,
-      ease: "easeInOut",
+      ease: 'easeInOut',
     },
   },
 };
 
-// Text effect animation - word by word reveal
+const headingVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      delay: 0.2,
+      ease: 'easeOut',
+    },
+  },
+};
+
+// Text effect animation - character by character reveal
 const textEffectVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.3,
+      staggerChildren: 0.05,
+      delayChildren: 0.2,
     },
   },
 };
@@ -61,17 +70,7 @@ const charVariants: Variants = {
     y: 0,
     transition: {
       duration: 0.4,
-      ease: "easeOut",
-    },
-  },
-};
-
-const wordVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
+      ease: 'easeOut',
     },
   },
 };
@@ -83,21 +82,21 @@ const descriptionVariants: Variants = {
     y: 0,
     transition: {
       duration: 0.8,
-      delay: 0.4,
-      ease: "easeOut",
+      delay: 0.3,
+      ease: 'easeOut',
     },
   },
 };
 
-const buttonsVariants: Variants = {
+const buttonVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      delay: 0.5,
-      ease: "easeOut",
+      delay: 0.4,
+      ease: 'easeOut',
     },
   },
 };
@@ -110,8 +109,8 @@ const imageVariants: Variants = {
     scale: 1,
     transition: {
       duration: 0.8,
-      delay: 0.6,
-      ease: "easeOut",
+      delay: 0.5,
+      ease: 'easeOut',
     },
   },
 };
@@ -135,192 +134,130 @@ const groupItemVariants: Variants = {
     scale: 1,
     transition: {
       duration: 0.5,
-      ease: "easeOut",
+      ease: 'easeOut',
     },
   },
 };
 
-const buttonGroupVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.55,
-    },
-  },
-};
-
-const buttonItemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
-    },
-  },
-};
-
-// Text effect component that animates characters word by word
+// Text effect component that animates characters
 function AnimatedText({ text }: { text: string }) {
-  const words = text.split(" ");
-
   return (
-    <motion.span
+    <motion.div
       className="inline-block"
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
       variants={textEffectVariants}
     >
-      {words.map((word, wordIndex) => (
-        <motion.span
-          key={wordIndex}
-          variants={wordVariants}
-          className="inline-block"
-        >
-          {word.split("").map((char, charIndex) => (
-            <motion.span key={charIndex} variants={charVariants}>
-              {char}
-            </motion.span>
-          ))}
-          <span className="inline-block">&nbsp;</span>
+      {text.split('').map((char, index) => (
+        <motion.span key={index} variants={charVariants}>
+          {char}
         </motion.span>
       ))}
-    </motion.span>
+    </motion.div>
   );
 }
 
-export default function HeroSection() {
+export default function FullHeroPage() {
   return (
-    <section className="relative py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
-      {/* Background */}
-      <motion.div
-        className="absolute inset-x-3 sm:inset-x-4 md:inset-x-6 lg:inset-x-8 top-2 sm:top-4 bottom-24 sm:bottom-32 md:bottom-40 lg:bottom-56 bg-muted rounded-2xl sm:rounded-3xl"
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, delay: 0.1 }}
-      />
-
-      <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-        <motion.div
-          className="flex flex-col items-center text-center gap-4 sm:gap-6 md:gap-8"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={containerVariants}
-        >
-          {/* Badge - Animated Group */}
+    <main>
+      <section className="bg-background overflow-hidden">
+        <div className="relative mx-auto max-w-5xl px-6 pt-28 lg:pt-24">
           <motion.div
+            className="relative z-10 mx-auto max-w-2xl text-center"
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true }}
-            variants={animatedGroupVariants}
+            viewport={{ once: true, amount: 0.3 }}
+            variants={containerVariants}
           >
-            <Link
-              href="#"
-              className="group flex items-center justify-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity"
+            {/* Badge - Animated Group */}
+            <motion.div
+              className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={animatedGroupVariants}
             >
-              <motion.div className="hidden sm:flex items-center" variants={groupItemVariants}>
+              <motion.div className="flex items-center" variants={groupItemVariants}>
                 <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent" />
               </motion.div>
 
               <motion.div variants={groupItemVariants}>
-                <Badge
-                  variant="hero"
-                  className="group flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm"
-                >
-                  <span className="font-normal">
-                    Introducing Layered UI Agents
-                  </span>
+                <Badge variant="hero" className="group">
+                  <span className="text-sm font-normal">Layered UI</span>
                 </Badge>
               </motion.div>
 
-              <motion.div className="hidden sm:flex items-center" variants={groupItemVariants}>
+              <motion.div className="flex items-center" variants={groupItemVariants}>
                 <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent" />
               </motion.div>
-            </Link>
-          </motion.div>
-
-          {/* Heading - Text Effect Animation */}
-          <motion.h1
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-normal leading-tight text-foreground max-w-4xl text-balance"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-          >
-            <AnimatedText text="Build 10x Faster with Layered UI" />
-          </motion.h1>
-
-          {/* Description */}
-          <motion.p
-            className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-xl text-balance px-2"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={descriptionVariants}
-          >
-            Craft. Build. Ship Modern Websites With AI Support.
-          </motion.p>
-
-          {/* CTA Buttons - Animated Group */}
-          <motion.div
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full sm:w-auto px-4 sm:px-0"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={buttonGroupVariants}
-          >
-            <motion.div variants={buttonItemVariants} className="w-full sm:w-auto">
-              <Button
-                asChild
-                size="lg"
-                className="rounded-full px-6 w-full sm:w-auto"
-              >
-                <Link href="#link">
-                  <span className="text-nowrap">Start Building</span>
-                </Link>
-              </Button>
             </motion.div>
 
-            <motion.div variants={buttonItemVariants} className="w-full sm:w-auto">
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="rounded-full px-6 bg-transparent w-full sm:w-auto"
-              >
-                <Link href="#link">
-                  <span className="text-nowrap">Watch Video</span>
+            {/* Heading - Text Effect Animation */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.05,
+                    delayChildren: 0.2,
+                  },
+                },
+              }}
+            >
+              <h1 className="text-balance text-4xl font-normal md:text-5xl lg:text-6xl">
+                <AnimatedText text="Build faster with Layered" />
+              </h1>
+            </motion.div>
+
+            {/* Description */}
+            <motion.p
+              className="text-muted-foreground mx-auto my-8 max-w-2xl text-base md:text-lg font-normal"
+              variants={descriptionVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              Experience how teams accelerate development, automate workflows, and transform ideas into production-ready applications using our advanced API ecosystem.
+            </motion.p>
+
+            {/* CTA Button */}
+            <motion.div
+              variants={buttonVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <Button asChild size="lg" className="rounded-full bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 font-normal">
+                <Link href="#">
+                  <span>Get started today</span>
                 </Link>
               </Button>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
 
-        {/* Hero Image */}
+        {/* Dashboard Image */}
         <motion.div
-          className="mt-8 sm:mt-10 md:mt-12 lg:mt-16"
+          className="mx-auto 2xl:max-w-7xl"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.2 }}
           variants={imageVariants}
         >
-          <div className="relative bg-card rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden border border-border shadow-lg shadow-primary/5">
-            <Image
-              src="/assets/12.png"
-              alt="App dashboard preview"
-              width={2880}
-              height={1842}
-              className="w-full h-auto"
-              priority
-            />
+          <div className="perspective-distant pl-8 lg:pl-44">
+            <div className="lg:h-176 rotate-x-20 mask-b-from-55% mask-b-to-100% mask-r-from-75% skew-x-12 pl-6 pt-6">
+              <img
+                className="rounded-lg border shadow-xl"
+                src="https://opencal-nextjs.vercel.app/12.png"
+                alt="Dashboard preview"
+              />
+            </div>
           </div>
         </motion.div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 }
