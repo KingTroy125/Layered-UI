@@ -13,46 +13,47 @@ import { Badge } from "@/components/ui/badge";
 const questions = [
   {
     id: "item-1",
-    title: "What kind of templates do you offer?",
+    title: "What are Layered UI components?",
     content:
-      "We offer a growing collection of beautifully crafted Next.js landing page templates built with Tailwind CSS and shadcn/ui. Each template is production-ready, fully responsive, and designed with modern patterns and best practices.",
+      "Layered UI components are a curated collection of pre-built, production-ready interface blocks designed for Next.js applications. Each component is crafted with multiple visual layers — combining subtle gradients, borders, shadows, and animations — to create a polished, depth-rich design out of the box.",
   },
   {
     id: "item-2",
-    title: "Who are these templates built for?",
+    title: "Who are Layered UI components built for?",
     content:
-      "Our templates are built for founders, indie hackers, product teams, and agencies that want to ship polished landing pages fast without starting from scratch every time.",
+      "They're built for developers, founders, and design-conscious teams who want to ship beautiful interfaces fast. Whether you're building a SaaS dashboard, a marketing site, or a portfolio — Layered UI components give you a professional foundation without needing a dedicated designer.",
   },
   {
     id: "item-3",
-    title: "Can I customize the templates?",
+    title: "Can I customize the Layered UI components?",
     content:
-      "Absolutely. Every template is built with clean, readable code and uses Tailwind utility classes throughout, making it straightforward to adjust colors, typography, layout, and content to match your brand.",
+      "Absolutely. Every component is built with clean, readable code using Tailwind CSS utility classes and shadcn/ui primitives. You can easily adjust colors, spacing, typography, and layout to match your brand — or extend them with your own design tokens.",
   },
   {
     id: "item-4",
-    title: "Do the templates include dark mode support?",
+    title: "Do Layered UI components support dark mode?",
     content:
-      "Yes. All templates include full dark mode support out of the box using Tailwind's dark variant and CSS custom properties, so they look great in both light and dark themes without any extra work.",
+      "Yes. All components include full dark mode support out of the box using Tailwind's dark variant and CSS custom properties. Every layer, shadow, and gradient adapts seamlessly between light and dark themes without any extra configuration.",
   },
   {
     id: "item-5",
-    title: "What technologies are used?",
+    title: "What technologies are Layered UI components built with?",
     content:
-      "Templates are built with Next.js (App Router), Tailwind CSS, and shadcn/ui components. Some templates also include Framer Motion for animations. Everything is TypeScript-first and follows modern React patterns.",
+      "Layered UI components are built with Next.js (App Router), Tailwind CSS, and shadcn/ui. Select components also leverage Framer Motion for smooth entrance and interaction animations. Everything is TypeScript-first and follows modern React patterns.",
   },
   {
     id: "item-6",
-    title: "How do I get started with a template?",
+    title: "How do I start using Layered UI components?",
     content:
-      "Click the Live Preview button on any template to see it in action, then use the GitHub link to clone or fork the repository. From there it's just a standard Next.js setup — install dependencies and you're ready to go.",
+      "Browse the components and templates in our collection, preview them live, then copy the code directly into your project. Each block is self-contained — just drop it in, install any required dependencies, and you're ready to ship.",
   },
   {
     id: "item-7",
-    title: "Will more templates be added over time?",
+    title: "Will new Layered UI components be added over time?",
     content:
-      "Yes. We're continuously adding new templates and components to the collection. New releases include landing pages, dashboards, portfolios, and more — all following the same quality standards.",
+      "Yes. We're continuously expanding the collection with new blocks, sections, and full-page templates. Upcoming additions include more dashboard widgets, e-commerce blocks, authentication flows, and data visualization components — all following the same layered design philosophy.",
   },
+
   // ── Add more questions here ───────────────────────────────────────────────
   // {
   //   id: "item-8",
@@ -80,7 +81,7 @@ const FaqsSection = () => {
         </div>
         <h2 className="text-balance text-3xl font-bold sm:text-4xl">Frequently Asked Questions</h2>
         <p className="mt-3 text-base max-w-xl">
-          Common questions about our templates. Can't find what you're looking for?{" "}
+          Common questions about Layered UI components. Can't find what you're looking for?{" "}
           <a className="text-primary hover:underline" href="#">Reach out</a>.
         </p>
       </div>

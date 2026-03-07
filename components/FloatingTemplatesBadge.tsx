@@ -24,7 +24,7 @@ export const FloatingTemplatesBadge = () => {
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
                     className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
                 >
-                    <Link href="/" className="block">
+                    <Link href="/templates" className="block">
                         <div className="group relative overflow-hidden flex items-center gap-2 px-4 py-2.5 rounded-full bg-zinc-900 dark:bg-zinc-100 border border-zinc-700 dark:border-zinc-300 shadow-lg transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
                             {/* Animated Badge */}
                             <span className="relative flex h-2 w-2">
