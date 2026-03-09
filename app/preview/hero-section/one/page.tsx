@@ -161,7 +161,7 @@ export default function Hero() {
             </div>
 
             <Badge variant="hero" className="group">
-              <span className="text-sm font-normal">Join us</span>
+              <span className="text-sm font-normal">Layered UI</span>
             </Badge>
 
             <div className="flex items-center">
@@ -177,7 +177,7 @@ export default function Hero() {
             viewport={{ once: true }}
             variants={headingVariants}
           >
-            <AnimatedText text="Ready to transform your financial management?" />
+            <AnimatedText text="Build your next project faster with Layered" />
           </motion.h2>
 
           {/* Description */}
@@ -188,9 +188,8 @@ export default function Hero() {
             viewport={{ once: true }}
             variants={descriptionVariants}
           >
-            Streamline your business's financial management with our intuitive,
-            scalable SaaS platform. Designed for U.S. enterprises, our solutions
-            simplify complex processes.
+            Build your next project faster with beautiful, accessible, and customizable
+            components that are designed to work together seamlessly.
           </motion.p>
 
           {/* CTA Button */}
