@@ -3,7 +3,7 @@
   "name": "footer-3",
   "type": "registry:block",
   "title": "Footer Block 3",
-  "description": "Shadcn/ui website footer block with animations",
+  "description": "Shadcn/ui website footer block with animations for Layered UI",
   "dependencies": [
     "framer-motion",
     "lucide-react",
