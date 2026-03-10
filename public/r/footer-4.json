@@ -3,7 +3,7 @@
   "name": "footer-4",
   "type": "registry:block",
   "title": "Footer Block 4",
-  "description": "Shadcn/ui website footer block",
+  "description": "Shadcn/ui website footer block for Layered UI",
   "files": [
     {
       "path": "app/preview/footer/four/page.tsx",
