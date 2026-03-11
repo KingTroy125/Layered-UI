@@ -105,7 +105,15 @@ export const BlockPreviewProvider: React.FC<{
                     observer.current?.disconnect()
                 }
             },
-            { threshold: 0.1 }
+            {
+                // FIX: Lower threshold (0 vs 0.1) means it fires as soon as even 1px is visible.
+                // On mobile, blocks near the fold with threshold: 0.1 could miss the trigger
+                // if the element is partially clipped or the viewport is narrow.
+                threshold: 0,
+                // FIX: Pre-load iframes 300px before they scroll into view on mobile,
+                // reducing the white screen gap between scroll and content appearing.
+                rootMargin: '300px 0px',
+            }
         )
 
         if (blockRef.current) observer.current.observe(blockRef.current)
@@ -145,25 +153,42 @@ export const BlockPreviewProvider: React.FC<{
         const iframe = iframeRef.current
         if (!iframe || !shouldLoadIframe) return
 
-        const handleLoad = () => {
+        const markLoaded = (iframe: HTMLIFrameElement) => {
             try {
                 const contentHeight = iframe.contentWindow!.document.body.scrollHeight
-                // FIX: Use a minimum of 224px (min-h-56) to avoid 0-height edge case
                 const safeHeight = Math.max(contentHeight, 224)
                 setIframeHeight(safeHeight)
-                // FIX: Mark iframe as fully loaded — this is the reliable signal for showing it
-                setIframeLoaded(true)
                 const cacheKey = getCacheKey(preview)
                 localStorage.setItem(cacheKey, JSON.stringify({ height: safeHeight, timestamp: Date.now() }))
             } catch (e) {
                 console.error('Error accessing iframe content:', e)
-                // FIX: Even on cross-origin errors, mark as loaded so it becomes visible
+            } finally {
+                // Always mark loaded regardless of height measurement success
                 setIframeLoaded(true)
             }
         }
 
+        // FIX: Race condition — if the iframe already loaded before this effect ran
+        // (common on mobile where JS is slower but network/cache is warm), catch it here.
+        if (iframe.contentDocument?.readyState === 'complete') {
+            markLoaded(iframe)
+            return
+        }
+
+        const handleLoad = () => markLoaded(iframe)
         iframe.addEventListener('load', handleLoad)
-        return () => iframe.removeEventListener('load', handleLoad)
+
+        // FIX: Mobile safety net — if load event never fires (e.g. sandboxed iframe, network
+        // stall, or browser quirk), reveal the iframe after 8 seconds so user isn't stuck on
+        // a white box forever.
+        const fallbackTimer = setTimeout(() => {
+            setIframeLoaded(true)
+        }, 8000)
+
+        return () => {
+            iframe.removeEventListener('load', handleLoad)
+            clearTimeout(fallbackTimer)
+        }
     }, [shouldLoadIframe, preview])
 
     const handleLove = () => {
