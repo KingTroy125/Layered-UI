@@ -31,6 +31,8 @@ interface BlockPreviewContextValue {
     setShouldLoadIframe: (load: boolean) => void
     cachedHeight: number | null
     isIframeCached: boolean
+    // FIX: Track whether the iframe has fully loaded so opacity can flip correctly
+    iframeLoaded: boolean
     loved: boolean
     setLoved: (loved: boolean | ((prev: boolean) => boolean)) => void
     title: string
@@ -79,6 +81,8 @@ export const BlockPreviewProvider: React.FC<{
     const [shouldLoadIframe, setShouldLoadIframe] = useState(false)
     const [cachedHeight, setCachedHeight] = useState<number | null>(null)
     const [isIframeCached, setIsIframeCached] = useState(false)
+    // FIX: Added iframeLoaded state so opacity/visibility logic has a reliable signal
+    const [iframeLoaded, setIframeLoaded] = useState(false)
     const [loved, setLoved] = useState(false)
 
     const terminalCode = `pnpm dlx shadcn@latest add @layeredui/${category}-${titleToNumber(title)}`
@@ -128,6 +132,8 @@ export const BlockPreviewProvider: React.FC<{
                 if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
                     setCachedHeight(height)
                     setIframeHeight(height)
+                    // FIX: If we have a valid cached height, treat it as already loaded
+                    setIframeLoaded(true)
                 }
             }
         } catch (error) {
@@ -142,11 +148,17 @@ export const BlockPreviewProvider: React.FC<{
         const handleLoad = () => {
             try {
                 const contentHeight = iframe.contentWindow!.document.body.scrollHeight
-                setIframeHeight(contentHeight)
+                // FIX: Use a minimum of 224px (min-h-56) to avoid 0-height edge case
+                const safeHeight = Math.max(contentHeight, 224)
+                setIframeHeight(safeHeight)
+                // FIX: Mark iframe as fully loaded — this is the reliable signal for showing it
+                setIframeLoaded(true)
                 const cacheKey = getCacheKey(preview)
-                localStorage.setItem(cacheKey, JSON.stringify({ height: contentHeight, timestamp: Date.now() }))
+                localStorage.setItem(cacheKey, JSON.stringify({ height: safeHeight, timestamp: Date.now() }))
             } catch (e) {
                 console.error('Error accessing iframe content:', e)
+                // FIX: Even on cross-origin errors, mark as loaded so it becomes visible
+                setIframeLoaded(true)
             }
         }
 
@@ -162,6 +174,7 @@ export const BlockPreviewProvider: React.FC<{
     const value = {
         mode, setMode, width, setWidth, iframeHeight, setIframeHeight,
         shouldLoadIframe, setShouldLoadIframe, cachedHeight, isIframeCached,
+        iframeLoaded,
         loved, setLoved, title, category, preview, code, terminalCode,
         copied,
         copy: (e?: any) => copy(e),
@@ -348,10 +361,14 @@ function BlockPreviewContent() {
 }
 
 function BlockPreviewView() {
-    const { mode, resizablePanelRef, setWidth, blockRef, shouldLoadIframe, isIframeCached, iframeRef, title, cachedHeight, iframeHeight, preview } = useBlockPreview()
+    // FIX: Consume iframeLoaded instead of relying on cachedHeight/isIframeCached for opacity
+    const { mode, resizablePanelRef, setWidth, blockRef, shouldLoadIframe, isIframeCached, iframeRef, title, category, cachedHeight, iframeHeight, preview, iframeLoaded } = useBlockPreview()
     const isLarge = useMedia('(min-width: 1024px)')
 
     if (mode !== 'preview') return null
+
+    // FIX: Compute the effective height — fall back to a safe minimum rather than 0
+    const effectiveHeight = cachedHeight || iframeHeight || 0
 
     return (
         <div className="bg-white dark:bg-transparent">
@@ -364,19 +381,26 @@ function BlockPreviewView() {
                     <div ref={blockRef} className="w-full">
                         {shouldLoadIframe ? (
                             <iframe
-                                key={`${title}-iframe`}
+                                // FIX: Key now includes category so React never reuses iframes across categories
+                                key={`${category}-${title}-iframe`}
                                 loading={isIframeCached ? 'eager' : 'lazy'}
                                 allowFullScreen
                                 ref={iframeRef}
-                                title={title}
-                                height={cachedHeight || iframeHeight}
+                                title={`${category} ${title}`}
+                                // FIX: Always set a pixel height from the CSS variable, using effectiveHeight
+                                //      The iframe becomes visible only once iframeLoaded is true
                                 className={cn(
-                                    'h-(--iframe-height) block min-h-56 w-full duration-200 transition-opacity',
-                                    !cachedHeight && !isIframeCached && 'opacity-0',
-                                    (cachedHeight || isIframeCached) && 'opacity-100'
+                                    'block w-full duration-300 transition-opacity min-h-56',
+                                    // FIX: Show iframe once iframeLoaded is true (covers all cases:
+                                    //      fresh load, cached height, or service worker cache)
+                                    iframeLoaded ? 'opacity-100' : 'opacity-0'
                                 )}
                                 src={preview}
-                                style={{ '--iframe-height': `${cachedHeight || iframeHeight}px` } as React.CSSProperties}
+                                style={{
+                                    // FIX: Only apply explicit height once we have a real value;
+                                    //      otherwise let min-h-56 hold the space during load
+                                    height: effectiveHeight > 0 ? `${effectiveHeight}px` : undefined,
+                                }}
                             />
                         ) : (
                             <div className="flex min-h-56 items-center justify-center">
