@@ -261,6 +261,7 @@ function BlockPreviewToolbar() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                    {/* Desktop-only: viewport resize controls */}
                     <div className="hidden h-8 items-center gap-1 rounded-lg border bg-background/50 px-1 lg:flex">
                         <TooltipProvider>
                             <Tooltip>
@@ -307,18 +308,41 @@ function BlockPreviewToolbar() {
 
                             <Separator orientation="vertical" className="h-4 mx-1" />
 
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="size-6" asChild>
-                                        <a href={preview} target="_blank" rel="noreferrer">
-                                            <ExternalLink className="size-3" />
-                                        </a>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Open in New Tab</TooltipContent>
-                            </Tooltip>
+                            {/* Desktop: ExternalLink inside the viewport control bar */}
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="icon" className="size-6" asChild>
+                                            <a href={preview} target="_blank" rel="noreferrer">
+                                                <ExternalLink className="size-3" />
+                                            </a>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>Open in New Tab</TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                         </TooltipProvider>
                     </div>
+
+                    {/* Mobile/tablet: standalone "Open in New Tab" button, always visible below lg */}
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="flex h-8 items-center gap-1.5 px-2.5 lg:hidden"
+                                    asChild
+                                >
+                                    <a href={preview} target="_blank" rel="noreferrer">
+                                        <ExternalLink className="size-3.5" />
+                                        <span className="text-xs">Open</span>
+                                    </a>
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Open in New Tab</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
 
                     <Separator orientation="vertical" className="mx-1 hidden h-4 lg:block" />
 
@@ -408,7 +432,11 @@ function BlockPreviewView() {
                             <iframe
                                 // FIX: Key now includes category so React never reuses iframes across categories
                                 key={`${category}-${title}-iframe`}
-                                loading={isIframeCached ? 'eager' : 'lazy'}
+                                // FIX: Always use "eager" — we already control lazy loading ourselves
+                                // via IntersectionObserver + shouldLoadIframe. The browser's native
+                                // loading="lazy" adds an extra unpredictable delay on top of ours,
+                                // which is what causes the long white screen on mobile.
+                                loading="eager"
                                 allowFullScreen
                                 ref={iframeRef}
                                 title={`${category} ${title}`}
