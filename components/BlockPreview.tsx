@@ -324,19 +324,13 @@ function BlockPreviewToolbar() {
                         </TooltipProvider>
                     </div>
 
-                    {/* Mobile/tablet: standalone "Open in New Tab" button, always visible below lg */}
+                    {/* Mobile/tablet: icon button "Open in New Tab", always visible below lg */}
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex h-8 items-center gap-1.5 px-2.5 lg:hidden"
-                                    asChild
-                                >
+                                <Button variant="outline" size="icon" className="size-8 lg:hidden" asChild>
                                     <a href={preview} target="_blank" rel="noreferrer">
                                         <ExternalLink className="size-3.5" />
-                                        <span className="text-xs">Open</span>
                                     </a>
                                 </Button>
                             </TooltipTrigger>
