@@ -18,7 +18,7 @@ function Navbar() {
 
   return (
     <motion.header
-      className="fixed top-0 left-0 right-0 z-40 pt-4 px-4 sm:px-6"
+      className="relative z-40 pt-4 px-4 sm:px-6"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -26,7 +26,7 @@ function Navbar() {
       <nav className="max-w-6xl mx-auto px-6 py-3 lg:py-4 rounded-2xl bg-background/50 border border-border/50 backdrop-blur-md transition-all duration-300">
         <div className="flex items-center justify-between">
           {/* Logo */}
-            <Logo />
+          <Logo />
 
           {/* Desktop Menu */}
           <div className="hidden lg:block">
@@ -69,9 +69,8 @@ function Navbar() {
 
         {/* Mobile Menu */}
         <div
-          className={`${
-            menuOpen ? 'flex' : 'hidden'
-          } lg:hidden flex-col gap-4 pt-4 mt-4 border-t border-border/50`}
+          className={`${menuOpen ? 'flex' : 'hidden'
+            } lg:hidden flex-col gap-4 pt-4 mt-4 border-t border-border/50`}
         >
           <ul className="space-y-4">
             {menuItems.map((item) => (

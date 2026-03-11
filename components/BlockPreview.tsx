@@ -1,11 +1,9 @@
 'use client'
 
-import type React from 'react'
-import { useState, useRef, useEffect } from 'react'
-import { Check, Code2, Copy, Eye, Maximize, Terminal } from 'lucide-react'
+import React, { createContext, useContext, useState, useRef, useEffect } from 'react'
+import { Check, Code2, Copy, Eye, Maximize, Terminal, Smartphone, Tablet, Monitor, RefreshCw, ExternalLink } from 'lucide-react'
 import { Panel, PanelGroup, PanelResizeHandle, type ImperativePanelGroupHandle } from 'react-resizable-panels'
 import { Separator } from '@/components/ui/separator'
-import * as RadioGroup from '@radix-ui/react-radio-group'
 import { useCopyToClipboard } from '@/hooks/useClipboard'
 import { useMedia } from 'use-media'
 import { Button } from './ui/button'
@@ -14,29 +12,69 @@ import CodeBlock from './code-block'
 import Link from 'next/link'
 import { OpenInV0Button } from './open-in-v0'
 import { isUrlCached } from '@/lib/serviceWorker'
+import { motion, AnimatePresence } from 'motion/react'
 import { HeartIcon, type HeartIconHandle } from '@/components/animation-logos/HeartIcon'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-export interface BlockPreviewProps {
-    code?: string
-    preview: string
+// --- Types & Context ---
+
+type ViewMode = 'preview' | 'code'
+
+interface BlockPreviewContextValue {
+    mode: ViewMode
+    setMode: (mode: ViewMode) => void
+    width: number
+    setWidth: (width: number) => void
+    iframeHeight: number
+    setIframeHeight: (height: number) => void
+    shouldLoadIframe: boolean
+    setShouldLoadIframe: (load: boolean) => void
+    cachedHeight: number | null
+    isIframeCached: boolean
+    loved: boolean
+    setLoved: (loved: boolean | ((prev: boolean) => boolean)) => void
     title: string
     category: string
-    previewOnly?: boolean
+    preview: string
+    code?: string
+    terminalCode: string
+    copied: boolean
+    copy: (e?: React.MouseEvent) => void
+    cliCopied: boolean
+    cliCopy: (e?: React.MouseEvent) => void
+    handleLove: () => void
+    heartIconRef: React.RefObject<HeartIconHandle | null>
+    resizablePanelRef: React.RefObject<ImperativePanelGroupHandle | null>
+    iframeRef: React.RefObject<HTMLIFrameElement | null>
+    blockRef: React.RefObject<HTMLDivElement | null>
 }
 
-const radioItem = 'rounded-(--radius) duration-200 flex items-center justify-center h-8 px-2.5 gap-2 transition-[color] data-[state=checked]:bg-muted'
+const BlockPreviewContext = createContext<BlockPreviewContextValue | null>(null)
 
-const DEFAULTSIZE = 100
-const SMSIZE = 30
-const MDSIZE = 62
-const LGSIZE = 82
+function useBlockPreview() {
+    const context = useContext(BlockPreviewContext)
+    if (!context) throw new Error('useBlockPreview must be used within a BlockPreviewProvider')
+    return context
+}
+
+// --- Provider ---
+
+const DEFAULT_SIZE = 100
+const SM_SIZE = 30
+const MD_SIZE = 62
+const LG_SIZE = 82
 
 const getCacheKey = (src: string) => `iframe-cache-${src}`
 
-export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title, category, previewOnly }) => {
-    const [width, setWidth] = useState(DEFAULTSIZE)
-    const [mode, setMode] = useState<'preview' | 'code'>('preview')
+export const BlockPreviewProvider: React.FC<{
+    children: React.ReactNode
+    title: string
+    category: string
+    preview: string
+    code?: string
+}> = ({ children, title, category, preview, code }) => {
+    const [mode, setMode] = useState<ViewMode>('preview')
+    const [width, setWidth] = useState(DEFAULT_SIZE)
     const [iframeHeight, setIframeHeight] = useState(0)
     const [shouldLoadIframe, setShouldLoadIframe] = useState(false)
     const [cachedHeight, setCachedHeight] = useState<number | null>(null)
@@ -48,13 +86,12 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
     const { copied, copy } = useCopyToClipboard({ code: code as string, title, category, eventName: 'block_copy' })
     const { copied: cliCopied, copy: cliCopy } = useCopyToClipboard({ code: terminalCode, title, category, eventName: 'block_cli_copy' })
 
-    const ref = useRef<ImperativePanelGroupHandle>(null)
-    const isLarge = useMedia('(min-width: 1024px)')
-
+    const resizablePanelRef = useRef<ImperativePanelGroupHandle>(null)
     const iframeRef = useRef<HTMLIFrameElement>(null)
-    const observer = useRef<IntersectionObserver | null>(null)
     const blockRef = useRef<HTMLDivElement>(null)
     const heartIconRef = useRef<HeartIconHandle>(null)
+
+    const observer = useRef<IntersectionObserver | null>(null)
 
     useEffect(() => {
         observer.current = new IntersectionObserver(
@@ -67,13 +104,8 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
             { threshold: 0.1 }
         )
 
-        if (blockRef.current) {
-            observer.current.observe(blockRef.current)
-        }
-
-        return () => {
-            observer.current?.disconnect()
-        }
+        if (blockRef.current) observer.current.observe(blockRef.current)
+        return () => observer.current?.disconnect()
     }, [])
 
     useEffect(() => {
@@ -81,14 +113,11 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
             try {
                 const isCached = await isUrlCached(preview)
                 setIsIframeCached(isCached)
-                if (isCached) {
-                    setShouldLoadIframe(true)
-                }
+                if (isCached) setShouldLoadIframe(true)
             } catch (error) {
                 console.error('Error checking cache status:', error)
             }
         }
-
         checkCache()
 
         try {
@@ -96,8 +125,7 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
             const cached = localStorage.getItem(cacheKey)
             if (cached) {
                 const { height, timestamp } = JSON.parse(cached)
-                const now = Date.now()
-                if (now - timestamp < 24 * 60 * 60 * 1000) {
+                if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
                     setCachedHeight(height)
                     setIframeHeight(height)
                 }
@@ -115,259 +143,332 @@ export const BlockPreview: React.FC<BlockPreviewProps> = ({ code, preview, title
             try {
                 const contentHeight = iframe.contentWindow!.document.body.scrollHeight
                 setIframeHeight(contentHeight)
-
                 const cacheKey = getCacheKey(preview)
-                const cacheValue = JSON.stringify({
-                    height: contentHeight,
-                    timestamp: Date.now(),
-                })
-                localStorage.setItem(cacheKey, cacheValue)
+                localStorage.setItem(cacheKey, JSON.stringify({ height: contentHeight, timestamp: Date.now() }))
             } catch (e) {
                 console.error('Error accessing iframe content:', e)
             }
         }
 
         iframe.addEventListener('load', handleLoad)
-        return () => {
-            iframe.removeEventListener('load', handleLoad)
-        }
+        return () => iframe.removeEventListener('load', handleLoad)
     }, [shouldLoadIframe, preview])
-
-    useEffect(() => {
-        if (!blockRef.current || shouldLoadIframe) return
-
-        const linkElement = document.createElement('link')
-        linkElement.rel = 'preload'
-        linkElement.href = preview
-        linkElement.as = 'document'
-
-        if (!document.head.querySelector(`link[rel="preload"][href="${preview}"]`)) {
-            document.head.appendChild(linkElement)
-        }
-
-        return () => {
-            const existingLink = document.head.querySelector(`link[rel="preload"][href="${preview}"]`)
-            if (existingLink) {
-                document.head.removeChild(existingLink)
-            }
-        }
-    }, [preview, shouldLoadIframe])
 
     const handleLove = () => {
         setLoved((prev) => !prev)
         heartIconRef.current?.startAnimation()
     }
 
+    const value = {
+        mode, setMode, width, setWidth, iframeHeight, setIframeHeight,
+        shouldLoadIframe, setShouldLoadIframe, cachedHeight, isIframeCached,
+        loved, setLoved, title, category, preview, code, terminalCode,
+        copied,
+        copy: (e?: any) => copy(e),
+        cliCopied,
+        cliCopy: (e?: any) => cliCopy(e),
+        handleLove, heartIconRef,
+        resizablePanelRef, iframeRef, blockRef
+    }
+
     return (
-        <section className="group mb-16 border-b [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]">
-            <div className="relative border-y">
-                <div
-                    aria-hidden
-                    className="absolute inset-x-4 -top-14 bottom-0 mx-auto max-w-7xl lg:inset-x-0">
-                    <div className="to-(--color-border) absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
-                    <div className="to-(--color-border) absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
-                </div>
+        <BlockPreviewContext.Provider value={value}>
+            <section className="group mb-16 border-b [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]">
+                {children}
+            </section>
+        </BlockPreviewContext.Provider>
+    )
+}
 
-                <div className="relative z-10 mx-auto flex max-w-7xl justify-between py-1.5 pl-8 pr-6 [--color-border:var(--color-zinc-200)] md:py-2 lg:pl-6 lg:pr-2 dark:[--color-border:var(--color-zinc-800)]">
-                    <div className="-ml-3 flex items-center gap-3">
-                        {code && (
-                            <>
-                                <RadioGroup.Root className="flex gap-0.5">
-                                    <RadioGroup.Item
-                                        onClick={() => setMode('preview')}
-                                        aria-label="Block preview"
-                                        value="100"
-                                        checked={mode == 'preview'}
-                                        className={radioItem}>
-                                        <Eye className="size-3.5 sm:opacity-50" />
-                                        <span className="hidden text-[13px] sm:block">Preview</span>
-                                    </RadioGroup.Item>
+// --- Sub-components ---
 
-                                    <RadioGroup.Item
-                                        onClick={() => setMode('code')}
-                                        aria-label="Code"
-                                        value="0"
-                                        checked={mode == 'code'}
-                                        className={radioItem}>
-                                        <Code2 className="size-3.5 sm:opacity-50" />
-                                        <span className="hidden text-[13px] sm:block">Code</span>
-                                    </RadioGroup.Item>
-                                </RadioGroup.Root>
+function BlockPreviewToolbar() {
+    const { mode, setMode, title, width, resizablePanelRef, handleLove, loved, heartIconRef, cliCopy, cliCopied, preview, category } = useBlockPreview()
 
-                                <Separator
-                                    orientation="vertical"
-                                    className="hidden !h-4 lg:block"
-                                />
-                            </>
-                        )}
-                        {previewOnly && (
-                            <>
-                                {' '}
-                                <span className="ml-2 text-sm capitalize">{title}</span>
-                                <Separator
-                                    orientation="vertical"
-                                    className="!h-4"
-                                />{' '}
-                            </>
-                        )}
+    return (
+        <div className="relative border-y">
+            {/* Background Grid Lines */}
+            <div
+                aria-hidden
+                className="absolute inset-x-4 -top-14 bottom-0 mx-auto max-w-7xl lg:inset-x-0">
+                <div className="to-(--color-border) absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
+                <div className="to-(--color-border) absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b from-transparent to-75%"></div>
+            </div>
+
+            <div className="relative z-10 mx-auto flex max-w-7xl items-center justify-between py-1.5 pl-8 pr-6 md:py-2 lg:pl-6 lg:pr-2">
+                <div className="-ml-2 flex items-center gap-2">
+                    <div className="flex bg-muted/50 p-1 rounded-lg">
                         <Button
-                            asChild
-                            variant="ghost"
+                            onClick={() => setMode('preview')}
+                            variant={mode === 'preview' ? 'secondary' : 'ghost'}
                             size="sm"
-                            className="size-8">
-                            <Link
-                                href={preview}
-                                passHref
-                                target="_blank">
-                                <Maximize className="size-4" />
-                            </Link>
+                            className="h-7 gap-2 rounded-md shadow-none px-2"
+                        >
+                            <Eye className="size-3.5" />
+                            <span className="hidden sm:inline text-xs">Preview</span>
                         </Button>
-                        <Separator
-                            orientation="vertical"
-                            className="hidden !h-4 lg:block"
-                        />
-                        <span className="text-muted-foreground hidden text-sm lg:block">{width < MDSIZE ? 'Mobile' : width < LGSIZE ? 'Tablet' : 'Desktop'}</span>{' '}
+                        <Button
+                            onClick={() => setMode('code')}
+                            variant={mode === 'code' ? 'secondary' : 'ghost'}
+                            size="sm"
+                            className="h-7 gap-2 rounded-md shadow-none px-2"
+                        >
+                            <Code2 className="size-3.5" />
+                            <span className="hidden sm:inline text-xs">Code</span>
+                        </Button>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        {code && (
-                            <>
-                                <Button
-                                    onClick={cliCopy}
-                                    size="sm"
-                                    className="size-8 shadow-none md:w-fit"
-                                    variant="outline"
-                                    aria-label="copy code">
-                                    {cliCopied ? <Check className="size-4" /> : <Terminal className="!size-3.5" />}
-                                    <span className="hidden font-mono text-xs md:block">
-                                        pnpm dlx shadcn@latest add @layeredui/{category}-{titleToNumber(title)}
-                                    </span>
-                                </Button>
-                                <Separator
-                                    className="!h-4"
-                                    orientation="vertical"
-                                />
-                                <OpenInV0Button
-                                    {...{ title, category }}
-                                    block={`${category}-${titleToNumber(title)}`}
-                                />
-                                <Separator
-                                    className="!h-4"
-                                    orientation="vertical"
-                                />
-                                <TooltipProvider>
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <Button
-                                                onClick={handleLove}
-                                                size="sm"
-                                                variant="ghost"
-                                                aria-label="love this block"
-                                                className={cn('size-8 transition-colors', loved && 'text-red-500')}>
-                                                <HeartIcon
-                                                    ref={heartIconRef}
-                                                    size={14}
-                                                    filled={loved}
-                                                    className={cn('transition-colors', loved && 'text-red-500')}
-                                                />
-                                            </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent>{loved ? 'Loved' : 'Love it'}</TooltipContent>
-                                    </Tooltip>
-                                </TooltipProvider>
-                                <Separator
-                                    className="!h-4"
-                                    orientation="vertical"
-                                />
+                    <Separator orientation="vertical" className="mx-2 hidden h-4 lg:block" />
+                    <span className="text-sm font-medium truncate max-w-[150px] md:max-w-none capitalize">{title}</span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                    <div className="hidden h-8 items-center gap-1 rounded-lg border bg-background/50 px-1 lg:flex">
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className={cn("size-6", width <= SM_SIZE && "bg-muted")}
+                                        onClick={() => resizablePanelRef.current?.setLayout([SM_SIZE, 100 - SM_SIZE])}
+                                    >
+                                        <Smartphone className="size-3" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Mobile</TooltipContent>
+                            </Tooltip>
+
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className={cn("size-6", width > SM_SIZE && width <= MD_SIZE && "bg-muted")}
+                                        onClick={() => resizablePanelRef.current?.setLayout([MD_SIZE, 100 - MD_SIZE])}
+                                    >
+                                        <Tablet className="size-3" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Tablet</TooltipContent>
+                            </Tooltip>
+
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className={cn("size-6", width > LG_SIZE && "bg-muted")}
+                                        onClick={() => resizablePanelRef.current?.setLayout([DEFAULT_SIZE, 0])}
+                                    >
+                                        <Monitor className="size-3" />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Desktop</TooltipContent>
+                            </Tooltip>
+
+                            <Separator orientation="vertical" className="h-4 mx-1" />
+
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="size-6" asChild>
+                                        <a href={preview} target="_blank" rel="noreferrer">
+                                            <ExternalLink className="size-3" />
+                                        </a>
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Open in New Tab</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+
+                    <Separator orientation="vertical" className="mx-1 hidden h-4 lg:block" />
+
+                    <div className="flex items-center gap-1.5">
+                        <Button
+                            onClick={cliCopy}
+                            size="sm"
+                            className="h-8 gap-2 border-dashed bg-muted/30 px-3 font-mono text-xs hover:bg-muted/50"
+                            variant="outline"
+                        >
+                            {cliCopied ? <Check className="size-3" /> : <Terminal className="size-3" />}
+                            <span className="hidden xl:block">shadcn add @layeredui/{category}-{titleToNumber(title)}</span>
+                            <span className="xl:hidden">CLI</span>
+                        </Button>
+
+                        <OpenInV0Button
+                            title={title}
+                            category={category}
+                            block={`${category}-${titleToNumber(title)}`}
+                        />
+
+                        <TooltipProvider>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <Button
+                                        onClick={handleLove}
+                                        size="icon"
+                                        variant="ghost"
+                                        className={cn('size-8 transition-colors', loved && 'text-red-500 bg-red-50/50 dark:bg-red-500/10')}>
+                                        <HeartIcon
+                                            ref={heartIconRef}
+                                            size={14}
+                                            filled={loved}
+                                            className={cn('transition-colors', loved && 'text-red-500')}
+                                        />
+                                    </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>{loved ? 'Loved' : 'Love it'}</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function BlockPreviewContent() {
+    return (
+        <div className="relative">
+            {/* Background Grid Lines */}
+            <div
+                aria-hidden
+                className="absolute inset-x-4 -bottom-14 mx-auto h-14 max-w-7xl lg:inset-x-0">
+                <div className="from-(--color-border) absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b"></div>
+                <div className="from-(--color-border) absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b"></div>
+            </div>
+
+            <div className="relative z-10 mx-auto max-w-7xl px-4 lg:border-r lg:px-0">
+                <BlockPreviewView />
+                <BlockPreviewCode />
+            </div>
+        </div>
+    )
+}
+
+function BlockPreviewView() {
+    const { mode, resizablePanelRef, setWidth, blockRef, shouldLoadIframe, isIframeCached, iframeRef, title, cachedHeight, iframeHeight, preview } = useBlockPreview()
+    const isLarge = useMedia('(min-width: 1024px)')
+
+    if (mode !== 'preview') return null
+
+    return (
+        <div className="bg-white dark:bg-transparent">
+            <PanelGroup
+                direction="horizontal"
+                ref={resizablePanelRef}
+                onLayout={(layout) => setWidth(layout[0])}
+            >
+                <Panel defaultSize={DEFAULT_SIZE} minSize={SM_SIZE} className="relative border-x">
+                    <div ref={blockRef} className="w-full">
+                        {shouldLoadIframe ? (
+                            <iframe
+                                key={`${title}-iframe`}
+                                loading={isIframeCached ? 'eager' : 'lazy'}
+                                allowFullScreen
+                                ref={iframeRef}
+                                title={title}
+                                height={cachedHeight || iframeHeight}
+                                className={cn(
+                                    'h-(--iframe-height) block min-h-56 w-full duration-200 transition-opacity',
+                                    !cachedHeight && !isIframeCached && 'opacity-0',
+                                    (cachedHeight || isIframeCached) && 'opacity-100'
+                                )}
+                                src={preview}
+                                style={{ '--iframe-height': `${cachedHeight || iframeHeight}px` } as React.CSSProperties}
+                            />
+                        ) : (
+                            <div className="flex min-h-56 items-center justify-center">
+                                <RefreshCw className="size-5 animate-spin text-muted-foreground/50" />
+                            </div>
+                        )}
+                    </div>
+                </Panel>
+                {isLarge && (
+                    <>
+                        <PanelResizeHandle className="relative w-2 before:absolute before:inset-0 before:m-auto before:h-12 before:w-1 before:rounded-full before:bg-zinc-300 before:transition-[height,background] hover:before:h-16 hover:before:bg-zinc-400 focus:before:bg-zinc-400 dark:before:bg-zinc-600 dark:hover:before:bg-zinc-500 dark:focus:before:bg-zinc-400" />
+                        <Panel defaultSize={0} minSize={0} className="-mr-[0.5px] ml-px" />
+                    </>
+                )}
+            </PanelGroup>
+        </div>
+    )
+}
+
+function BlockPreviewCode() {
+    const { mode, code, iframeHeight, copied, copy } = useBlockPreview()
+
+    if (mode !== 'code') return null
+
+    return (
+        <div className="bg-white dark:bg-transparent">
+            <div className="relative rounded-xl border bg-zinc-950 overflow-hidden">
+                <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-4 py-2">
+                    <span className="text-[11px] font-mono text-white/40 uppercase tracking-wider">TSX</span>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
                                 <Button
                                     onClick={copy}
-                                    size="sm"
+                                    size="icon"
                                     variant="ghost"
-                                    aria-label="copy code"
-                                    className="size-8">
-                                    {copied ? <Check className="size-4" /> : <Copy className="!size-3.5" />}
+                                    className="h-7 w-7 text-white/70 hover:text-white hover:bg-white/10">
+                                    <AnimatePresence mode="wait" initial={false}>
+                                        {copied ? (
+                                            <motion.div
+                                                key="check"
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
+                                                transition={{ duration: 0.1 }}
+                                            >
+                                                <Check className="size-3.5" />
+                                            </motion.div>
+                                        ) : (
+                                            <motion.div
+                                                key="copy"
+                                                initial={{ scale: 0.5, opacity: 0 }}
+                                                animate={{ scale: 1, opacity: 1 }}
+                                                exit={{ scale: 0.5, opacity: 0 }}
+                                                transition={{ duration: 0.1 }}
+                                            >
+                                                <Copy className="size-3.5" />
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </Button>
-                            </>
-                        )}
-                    </div>
+                            </TooltipTrigger>
+                        </Tooltip>
+                    </TooltipProvider>
                 </div>
+                <CodeBlock
+                    code={code as string}
+                    lang="tsx"
+                    maxHeight={Math.max(iframeHeight, 400)}
+                    className="!bg-transparent"
+                />
             </div>
+        </div>
+    )
+}
 
-            <div className="relative">
-                <div
-                    aria-hidden
-                    className="absolute inset-x-4 -bottom-14 mx-auto h-14 max-w-7xl lg:inset-x-0">
-                    <div className="from-(--color-border) absolute bottom-0 left-0 top-0 w-px bg-gradient-to-b"></div>
-                    <div className="from-(--color-border) absolute bottom-0 right-0 top-0 w-px bg-gradient-to-b"></div>
-                </div>
+// --- Main Component ---
 
-                <div className="relative z-10 mx-auto max-w-7xl px-4 lg:border-r lg:px-0">
-                    <div className={cn('bg-white dark:bg-transparent', mode == 'code' && 'hidden')}>
-                        <PanelGroup
-                            direction="horizontal"
-                            tagName="div"
-                            ref={ref}>
-                            <Panel
-                                id={`block-${title}`}
-                                order={1}
-                                onResize={(size) => {
-                                    setWidth(Number(size))
-                                }}
-                                defaultSize={DEFAULTSIZE}
-                                minSize={SMSIZE}
-                                className="h-fit border-x">
-                                <div ref={blockRef}>
-                                    {shouldLoadIframe ? (
-                                        <iframe
-                                            key={`${category}-${title}-iframe`}
-                                            loading={isIframeCached ? 'eager' : 'lazy'}
-                                            allowFullScreen
-                                            ref={iframeRef}
-                                            title={title}
-                                            height={cachedHeight || iframeHeight}
-                                            className={cn('h-(--iframe-height) block min-h-56 w-full duration-200 will-change-auto', !cachedHeight && '@starting:opacity-0 @starting:blur-xl', isIframeCached && '!opacity-100 !blur-none')}
-                                            src={preview}
-                                            id={`block-${title}`}
-                                            style={
-                                                {
-                                                    '--iframe-height': `${cachedHeight || iframeHeight}px`,
-                                                    display: 'block',
-                                                } as React.CSSProperties
-                                            }
-                                        />
-                                    ) : (
-                                        <div className="flex min-h-56 items-center justify-center">
-                                            <div className="border-primary size-6 animate-spin rounded-full border-2 border-t-transparent" />
-                                        </div>
-                                    )}
-                                </div>
-                            </Panel>
+export interface BlockPreviewProps {
+    code?: string
+    preview: string
+    title: string
+    category: string
+    previewOnly?: boolean
+}
 
-                            {isLarge && (
-                                <>
-                                    <PanelResizeHandle className="relative w-2 before:absolute before:inset-0 before:m-auto before:h-12 before:w-1 before:rounded-full before:bg-zinc-300 before:transition-[height,background] hover:before:h-16 hover:before:bg-zinc-400 focus:before:bg-zinc-400 dark:before:bg-zinc-600 dark:hover:before:bg-zinc-500 dark:focus:before:bg-zinc-400" />
-                                    <Panel
-                                        id={`code-${title}`}
-                                        order={2}
-                                        defaultSize={100 - DEFAULTSIZE}
-                                        className="-mr-[0.5px] ml-px"></Panel>
-                                </>
-                            )}
-                        </PanelGroup>
-                    </div>
-
-                    <div className="bg-white dark:bg-transparent">
-                        {mode == 'code' && (
-                            <CodeBlock
-                                code={code as string}
-                                lang="tsx"
-                                maxHeight={iframeHeight}
-                            />
-                        )}
-                    </div>
-                </div>
-            </div>
-        </section>
+export const BlockPreview: React.FC<BlockPreviewProps> = (props) => {
+    return (
+        <BlockPreviewProvider {...props}>
+            <BlockPreviewToolbar />
+            <BlockPreviewContent />
+        </BlockPreviewProvider>
     )
 }
 
