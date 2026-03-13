@@ -1,8 +1,8 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry-item.json",
-  "name": "testimonials-6",
+  "name": "testimonials-7",
   "type": "registry:block",
-  "title": "Testimonials Section 6",
+  "title": "Testimonials Section 7",
   "description": "Shadcn/ui website testimonials section",
   "registryDependencies": [
     "avatar",
@@ -16,7 +16,6 @@
       "type": "registry:component",
       "target": "components/testimonials.tsx"
     },
-
     {
       "path": "components/ui/badge.tsx",
       "type": "registry:component",
