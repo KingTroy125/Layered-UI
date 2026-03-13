@@ -153,34 +153,54 @@ export const BlockPreviewProvider: React.FC<{
         const iframe = iframeRef.current
         if (!iframe || !shouldLoadIframe) return
 
+        let resizeObserver: ResizeObserver | null = null
+
         const markLoaded = (iframe: HTMLIFrameElement) => {
             try {
-                const contentHeight = iframe.contentWindow!.document.body.scrollHeight
-                const safeHeight = Math.max(contentHeight, 224)
-                setIframeHeight(safeHeight)
-                const cacheKey = getCacheKey(preview)
-                localStorage.setItem(cacheKey, JSON.stringify({ height: safeHeight, timestamp: Date.now() }))
+                const doc = iframe.contentWindow?.document
+                if (!doc || !doc.body) return
+
+                const updateHeight = () => {
+                    // Use scrollHeight of the documentElement for the most accurate full-page measurement
+                    const contentHeight = doc.documentElement.scrollHeight
+                    const safeHeight = Math.max(contentHeight, 224)
+                    
+                    setIframeHeight(safeHeight)
+                    
+                    // Update cache with the latest measurement
+                    const cacheKey = getCacheKey(preview)
+                    localStorage.setItem(cacheKey, JSON.stringify({ 
+                        height: safeHeight, 
+                        timestamp: Date.now() 
+                    }))
+                }
+
+                // Initial measurement
+                updateHeight()
+
+                // Setup ResizeObserver to catch changes after load (animations, images, etc)
+                if (resizeObserver) resizeObserver.disconnect()
+                resizeObserver = new ResizeObserver(() => {
+                    requestAnimationFrame(updateHeight)
+                })
+                resizeObserver.observe(doc.body)
             } catch (e) {
                 console.error('Error accessing iframe content:', e)
             } finally {
-                // Always mark loaded regardless of height measurement success
+                // Always mark loaded regardless of measurement success to ensure visibility
                 setIframeLoaded(true)
             }
         }
 
-        // FIX: Race condition — if the iframe already loaded before this effect ran
-        // (common on mobile where JS is slower but network/cache is warm), catch it here.
+        // Catch frames that are already complete
         if (iframe.contentDocument?.readyState === 'complete') {
             markLoaded(iframe)
-            return
         }
 
         const handleLoad = () => markLoaded(iframe)
         iframe.addEventListener('load', handleLoad)
 
-        // FIX: Mobile safety net — if load event never fires (e.g. sandboxed iframe, network
-        // stall, or browser quirk), reveal the iframe after 8 seconds so user isn't stuck on
-        // a white box forever.
+        // Safety net: show the iframe after a delay even if events fail
         const fallbackTimer = setTimeout(() => {
             setIframeLoaded(true)
         }, 8000)
@@ -188,6 +208,7 @@ export const BlockPreviewProvider: React.FC<{
         return () => {
             iframe.removeEventListener('load', handleLoad)
             clearTimeout(fallbackTimer)
+            if (resizeObserver) resizeObserver.disconnect()
         }
     }, [shouldLoadIframe, preview])
 
