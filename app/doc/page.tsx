@@ -5,8 +5,7 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
-// ── Components ────────────────────────────────────────────────────────────────
-
+// Components //
 function CodeBlock({ code, lang }: { code: string; lang: string }) {
     return (
         <div className="relative border border-border bg-muted/30 overflow-x-auto">
@@ -22,7 +21,7 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
     );
 }
 
-// ── Data ──────────────────────────────────────────────────────────────────────
+// Data //
 
 const steps = [
     {
