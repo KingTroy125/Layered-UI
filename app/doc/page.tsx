@@ -116,7 +116,7 @@ const steps = [
     },
 ];
 
-// ── RegistryPage ──────────────────────────────────────────────────────────────
+// RegistryPage //
 
 const RegistryPage = () => {
     return (
