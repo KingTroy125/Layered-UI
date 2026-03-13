@@ -3,7 +3,7 @@
   "name": "testimonials-7",
   "type": "registry:block",
   "title": "Testimonials Section 7",
-  "description": "Shadcn/ui website testimonials section",
+  "description": "Shadcn/ui website testimonials section for Layered UI",
   "registryDependencies": [
     "avatar",
     "card",
