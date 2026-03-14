@@ -4,8 +4,9 @@ import { Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
 
-// ─── Add / remove templates freely — the grid adapts automatically ────────────
 const templates = [
   {
     title: "Vaulto",
@@ -35,57 +36,66 @@ const templates = [
     githubUrl: "",
     tag: "Marketing",
   },
-  // ── Paste more templates here — grid auto-adjusts, no gaps ────────────────
-  // {
-  //   title: "Your Template",
-  //   imageUrl: "./Templates/YourImage.png",
-  //   livePreviewUrl: "https://your-template.vercel.app/",
-  //   githubUrl: "",   // leave "" to hide the GitHub button
-  //   tag: "SaaS",
-  // },
 ];
 
-// ─── Pick the best grid layout based on count ────────────────────────────────
 function getLayout(count: number): string[] {
   switch (count) {
-    case 1:
-      return ['md:col-span-3'];
-    case 2:
-      return ['md:col-span-3', 'md:col-span-3'];
-    case 3:
-      return ['md:col-span-3', 'md:col-span-1', 'md:col-span-2'];
-    case 4:
-      return [
-        'md:col-span-2',
-        'md:col-span-1',
-        'md:col-span-1',
-        'md:col-span-2',
-      ];
-    case 5:
-      return [
-        'md:col-span-2',
-        'md:col-span-1',
-        'md:col-span-1',
-        'md:col-span-1',
-        'md:col-span-1',
-      ];
-    case 6:
-      return Array(6).fill('md:col-span-1');
-    case 7:
-      return [
-        'md:col-span-2',
-        'md:col-span-1',
-        ...Array(5).fill('md:col-span-1'),
-      ];
-    default: {
-      return templates.map((_, i) => {
-        const rowPos = i % 3;
-        if (rowPos === 0) return 'md:col-span-2';
-        return 'md:col-span-1';
-      });
-    }
+    case 1: return ['md:col-span-3'];
+    case 2: return ['md:col-span-3', 'md:col-span-3'];
+    case 3: return ['md:col-span-3', 'md:col-span-1', 'md:col-span-2'];
+    case 4: return ['md:col-span-2', 'md:col-span-1', 'md:col-span-1', 'md:col-span-2'];
+    case 5: return ['md:col-span-2', 'md:col-span-1', 'md:col-span-1', 'md:col-span-1', 'md:col-span-1'];
+    case 6: return Array(6).fill('md:col-span-1');
+    case 7: return ['md:col-span-2', 'md:col-span-1', ...Array(5).fill('md:col-span-1')];
+    default: return templates.map((_, i) => i % 3 === 0 ? 'md:col-span-2' : 'md:col-span-1');
   }
 }
+
+// ─── Variants ────────────────────────────────────────────────────────────────
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94], delay },
+  }),
+};
+
+const lineVariant = {
+  hidden: { scaleX: 0, opacity: 0 },
+  visible: {
+    scaleX: 1,
+    opacity: 1,
+    transition: { duration: 0.5, ease: 'easeOut', delay: 0.15 },
+  },
+};
+
+const badgeVariant = {
+  hidden: { opacity: 0, scale: 0.85 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.45, ease: 'easeOut' },
+  },
+};
+
+const gridVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 32, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+  },
+};
 
 // ─── TemplateCard ─────────────────────────────────────────────────────────────
 
@@ -105,7 +115,9 @@ const TemplateCard = ({
   className?: string;
 }) => {
   return (
-    <div
+    <motion.div
+      variants={cardVariants}
+      whileHover={{ y: -4, transition: { duration: 0.22, ease: 'easeOut' } }}
       className={cn(
         'group relative overflow-hidden rounded-xl aspect-video ring ring-border shadow shadow-black/4 bg-card dark:bg-background',
         className,
@@ -146,7 +158,7 @@ const TemplateCard = ({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -155,29 +167,86 @@ const TemplateCard = ({
 export const TemplatesSection = () => {
   const layout = getLayout(templates.length);
 
+  const headerRef = useRef(null);
+  const gridRef = useRef(null);
+  const ctaRef = useRef(null);
+
+  const headerInView = useInView(headerRef, { once: true, margin: '-60px' });
+  const gridInView = useInView(gridRef, { once: true, margin: '-60px' });
+  const ctaInView = useInView(ctaRef, { once: true, margin: '-40px' });
+
   return (
     <section
       id="templates-bento"
       className="mx-4 max-w-7xl border-x px-4 py-16 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]"
     >
-      {/* Heading — centered */}
-      <div className="flex flex-col items-center text-center mb-12">
+      {/* Heading */}
+      <div ref={headerRef} className="flex flex-col items-center text-center mb-12">
         <div className="mb-4 flex items-center justify-center gap-3">
-          <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
-          <Badge variant="hero" className="group">
-            <span className="text-sm font-normal">All Templates</span>
-          </Badge>
-          <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
+          <motion.div
+            className="origin-right"
+            variants={lineVariant}
+            initial="hidden"
+            animate={headerInView ? 'visible' : 'hidden'}
+          >
+            <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
+          </motion.div>
+
+          <motion.div
+            variants={badgeVariant}
+            initial="hidden"
+            animate={headerInView ? 'visible' : 'hidden'}
+          >
+            <Badge variant="hero" className="group">
+              <span className="text-sm font-normal">All Templates</span>
+            </Badge>
+          </motion.div>
+
+          <motion.div
+            className="origin-left"
+            variants={lineVariant}
+            initial="hidden"
+            animate={headerInView ? 'visible' : 'hidden'}
+          >
+            <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
+          </motion.div>
         </div>
-        <h2 className="text-balance text-3xl font-bold sm:text-4xl">Browse the Full Collection</h2>
-        <p className="mt-3 text-base max-w-xl">
+
+        <motion.h2
+          className="text-balance text-3xl font-bold sm:text-4xl"
+          variants={fadeUp}
+          custom={0.1}
+          initial="hidden"
+          animate={headerInView ? 'visible' : 'hidden'}
+        >
+          Browse the Full Collection
+        </motion.h2>
+
+        <motion.p
+          className="mt-3 text-base max-w-xl"
+          variants={fadeUp}
+          custom={0.2}
+          initial="hidden"
+          animate={headerInView ? 'visible' : 'hidden'}
+        >
           Every template is production-ready, fully responsive, and built with Next.js and Tailwind CSS.
-        </p>
+        </motion.p>
       </div>
 
       {/* Bento Grid */}
-      <div className="bg-muted/50 border rounded-2xl p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <motion.div
+        ref={gridRef}
+        className="bg-muted/50 border rounded-2xl p-4"
+        initial={{ opacity: 0, scale: 0.99 }}
+        animate={gridInView ? { opacity: 1, scale: 1 } : {}}
+        transition={{ duration: 0.45, ease: 'easeOut' }}
+      >
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          variants={gridVariants}
+          initial="hidden"
+          animate={gridInView ? 'visible' : 'hidden'}
+        >
           {templates.map((template, index) => (
             <TemplateCard
               key={index}
@@ -185,18 +254,24 @@ export const TemplatesSection = () => {
               className={layout[index]}
             />
           ))}
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Footer CTA */}
-      <div className="mt-8 flex justify-center">
+      <motion.div
+        ref={ctaRef}
+        className="mt-8 flex justify-center"
+        initial={{ opacity: 0, y: 12 }}
+        animate={ctaInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.4, ease: 'easeOut', delay: 0.1 }}
+      >
         <Button variant="ghost" size="sm" className="text-sm" asChild>
           <a href="/templates">
             See all templates
             <span className="border-l-foreground/50 ml-0.5 block size-0 border-y-4 border-l-4 border-y-transparent" />
           </a>
         </Button>
-      </div>
+      </motion.div>
     </section>
   );
 };
