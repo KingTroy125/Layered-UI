@@ -162,7 +162,7 @@ const TemplateCard = ({
   );
 };
 
-// ─── TemplatesSection ─────────────────────────────────────────────────────────
+// TemplatesSection //
 
 export const TemplatesSection = () => {
   const layout = getLayout(templates.length);
