@@ -97,7 +97,7 @@ const cardVariants = {
   },
 };
 
-// ─── TemplateCard ─────────────────────────────────────────────────────────────
+// TemplateCard //
 
 const TemplateCard = ({
   title,
