@@ -6,8 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-
+// Data //
 const testimonials = [
   {
     type: 'dark',
@@ -117,20 +116,20 @@ const testimonials = [
   // },
 ];
 
-const INITIAL_COUNT  = 6;
+const INITIAL_COUNT = 6;
 const LOAD_MORE_COUNT = 3;
 
 // ── TestimonialCard ───────────────────────────────────────────────────────────
 
 const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0] }) => {
-  const isDark  = testimonial.type === 'dark';
+  const isDark = testimonial.type === 'dark';
   const isBrand = testimonial.type === 'brand';
 
   return (
     <div
       className={cn(
         'relative flex flex-col p-6 rounded-xl border shadow-sm overflow-hidden transition-transform duration-300 hover:-translate-y-1',
-        isDark  && 'bg-foreground/95 text-background border-foreground/20',
+        isDark && 'bg-foreground/95 text-background border-foreground/20',
         isBrand && 'bg-primary/95 text-primary-foreground border-primary/20',
         !isDark && !isBrand && 'bg-card text-card-foreground border-border',
       )}
@@ -152,7 +151,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0
       <p
         className={cn(
           'text-sm font-normal leading-relaxed mb-6 flex-1',
-          isDark  && 'text-background/90',
+          isDark && 'text-background/90',
           isBrand && 'text-primary-foreground/90',
           !isDark && !isBrand && 'text-foreground',
         )}
@@ -173,7 +172,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0
           <p
             className={cn(
               'font-semibold text-sm truncate',
-              isDark  && 'text-background',
+              isDark && 'text-background',
               isBrand && 'text-primary-foreground',
             )}
           >
@@ -182,7 +181,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0
           <p
             className={cn(
               'text-xs truncate',
-              isDark  && 'text-background/60',
+              isDark && 'text-background/60',
               isBrand && 'text-primary-foreground/70',
               !isDark && !isBrand && 'text-muted-foreground',
             )}
