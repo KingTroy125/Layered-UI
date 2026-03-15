@@ -119,7 +119,7 @@ const testimonials = [
 const INITIAL_COUNT = 6;
 const LOAD_MORE_COUNT = 3;
 
-// ── TestimonialCard ───────────────────────────────────────────────────────────
+// TestimonialCard //
 
 const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0] }) => {
   const isDark = testimonial.type === 'dark';
