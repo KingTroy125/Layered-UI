@@ -7,24 +7,24 @@ import { useInView } from "react-intersection-observer"
 
 const faqs = [
   {
-    question: "What is Layered UI?",
+    question: "What is Modula?",
     answer:
-      "Layered UI is a collection of beautifully crafted Shadcn UI blocks and components, designed to help developers build modern websites with ease.",
+      "Modula is a collection of beautifully crafted Shadcn UI blocks and components, designed to help developers build modern websites with ease.",
   },
   {
-    question: "How does Layered UI work?",
+    question: "How does Modula work?",
     answer:
-      "Layered UI works by providing developers with a set of pre-built, customizable UI components that can be easily integrated into any project. These components are designed to work together seamlessly, allowing for rapid development and consistent design.",
+      "Modula works by providing developers with a set of pre-built, customizable UI components that can be easily integrated into any project. These components are designed to work together seamlessly, allowing for rapid development and consistent design.",
   },
   {
-    question: "Is Layered UI secure?",
+    question: "Is Modula secure?",
     answer:
-      "Yes, Layered UI is built with enterprise-grade security. We use encryption for data in transit and at rest, comply with industry standards, and regularly undergo security audits to protect your information.",
+      "Yes, Modula is built with enterprise-grade security. We use encryption for data in transit and at rest, comply with industry standards, and regularly undergo security audits to protect your information.",
   },
   {
-    question: "Can Layered UI integrate with other software?",
+    question: "Can Modula integrate with other software?",
     answer:
-      "Layered UI integrates with hundreds of popular tools and platforms. From CRMs to project management tools, we support a wide range of integrations to fit seamlessly into your existing workflow.",
+      "Modula integrates with hundreds of popular tools and platforms. From CRMs to project management tools, we support a wide range of integrations to fit seamlessly into your existing workflow.",
   },
   {
     question: "What support options are available?",
