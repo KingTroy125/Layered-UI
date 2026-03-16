@@ -53,7 +53,7 @@ const questions = [
       "Yes. We're continuously expanding the collection with new blocks, sections, and full-page templates. Upcoming additions include more dashboard widgets, e-commerce blocks, authentication flows, and data visualization components — all following the same layered design philosophy.",
   },
 
-  // ── Add more questions here ───────────────────────────────────────────────
+  // Add more questions here
   // {
   //   id: "item-8",
   //   title: "Your question here?",
