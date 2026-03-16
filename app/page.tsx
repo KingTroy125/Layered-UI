@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Hero2 } from '@/components/hero2-header';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
-import { Button } from '@/components/ui/button';
 import { MobileNotification } from '@/components/moblie-notification';
 import { FloatingTemplatesBadge } from '@/components/FloatingTemplatesBadge';
 import { TemplatesSection } from '@/components/marketing/templates-section';
