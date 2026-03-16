@@ -61,7 +61,7 @@ const questions = [
   // },
 ];
 
-// ── FaqsSection ───────────────────────────────────────────────────────────────
+// FaqsSection //
 
 const FaqsSection = () => {
   return (
