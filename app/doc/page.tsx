@@ -4,12 +4,61 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+import { Badge } from "@/components/ui/badge";
+
+// Variants //
+
+const fadeUp = {
+    hidden: { opacity: 0, y: 24 },
+    visible: (delay = 0) => ({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94], delay },
+    }),
+};
+
+const lineVariant = {
+    hidden: { scaleX: 0, opacity: 0 },
+    visible: {
+        scaleX: 1,
+        opacity: 1,
+        transition: { duration: 0.5, ease: "easeOut", delay: 0.15 },
+    },
+};
+
+const badgeVariant = {
+    hidden: { opacity: 0, scale: 0.85 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: { duration: 0.45, ease: "easeOut" },
+    },
+};
+
+const gridVariants = {
+    hidden: {},
+    visible: {
+        transition: { staggerChildren: 0.1, delayChildren: 0.15 },
+    },
+};
+
+const cardVariants = {
+    hidden: { opacity: 0, y: 32, scale: 0.98 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+    },
+};
 
 // Components //
 function CodeBlock({ code, lang }: { code: string; lang: string }) {
     return (
-        <div className="relative border border-border bg-muted/30 overflow-x-auto">
-            <div className="flex items-center gap-2 border-b border-border px-4 py-2">
+        <div className="relative border border-border bg-muted/40 overflow-x-auto rounded-lg shadow-sm">
+            <div className="flex items-center gap-2 border-b border-border bg-muted/20 px-4 py-2">
                 <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
                     {lang}
                 </span>
@@ -31,7 +80,7 @@ const steps = [
             <>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                     Add the Layered UI registry namespace to your{" "}
-                    <code className="font-mono text-xs text-foreground bg-muted px-1 py-0.5 border border-border">
+                    <code className="font-mono text-xs text-foreground bg-muted px-1 py-0.5 border border-border rounded">
                         components.json
                     </code>
                     .
@@ -50,7 +99,7 @@ const steps = [
                         href="https://ui.shadcn.com/docs/registry/namespace"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-foreground underline underline-offset-4 hover:text-muted-foreground transition-colors"
+                        className="text-foreground underline underline-offset-4 hover:text-primary transition-colors"
                     >
                         Shadcn UI docs
                     </Link>
@@ -66,7 +115,7 @@ const steps = [
             <>
                 <p className="text-sm leading-relaxed text-muted-foreground">
                     Install blocks via the shadcn CLI using the{" "}
-                    <code className="font-mono text-xs text-foreground bg-muted px-1 py-0.5 border border-border">
+                    <code className="font-mono text-xs text-foreground bg-muted px-1 py-0.5 border border-border rounded">
                         @layeredUI/&#123;name&#125;
                     </code>{" "}
                     syntax.
@@ -93,7 +142,7 @@ const steps = [
                 <p className="text-sm leading-relaxed text-muted-foreground">
                     Select your MCP client when prompted. Remember to enable the MCP server in your client when done.
                 </p>
-                <div className="border-l-2 border-border pl-4 mt-2 flex flex-col gap-3">
+                <div className="border-l-2 border-primary/20 pl-4 mt-2 flex flex-col gap-3">
                     <p className="font-mono text-[10px] tracking-widest text-foreground uppercase">
                         Prompts to try
                     </p>
@@ -103,8 +152,8 @@ const steps = [
                             "Build me a landing page using a hero and features section from layeredUI registry",
                             "Build me a pricing page using a pricing, logo cloud, comparator and faqs blocks from layeredUI mist registry",
                         ].map((prompt) => (
-                            <li key={prompt} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                <span className="mt-1.5 size-1 shrink-0 rounded-full bg-border" aria-hidden />
+                            <li key={prompt} className="flex items-start gap-2 text-sm text-muted-foreground leading-relaxed">
+                                <span className="mt-2 size-1 shrink-0 rounded-full bg-primary/40" aria-hidden />
                                 {prompt}
                             </li>
                         ))}
@@ -118,53 +167,117 @@ const steps = [
 // RegistryPage //
 
 const RegistryPage = () => {
+    const headerRef = useRef(null);
+    const gridRef = useRef(null);
+    const headerInView = useInView(headerRef, { once: true, margin: "-60px" });
+    const gridInView = useInView(gridRef, { once: true, margin: "-60px" });
+
     return (
-        <>
+        <div className="min-h-screen flex flex-col">
             <SiteHeader />
 
-            <section
-                id="registry"
-                className="mx-4 max-w-7xl border-x px-4 py-16 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]"
-            >
-                {/* Heading */}
-                <div className="flex flex-col items-center text-center mb-12">
-                    <h2 className="text-balance text-3xl font-bold sm:text-4xl">Layered UI Registry</h2>
-                    <p className="mt-3 text-base max-w-xl text-muted-foreground">
-                        Install production‑ready shadcn/UI marketing blocks directly into your project
-                        using the shadcn CLI. Add the registry once and pull blocks by name.
-                    </p>
-                </div>
-
-                {/* Steps */}
-                <div className="mx-auto max-w-3xl">
-                    <div className="w-full rounded-2xl border border-border bg-card overflow-hidden">
-                        {steps.map((step, i) => (
-                            <div
-                                key={step.id}
-                                className={cn(
-                                    "flex gap-6 px-6 py-8 transition-colors hover:bg-muted/30",
-                                    i !== steps.length - 1 && "border-b border-border",
-                                )}
+            <main className="flex-1">
+                <section
+                    id="registry"
+                    className="mx-4 max-w-7xl border-x px-4 py-20 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]"
+                >
+                    {/* Heading */}
+                    <div ref={headerRef} className="flex flex-col items-center text-center mb-16">
+                        <div className="mb-4 flex items-center justify-center gap-3">
+                            <motion.div
+                                className="origin-right"
+                                variants={lineVariant}
+                                initial="hidden"
+                                animate={headerInView ? "visible" : "hidden"}
                             >
-                                <div className="shrink-0 pt-0.5">
-                                    <span className="font-mono text-[10px] tracking-widest text-muted-foreground/50 tabular-nums">
-                                        {step.id}
-                                    </span>
-                                </div>
-                                <div className="flex flex-col gap-4 flex-1 min-w-0">
-                                    <p className="font-mono text-[10px] tracking-widest text-foreground uppercase">
-                                        {step.title}
-                                    </p>
-                                    {step.description}
-                                </div>
-                            </div>
-                        ))}
+                                <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
+                            </motion.div>
+
+                            <motion.div
+                                variants={badgeVariant}
+                                initial="hidden"
+                                animate={headerInView ? "visible" : "hidden"}
+                            >
+                                <Badge variant="hero" className="group">
+                                    <span className="text-sm font-normal">Documentation</span>
+                                </Badge>
+                            </motion.div>
+
+                            <motion.div
+                                className="origin-left"
+                                variants={lineVariant}
+                                initial="hidden"
+                                animate={headerInView ? "visible" : "hidden"}
+                            >
+                                <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
+                            </motion.div>
+                        </div>
+
+                        <motion.h2
+                            className="text-balance text-3xl font-bold sm:text-4xl"
+                            variants={fadeUp}
+                            custom={0.1}
+                            initial="hidden"
+                            animate={headerInView ? "visible" : "hidden"}
+                        >
+                            Layered UI Registry
+                        </motion.h2>
+                        <motion.p
+                            className="mt-4 text-base max-w-xl text-muted-foreground"
+                            variants={fadeUp}
+                            custom={0.2}
+                            initial="hidden"
+                            animate={headerInView ? "visible" : "hidden"}
+                        >
+                            Install production‑ready shadcn/UI marketing blocks directly into your project
+                            using the shadcn CLI. Add the registry once and pull blocks by name.
+                        </motion.p>
                     </div>
-                </div>
-            </section>
+
+                    {/* Steps */}
+                    <div className="mx-auto max-w-3xl">
+                        <motion.div
+                            ref={gridRef}
+                            className="w-full rounded-2xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden"
+                            initial={{ opacity: 0, scale: 0.99 }}
+                            animate={gridInView ? { opacity: 1, scale: 1 } : {}}
+                            transition={{ duration: 0.45, ease: "easeOut" }}
+                        >
+                            <motion.div
+                                variants={gridVariants}
+                                initial="hidden"
+                                animate={gridInView ? "visible" : "hidden"}
+                            >
+                                {steps.map((step, i) => (
+                                    <motion.div
+                                        key={step.id}
+                                        variants={cardVariants}
+                                        className={cn(
+                                            "flex gap-6 px-8 py-10 transition-colors hover:bg-muted/30",
+                                            i !== steps.length - 1 && "border-b border-border",
+                                        )}
+                                    >
+                                        <div className="shrink-0 pt-0.5">
+                                            <span className="font-mono text-[10px] tracking-widest text-muted-foreground/40 tabular-nums">
+                                                {step.id}
+                                            </span>
+                                        </div>
+                                        <div className="flex flex-col gap-5 flex-1 min-w-0">
+                                            <p className="font-mono text-[10px] tracking-widest text-foreground uppercase opacity-80">
+                                                {step.title}
+                                            </p>
+                                            {step.description}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </motion.div>
+                        </motion.div>
+                    </div>
+                </section>
+            </main>
 
             <SiteFooter />
-        </>
+        </div>
     );
 };
 
