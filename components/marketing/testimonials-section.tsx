@@ -194,7 +194,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0
   );
 };
 
-// ── TestimonialsSection ───────────────────────────────────────────────────────
+// TestimonialsSection //
 
 export const TestimonialsSection = () => {
   const [count, setCount] = useState(INITIAL_COUNT);
