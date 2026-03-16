@@ -8,8 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-
+// Data //
 const questions = [
   {
     id: "item-1",
