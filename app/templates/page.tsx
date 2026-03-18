@@ -9,8 +9,7 @@ import { Eye, ShoppingCart, ArrowRight } from 'lucide-react';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 
-// ── Animation Variants ────────────────────────────────────────────────────────
-
+// Animation Variants 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -198,16 +197,14 @@ export default function TemplatesPage() {
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.3 }}
                 variants={containerVariants}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center ${
-                  template.imagePosition === 'left' ? 'lg:flex-row-reverse' : ''
-                }`}
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center ${template.imagePosition === 'left' ? 'lg:flex-row-reverse' : ''
+                  }`}
               >
                 {/* Content */}
                 <motion.div
                   variants={fadeInUpVariants}
-                  className={`space-y-6 sm:space-y-8 ${
-                    template.imagePosition === 'left' ? 'lg:order-2' : 'lg:order-1'
-                  }`}
+                  className={`space-y-6 sm:space-y-8 ${template.imagePosition === 'left' ? 'lg:order-2' : 'lg:order-1'
+                    }`}
                 >
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -268,9 +265,8 @@ export default function TemplatesPage() {
                 {/* Image Card (templates-section style) */}
                 <motion.div
                   variants={scaleInVariants}
-                  className={`relative ${
-                    template.imagePosition === 'left' ? 'lg:order-1' : 'lg:order-2'
-                  }`}
+                  className={`relative ${template.imagePosition === 'left' ? 'lg:order-1' : 'lg:order-2'
+                    }`}
                 >
                   <TemplateCard template={template} />
                 </motion.div>
