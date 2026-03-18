@@ -120,7 +120,7 @@ const templates: TemplateItem[] = [
   },
 ];
 
-// ── Template Preview Card (templates-section style) ───────────────────────────
+// Template Preview Card (templates-section style)
 
 const TemplateCard = ({ template }: { template: TemplateItem }) => {
   return (
