@@ -45,8 +45,7 @@ const scaleInVariants: Variants = {
   },
 };
 
-// ── Data ──────────────────────────────────────────────────────────────────────
-
+// Data
 interface TemplateItem {
   title: string;
   description: string;
