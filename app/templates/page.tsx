@@ -140,8 +140,7 @@ const TemplateCard = ({ template }: { template: TemplateItem }) => {
   );
 };
 
-// ── Page Component ────────────────────────────────────────────────────────────
-
+// Page Component
 export default function TemplatesPage() {
   return (
     <>
