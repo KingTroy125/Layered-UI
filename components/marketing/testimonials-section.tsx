@@ -202,7 +202,7 @@ export const TestimonialsSection = () => {
   const visible = testimonials.slice(0, count);
   const hasMore = count < testimonials.length;
 
-  // Split into 3 masonry columns
+  // Split into 3 masonry columns //
   const col1 = visible.filter((_, i) => i % 3 === 0);
   const col2 = visible.filter((_, i) => i % 3 === 1);
   const col3 = visible.filter((_, i) => i % 3 === 2);
