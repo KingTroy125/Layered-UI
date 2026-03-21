@@ -186,8 +186,7 @@ export default function TemplatesPage() {
             </motion.div>
           </div>
 
-          {/*
-           Template Sections */}
+          {/* Template Sections */}
           <div className="space-y-20 sm:space-y-28">
             {templates.map((template) => (
               <motion.div
