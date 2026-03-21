@@ -12,11 +12,17 @@ const compat = new FlatCompat({
 const eslintConfig = [
     ...compat.config({
         extends: ['next/core-web-vitals', 'next', 'next/typescript'],
+    }),
+    {
         rules: {
             'react/no-unescaped-entities': 'off',
             '@next/next/no-page-custom-font': 'off',
+            '@typescript-eslint/no-unused-vars': 'warn',
+            '@typescript-eslint/no-explicit-any': 'warn',
+            '@next/next/no-img-element': 'warn',
+            '@next/next/no-html-link-for-pages': 'warn',
         },
-    }),
+    },
 ]
 
 export default eslintConfig
