@@ -203,7 +203,7 @@ export const BlockPreviewProvider: React.FC<{
         // Safety net: show the iframe after a delay even if events fail
         const fallbackTimer = setTimeout(() => {
             setIframeLoaded(true)
-        }, 8000)
+        }, 3000) // Reduced from 8000ms for better perceived speed
 
         return () => {
             iframe.removeEventListener('load', handleLoad)
@@ -442,7 +442,14 @@ function BlockPreviewView() {
                 onLayout={(layout) => setWidth(layout[0])}
             >
                 <Panel defaultSize={DEFAULT_SIZE} minSize={SM_SIZE} className="relative border-x">
-                    <div ref={blockRef} className="w-full">
+                    <div ref={blockRef} className="w-full relative">
+                        {/* Show spinner while shouldLoadIframe is true but iframe hasn't finished loading yet */}
+                        {shouldLoadIframe && !iframeLoaded && (
+                            <div className="absolute inset-0 flex items-center justify-center bg-zinc-50/50 dark:bg-zinc-950/50 z-20">
+                                <RefreshCw className="size-5 animate-spin text-muted-foreground/50" />
+                            </div>
+                        )}
+                        
                         {shouldLoadIframe ? (
                             <iframe
                                 // FIX: Key now includes category so React never reuses iframes across categories

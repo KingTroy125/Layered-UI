@@ -21,21 +21,21 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'hero-section',
         preview: '/preview/hero-section/one',
-        code: loadCode('app/preview/hero-section/one/page.tsx'),
+        get code() { return loadCode('app/preview/hero-section/one/page.tsx') },
     },
     {
         slug: 'hero-section',
         title: 'two',
         category: 'hero-section',
         preview: '/preview/hero-section/two',
-        code: loadCode('app/preview/hero-section/two/page.tsx'),
+        get code() { return loadCode('app/preview/hero-section/two/page.tsx') },
     },
     {
         slug: 'hero-section',
         title: 'three',
         category: 'hero-section',
         preview: '/preview/hero-section/three',
-        code: loadCode('app/preview/hero-section/three/page.tsx'),
+        get code() { return loadCode('app/preview/hero-section/three/page.tsx') },
     },
 
     {
@@ -43,21 +43,21 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'navbar',
         preview: '/preview/navbar/one',
-        code: loadCode('app/preview/navbar/one/page.tsx'),
+        get code() { return loadCode('app/preview/navbar/one/page.tsx') },
     },
     {
         slug: 'navbar',
         title: 'two',
         category: 'navbar',
         preview: '/preview/navbar/two',
-        code: loadCode('app/preview/navbar/two/page.tsx'),
+        get code() { return loadCode('app/preview/navbar/two/page.tsx') },
     },
     {
         slug: 'navbar',
         title: 'three',
         category: 'navbar',
         preview: '/preview/navbar/three',
-        code: loadCode('app/preview/navbar/three/page.tsx'),
+        get code() { return loadCode('app/preview/navbar/three/page.tsx') },
     },
 
     {
@@ -65,21 +65,21 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'logo-cloud',
         preview: '/preview/logo-cloud/one',
-        code: loadCode('app/preview/logo-cloud/one/page.tsx'),
+        get code() { return loadCode('app/preview/logo-cloud/one/page.tsx') },
     },
     {
         slug: 'logo-cloud',
         title: 'five',
         category: 'logo-cloud',
         preview: '/preview/logo-cloud/five',
-        code: loadCode('app/preview/logo-cloud/five/page.tsx'),
+        get code() { return loadCode('app/preview/logo-cloud/five/page.tsx') },
     },
     {
         slug: 'logo-cloud',
         title: 'six',
         category: 'logo-cloud',
         preview: '/preview/logo-cloud/six',
-        code: loadCode('app/preview/logo-cloud/six/page.tsx'),
+        get code() { return loadCode('app/preview/logo-cloud/six/page.tsx') },
     },
 
     {
@@ -87,14 +87,14 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'features',
         preview: '/preview/features/one',
-        code: loadCode('app/preview/features/one/page.tsx'),
+        get code() { return loadCode('app/preview/features/one/page.tsx') },
     },
     {
         slug: 'features',
         title: 'two',
         category: 'features',
         preview: '/preview/features/two',
-        code: loadCode('app/preview/features/two/page.tsx'),
+        get code() { return loadCode('app/preview/features/two/page.tsx') },
     },
 
     {
@@ -102,7 +102,7 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'integrations',
         preview: '/preview/integrations/one',
-        code: loadCode('app/preview/integrations/one/page.tsx'),
+        get code() { return loadCode('app/preview/integrations/one/page.tsx') },
     },
 
     {
@@ -110,21 +110,21 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'stats',
         preview: '/preview/stats/one',
-        code: loadCode('app/preview/stats/one/page.tsx'),
+        get code() { return loadCode('app/preview/stats/one/page.tsx') },
     },
     {
         slug: 'stats',
         title: 'five',
         category: 'stats',
         preview: '/preview/stats/five',
-        code: loadCode('app/preview/stats/five/page.tsx'),
+        get code() { return loadCode('app/preview/stats/five/page.tsx') },
     },
     {
         slug: 'stats',
         title: 'six',
         category: 'stats',
         preview: '/preview/stats/six',
-        code: loadCode('app/preview/stats/six/page.tsx'),
+        get code() { return loadCode('app/preview/stats/six/page.tsx') },
     },
 
     {
@@ -132,7 +132,7 @@ export const blocks: Block[] = [
         title: 'four',
         category: 'team',
         preview: '/preview/team/four',
-        code: loadCode('app/preview/team/four/page.tsx'),
+        get code() { return loadCode('app/preview/team/four/page.tsx') },
     },
 
     {
@@ -140,28 +140,28 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'testimonials',
         preview: '/preview/testimonials/one',
-        code: loadCode('app/preview/testimonials/one/page.tsx'),
+        get code() { return loadCode('app/preview/testimonials/one/page.tsx') },
     },
     {
         slug: 'testimonials',
         title: 'six',
         category: 'testimonials',
         preview: '/preview/testimonials/six',
-        code: loadCode('app/preview/testimonials/six/page.tsx'),
+        get code() { return loadCode('app/preview/testimonials/six/page.tsx') },
     },
     {
         slug: 'testimonials',
         title: 'eight',
         category: 'testimonials',
         preview: '/preview/testimonials/eight',
-        code: loadCode('app/preview/testimonials/eight/page.tsx'),
+        get code() { return loadCode('app/preview/testimonials/eight/page.tsx') },
     },
     {
         slug: 'testimonials',
         title: 'nine',
         category: 'testimonials',
         preview: '/preview/testimonials/nine',
-        code: loadCode('app/preview/testimonials/nine/page.tsx'),
+        get code() { return loadCode('app/preview/testimonials/nine/page.tsx') },
     },
 
     {
@@ -169,28 +169,28 @@ export const blocks: Block[] = [
         title: 'two',
         category: 'footer',
         preview: '/preview/footer/two',
-        code: loadCode('app/preview/footer/two/page.tsx'),
+        get code() { return loadCode('app/preview/footer/two/page.tsx') },
     },
     {
         slug: 'footer',
         title: 'three',
         category: 'footer',
         preview: '/preview/footer/three',
-        code: loadCode('app/preview/footer/three/page.tsx'),
+        get code() { return loadCode('app/preview/footer/three/page.tsx') },
     },
     {
         slug: 'footer',
         title: 'five',
         category: 'footer',
         preview: '/preview/footer/five',
-        code: loadCode('app/preview/footer/five/page.tsx'),
+        get code() { return loadCode('app/preview/footer/five/page.tsx') },
     },
     {
         slug: 'footer',
         title: 'six',
         category: 'footer',
         preview: '/preview/footer/six',
-        code: loadCode('app/preview/footer/six/page.tsx'),
+        get code() { return loadCode('app/preview/footer/six/page.tsx') },
     },
 
     {
@@ -198,28 +198,28 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'pricing',
         preview: '/preview/pricing/one',
-        code: loadCode('app/preview/pricing/one/page.tsx'),
+        get code() { return loadCode('app/preview/pricing/one/page.tsx') },
     },
     {
         slug: 'pricing',
         title: 'two',
         category: 'pricing',
         preview: '/preview/pricing/two',
-        code: loadCode('app/preview/pricing/two/page.tsx'),
+        get code() { return loadCode('app/preview/pricing/two/page.tsx') },
     },
     {
         slug: 'pricing',
         title: 'three',
         category: 'pricing',
         preview: '/preview/pricing/three',
-        code: loadCode('app/preview/pricing/three/page.tsx'),
+        get code() { return loadCode('app/preview/pricing/three/page.tsx') },
     },
     {
         slug: 'pricing',
         title: 'four',
         category: 'pricing',
         preview: '/preview/pricing/four',
-        code: loadCode('app/preview/pricing/four/page.tsx'),
+        get code() { return loadCode('app/preview/pricing/four/page.tsx') },
     },
 
     {
@@ -227,21 +227,21 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'faqs',
         preview: '/preview/faqs/one',
-        code: loadCode('app/preview/faqs/one/page.tsx'),
+        get code() { return loadCode('app/preview/faqs/one/page.tsx') },
     },
     {
         slug: 'faqs',
         title: 'two',
         category: 'faqs',
         preview: '/preview/faqs/two',
-        code: loadCode('app/preview/faqs/two/page.tsx'),
+        get code() { return loadCode('app/preview/faqs/two/page.tsx') },
     },
     {
         slug: 'faqs',
         title: 'three',
         category: 'faqs',
         preview: '/preview/faqs/three',
-        code: loadCode('app/preview/faqs/three/page.tsx'),
+        get code() { return loadCode('app/preview/faqs/three/page.tsx') },
     },
 
     {
@@ -249,7 +249,7 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'comparator',
         preview: '/preview/comparator/one',
-        code: loadCode('app/preview/comparator/one/page.tsx'),
+        get code() { return loadCode('app/preview/comparator/one/page.tsx') },
     },
 
     {
@@ -257,14 +257,14 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'cta',
         preview: '/preview/cta/one',
-        code: loadCode('app/preview/cta/one/page.tsx'),
+        get code() { return loadCode('app/preview/cta/one/page.tsx') },
     },
     {
         slug: 'cta',
         title: 'two',
         category: 'cta',
         preview: '/preview/cta/two',
-        code: loadCode('app/preview/cta/two/page.tsx'),
+        get code() { return loadCode('app/preview/cta/two/page.tsx') },
     },
 
     {
@@ -272,14 +272,14 @@ export const blocks: Block[] = [
         title: 'one',
         category: 'login',
         preview: '/preview/login/one',
-        code: loadCode('app/preview/login/one/page.tsx'),
+        get code() { return loadCode('app/preview/login/one/page.tsx') },
     },
     {
         slug: 'login',
         title: 'two',
         category: 'login',
         preview: '/preview/login/two',
-        code: loadCode('app/preview/login/two/page.tsx'),
+        get code() { return loadCode('app/preview/login/two/page.tsx') },
     },
 
     {
@@ -287,7 +287,7 @@ export const blocks: Block[] = [
         title: 'one',
         category: '404',
         preview: '/preview/404/one',
-        code: loadCode('app/preview/404/one/page.tsx'),
+        get code() { return loadCode('app/preview/404/one/page.tsx') },
     },
 
 ]

@@ -15,7 +15,7 @@ import { Badge } from '@/components/ui/badge';
 export default function IntegrationsSection() {
   return (
     <section>
-      <div className="bg-background py-24 md:py-32">
+      <div className="py-24 md:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Header Section */}
           <div className="mb-16 flex flex-col items-center text-center gap-6 sm:gap-8">
@@ -49,7 +49,7 @@ export default function IntegrationsSection() {
           <div className="relative mx-auto w-fit mb-12">
             <div
               role="presentation"
-              className="absolute inset-0 z-10 from-transparent to-75% bg-gradient-to-b to-background dark:to-background rounded-3xl"
+              className="absolute inset-0 z-10 from-transparent to-75% dark:to-background rounded-3xl"
             />
 
             {/* Row 1 */}
@@ -67,10 +67,7 @@ export default function IntegrationsSection() {
               <IntegrationCard>
                 <MagicUI />
               </IntegrationCard>
-              <IntegrationCard
-                borderClassName="shadow-primary/20 dark:shadow-primary/30 shadow-lg border-primary/40 dark:border-primary/40"
-                className="bg-primary/5 dark:bg-primary/10"
-              >
+              <IntegrationCard>
                 <Logo />
               </IntegrationCard>
               <IntegrationCard>
