@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { Quote } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -120,7 +121,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0
 
     {/* Author row */}
     <div className="flex items-center gap-3.5 mt-auto">
-      <img
+      <Image
         src={testimonial.avatar}
         alt={testimonial.author}
         width={52}
@@ -144,13 +145,9 @@ const TestimonialCard = ({ testimonial }: { testimonial: (typeof testimonials)[0
 export const TestimonialsSection = () => {
   const [count, setCount] = useState(INITIAL_COUNT);
 
+
   const visible = testimonials.slice(0, count);
   const hasMore = count < testimonials.length;
-
-  // Split into 3 masonry columns
-  const col1 = visible.filter((_, i) => i % 3 === 0);
-  const col2 = visible.filter((_, i) => i % 3 === 1);
-  const col3 = visible.filter((_, i) => i % 3 === 2);
 
   return (
     <section
@@ -159,13 +156,9 @@ export const TestimonialsSection = () => {
     >
       {/* ── Header ── */}
       <div className="flex flex-col items-center text-center mb-12">
-        <div className="mb-4 flex items-center justify-center gap-3">
-          <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
-          <Badge variant="hero" className="group">
-            <span className="text-sm font-normal">Testimonials</span>
-          </Badge>
-          <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
-        </div>
+        <Badge variant="hero" showLines={true} className="group mb-4">
+          <span className="text-sm font-normal">Testimonials</span>
+        </Badge>
         <h2 className="text-balance text-3xl font-bold sm:text-4xl">
           Trusted by Teams Worldwide
         </h2>
@@ -176,28 +169,12 @@ export const TestimonialsSection = () => {
 
       {/* ── Masonry Grid ── */}
       <div className="relative">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-
-          {/* Column 1 */}
-          <div className="flex flex-col gap-4">
-            {col1.map((t) => (
-              <TestimonialCard key={t.author} testimonial={t} />
-            ))}
-          </div>
-
-          {/* Column 2 */}
-          <div className="flex flex-col gap-4">
-            {col2.map((t) => (
-              <TestimonialCard key={t.author} testimonial={t} />
-            ))}
-          </div>
-
-          {/* Column 3 — hidden on mobile/tablet, shows on lg */}
-          <div className="hidden lg:flex flex-col gap-4">
-            {col3.map((t) => (
-              <TestimonialCard key={t.author} testimonial={t} />
-            ))}
-          </div>
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance] space-y-4">
+          {visible.map((t, i) => (
+            <div key={`${t.author}-${i}`} className="break-inside-avoid">
+              <TestimonialCard testimonial={t} />
+            </div>
+          ))}
         </div>
 
         {/* Fade overlay — only when more items are hidden */}
