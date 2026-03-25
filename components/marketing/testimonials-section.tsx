@@ -153,7 +153,7 @@ export const TestimonialsSection = () => {
       id="testimonials"
       className="mx-4 max-w-7xl border-x px-4 py-16 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]"
     >
-      {/* ── Header ── */}
+      {/* Header */}
       <div className="flex flex-col items-center text-center mb-12">
         <Badge variant="hero" showLines={true} className="group mb-4">
           <span className="text-sm font-normal">Testimonials</span>
