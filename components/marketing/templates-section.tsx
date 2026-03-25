@@ -119,7 +119,7 @@ const TemplateCard = ({
       variants={cardVariants}
       whileHover={{ y: -4, transition: { duration: 0.22, ease: 'easeOut' } }}
       className={cn(
-        'group relative overflow-hidden rounded-xl aspect-video ring ring-border shadow shadow-black/4 bg-card dark:bg-background',
+        'group relative overflow-hidden rounded-xl aspect-video border border-border shadow shadow-black/4 bg-card dark:bg-background',
         className,
       )}
     >
@@ -135,7 +135,7 @@ const TemplateCard = ({
       </span>
 
       {/* Hover overlay */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40 p-6 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100 rounded-xl">
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40 p-6 opacity-0 backdrop-blur-sm transition-opacity duration-300 group-hover:opacity-100">
         <h3 className="text-center text-lg font-semibold text-white">{title}</h3>
 
         <div className="flex items-center justify-center gap-3">
