@@ -166,7 +166,7 @@ export const TestimonialsSection = () => {
         </p>
       </div>
 
-      {/* ── Masonry Grid ── */}
+      {/* Masonry Grid */}
       <div className="relative">
         <div className="columns-1 md:columns-2 lg:columns-3 gap-4 [column-fill:_balance] space-y-4">
           {visible.map((t, i) => (
