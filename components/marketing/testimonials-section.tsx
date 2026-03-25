@@ -87,7 +87,7 @@ const testimonials = [
     role: 'Customer Success Lead',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=MarcusWebb',
   },
-  // ── Add more testimonials here ─────────────────────────────────────────────
+  // Add more testimonials here 
   // {
   //   quote: 'Your testimonial text here.',
   //   author: 'Jane Doe',
