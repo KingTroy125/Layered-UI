@@ -6,13 +6,13 @@ export interface Block {
     title: string
     category: string
     preview: string
-    code: string
+    code: Promise<string>
     relatedCode?: { label: string; code: string }[]
 }
 
-function loadCode(filePath: string): string {
+async function loadCode(filePath: string): Promise<string> {
     const fullPath = path.join(process.cwd(), filePath)
-    return fs.readFileSync(fullPath, 'utf-8')
+    return fs.promises.readFile(fullPath, 'utf-8')
 }
 
 export const blocks: Block[] = [

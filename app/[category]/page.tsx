@@ -30,6 +30,20 @@ export default async function CategoryPage({ params }: PageProps) {
         notFound()
     }
 
+    const resolvedBlocks = await Promise.all(
+        categoryBlocks.map(async (block) => {
+            const code = await block.code
+            return {
+                slug: block.slug,
+                title: block.title,
+                category: block.category,
+                preview: block.preview,
+                code,
+                relatedCode: block.relatedCode,
+            }
+        })
+    )
+
     return (
         <>
             <section>
@@ -40,7 +54,7 @@ export default async function CategoryPage({ params }: PageProps) {
                 <div className="h-6 w-full bg-[repeating-linear-gradient(-45deg,var(--color-border),var(--color-border)_1px,transparent_1px,transparent_6px)] opacity-35"></div>
             </section>
 
-            {categoryBlocks.map((block, index) => (
+            {resolvedBlocks.map((block, index) => (
                 <BlockPreview
                     {...block}
                     key={index}

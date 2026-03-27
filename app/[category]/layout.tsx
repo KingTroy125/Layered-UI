@@ -15,7 +15,12 @@ export default function CategoryLayout({
                 currentKitFullName="default"
                 currentKitShortName="default"
                 allCategories={categories} 
-                blocks={blocks}
+                blocks={blocks.map((b) => ({
+                    slug: b.slug,
+                    title: b.title,
+                    category: b.category,
+                    preview: b.preview,
+                })) as typeof blocks}
             />
             <main>{children}</main>
 
