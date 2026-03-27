@@ -17,8 +17,15 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-    title: 'Layered Blocks for Shadcn UI',
+    title: 'Layered UI for Shadcn UI',
     description: 'Speed up your workflow with responsive, pre-built UI blocks designed for marketing websites.',
+    openGraph: {
+        images: ['https://raw.githubusercontent.com/KingTroy125/Layered-Blocks/main/public/LayeredUI.png'],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        images: ['https://raw.githubusercontent.com/KingTroy125/Layered-Blocks/main/public/LayeredUI.png'],
+    },
 }
 
 export default function RootLayout({
