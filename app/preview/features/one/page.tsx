@@ -1,253 +1,98 @@
-'use client';
-
-import { motion, type Variants } from 'framer-motion';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Badge } from '@/components/ui/badge';
-
-const containerVariants: Variants = {
-  hidden: {
-    opacity: 0,
-  },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const badgeVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.8,
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut',
-    },
-  },
-};
-
-const headingVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      delay: 0.2,
-      ease: 'easeOut',
-    },
-  },
-};
-
-const fadeInUpVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 30,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut',
-    },
-  },
-};
-
-const scaleInVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    scale: 0.9,
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut',
-    },
-  },
-};
-
-const lineVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    scaleX: 0,
-  },
-  visible: {
-    opacity: 1,
-    scaleX: 1,
-    transition: {
-      duration: 0.6,
-      ease: 'easeOut',
-    },
-  },
-};
+import { Cpu, Fingerprint, Pencil, Settings2, Sparkles, Zap } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 const features = [
-  'Quick list creation in seconds',
-  'Intuitive task management',
-  'Seamless organization experience',
-];
-
-interface FeatureSection {
-  title: string;
-  description: string;
-  image: string;
-  imagePosition: 'left' | 'right';
-}
-
-const featureSections: FeatureSection[] = [
   {
-    title: 'Effortless task building',
-    description:
-      'Build workflows and manage projects in seconds with our intuitive dashboard interface',
-    image: 'https://placehold.co/550x400',
-    imagePosition: 'right',
+    icon: Zap,
+    title: "Faaast",
+    description: "It supports an entire helping developers and innovate.",
   },
   {
-    title: 'Advanced workflow tools',
-    description:
-      'Streamline your work process with powerful automation and intelligent project tracking',
-    image: 'https://placehold.co/550x400',
-    imagePosition: 'left',
+    icon: Cpu,
+    title: "Powerful",
+    description: "It supports an entire helping developers and businesses.",
   },
   {
-    title: 'Real-time synchronization',
-    description:
-      'Connect your data across platforms and sync updates instantly with powerful integration',
-    image: 'https://placehold.co/550x400',
-    imagePosition: 'right',
+    icon: Fingerprint,
+    title: "Security",
+    description: "It supports an helping developers businesses.",
   },
-];
+  {
+    icon: Pencil,
+    title: "Customization",
+    description: "It supports helping developers and businesses innovate.",
+  },
+  {
+    icon: Settings2,
+    title: "Control",
+    description: "It supports helping developers and businesses innovate.",
+  },
+  {
+    icon: Sparkles,
+    title: "Built for AI",
+    description: "It supports helping developers and businesses innovate.",
+  },
+]
 
-export default function FeatureDetail() {
+export default function FeaturesSection() {
   return (
     <section className="relative py-16 sm:py-20 md:py-28 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 sm:mb-20">
-          <motion.div
-            className="flex flex-col items-center text-center gap-6 sm:gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{
-              once: true,
-              amount: 0.3,
-            }}
-            variants={containerVariants}
-          >
-            {/* Badge */}
-            <div className="flex items-center justify-center gap-2 sm:gap-3">
-              <div className="flex items-center">
-                <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent"></div>
-              </div>
-              
-              <Badge variant="hero" className="group">
-                <span className="text-sm font-normal">key features</span>
-              </Badge>
-              
-              <div className="flex items-center">
-                <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent"></div>
-              </div>
+      {/* Header */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 sm:mb-16">
+        <div className="flex flex-col items-center text-center gap-6 sm:gap-8">
+          {/* Badge */}
+          <div className="flex items-center justify-center gap-2 sm:gap-3">
+            <div className="flex items-center">
+              <div className="w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent"></div>
             </div>
 
-            {/* Heading */}
-            <motion.h2
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-tight text-foreground px-4 max-w-4xl"
-              variants={headingVariants}
-            >
-              Features that make the difference
-            </motion.h2>
-          </motion.div>
+            <Badge variant="hero" className="group">
+              <span className="text-sm font-normal">Features</span>
+            </Badge>
+
+            <div className="flex items-center">
+              <div className="w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent"></div>
+            </div>
+          </div>
+
+          {/* Heading and Description */}
+          <div className="flex flex-col items-center gap-4 sm:gap-6 max-w-3xl">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-normal leading-tight text-balance text-foreground px-4">
+              The foundation for creative teams management
+            </h2>
+
+            <p className="text-muted-foreground text-sm sm:text-base font-normal leading-relaxed px-4">
+              Lyra is evolving to be more than just the models. It supports an entire helping developers and businesses innovate.
+            </p>
+          </div>
         </div>
+      </div>
 
-        {/* Feature Sections */}
-        <div className="space-y-20 sm:space-y-28">
-          {featureSections.map((section) => (
-            <motion.div
-              key={section.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{
-                once: true,
-                amount: 0.3,
-              }}
-              variants={containerVariants}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-10 sm:gap-16 items-center ${
-                section.imagePosition === 'left' ? 'lg:flex-row-reverse' : ''
-              }`}
+      {/* Features Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 border border-border rounded-3xl overflow-hidden divide-x divide-y divide-border">
+          {features.map((feature, index) => (
+            <div
+              key={index}
+              className="relative bg-card p-8 sm:p-10 md:p-12 group hover:bg-secondary/50 transition-all duration-300"
             >
-              {/* Content */}
-              <motion.div
-                variants={fadeInUpVariants}
-                className={`space-y-6 sm:space-y-8 ${
-                  section.imagePosition === 'left'
-                    ? 'lg:order-2'
-                    : 'lg:order-1'
-                }`}
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-normal text-foreground">
-                      {section.title}
-                    </h3>
-                  </div>
-                  <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg">
-                    {section.description}
-                  </p>
-                </div>
+              {/* Hover effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                {/* Features List */}
-                <div className="space-y-4">
-                  {features.map((feature) => (
-                    <motion.div
-                      key={feature}
-                      variants={fadeInUpVariants}
-                      className="flex items-center gap-3"
-                    >
-                      <Checkbox
-                        checked
-                        className="h-5 w-5 rounded-full border-primary data-[state=checked]:bg-primary"
-                      />
-                      <span className="text-sm sm:text-base text-foreground">
-                        {feature}
-                      </span>
-                    </motion.div>
-                  ))}
+              {/* Icon container */}
+              <div className="relative z-10 flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-full bg-secondary border border-border flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:border-primary/50">
+                  <feature.icon className="w-4 h-4 text-primary transition-transform duration-300 group-hover:rotate-6" />
                 </div>
-              </motion.div>
+                <h3 className="text-base font-medium text-foreground">{feature.title}</h3>
+              </div>
 
-              {/* Image */}
-              <motion.div
-                variants={scaleInVariants}
-                className={`relative ${
-                  section.imagePosition === 'left'
-                    ? 'lg:order-1'
-                    : 'lg:order-2'
-                }`}
-              >
-                <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-card border border-border shadow-[0px_-4px_100px_21px_rgba(11,56,88,0.16)_inset]">
-                  <img
-                    src={section.image}
-                    alt={section.title}
-                    className="w-full h-64 sm:h-80 lg:h-96 object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card/50 to-transparent" />
-                </div>
-              </motion.div>
-            </motion.div>
+              {/* Description */}
+              <p className="relative z-10 text-sm text-muted-foreground leading-relaxed">{feature.description}</p>
+            </div>
           ))}
         </div>
       </div>
     </section>
-  );
+  )
 }
