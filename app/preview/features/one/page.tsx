@@ -1,3 +1,5 @@
+'use client';
+
 import { Cpu, Fingerprint, Pencil, Settings2, Sparkles, Zap } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 
