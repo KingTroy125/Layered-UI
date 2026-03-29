@@ -106,6 +106,14 @@ export const blocks: Block[] = [
     },
 
     {
+        slug: 'bento',
+        title: 'one',
+        category: 'bento',
+        preview: '/preview/bento/one',
+        get code() { return loadCode('app/preview/bento/one/page.tsx') },
+    },
+
+    {
         slug: 'stats',
         title: 'one',
         category: 'stats',
