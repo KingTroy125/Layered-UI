@@ -164,14 +164,14 @@ export const BlockPreviewProvider: React.FC<{
                     // Use scrollHeight of the documentElement for the most accurate full-page measurement
                     const contentHeight = doc.documentElement.scrollHeight
                     const safeHeight = Math.max(contentHeight, 224)
-                    
+
                     setIframeHeight(safeHeight)
-                    
+
                     // Update cache with the latest measurement
                     const cacheKey = getCacheKey(preview)
-                    localStorage.setItem(cacheKey, JSON.stringify({ 
-                        height: safeHeight, 
-                        timestamp: Date.now() 
+                    localStorage.setItem(cacheKey, JSON.stringify({
+                        height: safeHeight,
+                        timestamp: Date.now()
                     }))
                 }
 
@@ -449,7 +449,7 @@ function BlockPreviewView() {
                                 <RefreshCw className="size-5 animate-spin text-muted-foreground/50" />
                             </div>
                         )}
-                        
+
                         {shouldLoadIframe ? (
                             <iframe
                                 // FIX: Key now includes category so React never reuses iframes across categories
