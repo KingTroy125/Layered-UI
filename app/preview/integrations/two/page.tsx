@@ -37,8 +37,7 @@ const tiles: TileData[] = [
     { row: 4, col: 3, logo: { src: "https://storage.efferd.com/logo/polar.svg", alt: "Polar Logo" } },
 ];
 
-// ─── Variants ─────────────────────────────────────────────────────────────────
-
+// Variants 
 const lineVariant = {
     hidden: { scaleX: 0, opacity: 0 },
     visible: {
