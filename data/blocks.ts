@@ -104,6 +104,13 @@ export const blocks: Block[] = [
         preview: '/preview/integrations/one',
         get code() { return loadCode('app/preview/integrations/one/page.tsx') },
     },
+    {
+        slug: 'integrations',
+        title: 'two',
+        category: 'integrations',
+        preview: '/preview/integrations/two',
+        get code() { return loadCode('app/preview/integrations/two/page.tsx') },
+    },
 
     {
         slug: 'bento',
