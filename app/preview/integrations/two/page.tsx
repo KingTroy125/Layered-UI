@@ -152,7 +152,7 @@ function IntegrationCard({ row, col, logo, index, inView }: TileData & { index: 
     );
 }
 
-// ─── IntegrationsSection ──────────────────────────────────────────────────────
+// IntegrationsSection
 
 export default function IntegrationsSection() {
     const headerRef = useRef(null)
