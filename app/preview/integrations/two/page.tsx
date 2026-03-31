@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { motion, useInView } from "framer-motion";
 
-// ─── Easing ───────────────────────────────────────────────────────────────────
+// Easing
 const expo = [0.16, 1, 0.3, 1] as const
 
 // Types
