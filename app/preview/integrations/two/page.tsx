@@ -8,7 +8,7 @@ import { motion, useInView } from "framer-motion";
 // ─── Easing ───────────────────────────────────────────────────────────────────
 const expo = [0.16, 1, 0.3, 1] as const
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// Types
 
 type LogoType = {
     src: string;
