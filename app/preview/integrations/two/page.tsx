@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { Logo } from "@/components/logo";
 import { motion, useInView } from "framer-motion";
 
 // Easing
@@ -11,9 +12,10 @@ const expo = [0.16, 1, 0.3, 1] as const
 // Types
 
 type LogoType = {
-    src: string;
+    src?: string;
     alt: string;
     isInvertable?: boolean;
+    component?: React.ComponentType<{ className?: string }>;
 };
 
 type TileData = {
@@ -28,7 +30,7 @@ const tiles: TileData[] = [
     { row: 1, col: 0 },
     { row: 1, col: 2, logo: { src: "https://storage.efferd.com/logo/cursor.svg", alt: "Cursor Logo", isInvertable: true } },
     { row: 1, col: 4, logo: { src: "https://storage.efferd.com/logo/vercel.svg", alt: "Vercel Logo", isInvertable: true } },
-    { row: 2, col: 1, logo: { src: "https://storage.efferd.com/logo/planetscale.svg", alt: "Planetscale Logo", isInvertable: true } },
+    { row: 2, col: 1, logo: { component: Logo, alt: "Layered Logo" } },
     { row: 2, col: 3, logo: { src: "https://storage.efferd.com/logo/gmail.svg", alt: "Gmail Logo" } },
     { row: 3, col: 0 },
     { row: 3, col: 2, logo: { src: "https://storage.efferd.com/logo/supabase.svg", alt: "Supabase Logo" } },
@@ -136,16 +138,22 @@ function IntegrationCard({ row, col, logo, index, inView }: TileData & { index: 
                 )}
             >
                 {logo && (
-                    <img
-                        alt={logo.alt}
-                        className={cn(
-                            "pointer-events-none size-8 select-none object-contain p-1",
-                            logo.isInvertable && "dark:invert"
+                    <>
+                        {logo.component ? (
+                            <logo.component className="size-8" />
+                        ) : (
+                            <img
+                                alt={logo.alt}
+                                className={cn(
+                                    "pointer-events-none size-8 select-none object-contain p-1",
+                                    logo.isInvertable && "dark:invert"
+                                )}
+                                height={40}
+                                src={logo.src}
+                                width={40}
+                            />
                         )}
-                        height={40}
-                        src={logo.src}
-                        width={40}
-                    />
+                    </>
                 )}
             </motion.div>
         </motion.div>
