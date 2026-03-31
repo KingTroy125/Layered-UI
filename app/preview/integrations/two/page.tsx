@@ -104,7 +104,7 @@ function getFloatAnimation(index: number) {
     }
 }
 
-// ─── IntegrationCard ──────────────────────────────────────────────────────────
+// IntegrationCard 
 
 function IntegrationCard({ row, col, logo, index, inView }: TileData & { index: number; inView: boolean }) {
     const variant = getTileVariant(row, col)
