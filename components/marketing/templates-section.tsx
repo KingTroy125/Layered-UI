@@ -4,7 +4,7 @@ import { Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, type Variants } from 'framer-motion';
 import { useRef } from 'react';
 
 const templates = [
@@ -53,7 +53,7 @@ function getLayout(count: number): string[] {
 
 // Variants //
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
   visible: (delay = 0) => ({
     opacity: 1,
@@ -62,7 +62,7 @@ const fadeUp = {
   }),
 };
 
-const lineVariant = {
+const lineVariant: Variants = {
   hidden: { scaleX: 0, opacity: 0 },
   visible: {
     scaleX: 1,
@@ -71,7 +71,7 @@ const lineVariant = {
   },
 };
 
-const badgeVariant = {
+const badgeVariant: Variants = {
   hidden: { opacity: 0, scale: 0.85 },
   visible: {
     opacity: 1,
@@ -80,14 +80,14 @@ const badgeVariant = {
   },
 };
 
-const gridVariants = {
+const gridVariants: Variants = {
   hidden: {},
   visible: {
     transition: { staggerChildren: 0.1, delayChildren: 0.15 },
   },
 };
 
-const cardVariants = {
+const cardVariants: Variants = {
   hidden: { opacity: 0, y: 32, scale: 0.98 },
   visible: {
     opacity: 1,
