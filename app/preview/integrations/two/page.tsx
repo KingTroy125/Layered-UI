@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/logo";
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, type Variants, type TargetAndTransition } from "framer-motion";
 
 // Easing
 const expo = [0.16, 1, 0.3, 1] as const
@@ -40,7 +40,7 @@ const tiles: TileData[] = [
 ];
 
 // Variants 
-const lineVariant = {
+const lineVariant: Variants = {
     hidden: { scaleX: 0, opacity: 0 },
     visible: {
         scaleX: 1, opacity: 1,
@@ -48,7 +48,7 @@ const lineVariant = {
     },
 }
 
-const badgeVariant = {
+const badgeVariant: Variants = {
     hidden: { opacity: 0, y: 8, filter: "blur(4px)" },
     visible: {
         opacity: 1, y: 0, filter: "blur(0px)",
@@ -56,7 +56,7 @@ const badgeVariant = {
     },
 }
 
-const fadeUp = {
+const fadeUp: Variants = {
     hidden: { opacity: 0, y: 28, filter: "blur(3px)" },
     visible: (delay = 0) => ({
         opacity: 1, y: 0, filter: "blur(0px)",
@@ -65,7 +65,7 @@ const fadeUp = {
 }
 
 // Tiles scatter inward from random offsets, staggered by distance from center
-function getTileVariant(row: number, col: number) {
+function getTileVariant(row: number, col: number): Variants {
     // Center of grid is row 2, col 2
     const dx = (col - 2) * 18
     const dy = (row - 2) * 18
@@ -92,7 +92,7 @@ function getTileVariant(row: number, col: number) {
 }
 
 // Subtle idle float for logo tiles — each gets a unique phase
-function getFloatAnimation(index: number) {
+function getFloatAnimation(index: number): TargetAndTransition {
     const yAmp = 4 + (index % 3) * 1.5
     const duration = 3.2 + (index % 4) * 0.5
     return {
