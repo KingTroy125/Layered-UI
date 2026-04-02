@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, type Variants } from "framer-motion"
 
 const testimonials = [
   {
@@ -43,7 +43,7 @@ const TestimonialsSection2 = () => {
 
   const currentTestimonial = testimonials[currentIndex]
 
-  const badgeVariants = {
+  const badgeVariants: Variants = {
     hidden: { opacity: 0, scale: 0.8 },
     visible: {
       opacity: 1,
@@ -55,7 +55,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const lineVariants = {
+  const lineVariants: Variants = {
     hidden: { scaleX: 0 },
     visible: {
       scaleX: 1,
@@ -66,7 +66,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const headingVariants = {
+  const headingVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -79,7 +79,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const descriptionVariants = {
+  const descriptionVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
@@ -92,7 +92,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -102,7 +102,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, y: 30, scale: 0.95 },
     visible: {
       opacity: 1,
@@ -124,7 +124,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const quoteIconVariants = {
+  const quoteIconVariants: Variants = {
     hidden: { opacity: 0, scale: 0 },
     visible: {
       opacity: 1,
@@ -137,7 +137,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const textVariants = {
+  const textVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -148,7 +148,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const avatarVariants = {
+  const avatarVariants: Variants = {
     hidden: { opacity: 0, scale: 0 },
     visible: {
       opacity: 1,
@@ -161,7 +161,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const authorVariants = {
+  const authorVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -172,7 +172,7 @@ const TestimonialsSection2 = () => {
     },
   }
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
@@ -192,7 +192,7 @@ const TestimonialsSection2 = () => {
   }
   
 
-  const activeDotVariants = {
+  const activeDotVariants: Variants = {
     inactive: {
       width: 8,
       height: 8,
