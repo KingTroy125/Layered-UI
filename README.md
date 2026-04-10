@@ -7,7 +7,7 @@
 <h3 align="center">Layered UI</h3>
 
 <p align="center">
-  Speed up your workflow with responsive, pre-built <b>shadcn/ui</b> blocks designed for SaaS and marketing websites.
+  A collection of components and utilities for building layered interfaces with <b>Shadcn UI</b>. blocks designed for SaaS and marketing websites.
 </p>
 
 <div align="center">
