@@ -3,8 +3,7 @@
 import { ChevronRight } from 'lucide-react'
 import { motion, type Variants } from 'framer-motion'
 import { Badge } from '@/components/ui/badge'
-import { useRef, useCallback, useState, useEffect, ReactNode } from 'react'
-import { useTheme } from 'next-themes'
+import { useRef, useCallback, ReactNode } from 'react'
 
 const animatedGroupVariants: Variants = {
   hidden: { opacity: 0 },
@@ -106,9 +105,6 @@ function AnimatedText({ text }: { text: string }) {
   return (
     <motion.span
       className="inline-block"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
       variants={textEffectVariants}
     >
       {words.map((word, wordIndex) => (
@@ -131,15 +127,6 @@ function AnimatedText({ text }: { text: string }) {
 
 export function Hero2(): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [mounted, setMounted] = useState<boolean>(false)
-  const { resolvedTheme } = useTheme()
-
-  useEffect(() => {
-    // eslint-disable-next-line
-    setMounted(true)
-  }, [])
-
-  const isDark = mounted && resolvedTheme === 'dark'
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>): void => {
     if (!containerRef.current) return
@@ -159,26 +146,80 @@ export function Hero2(): ReactNode {
     <section
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative mx-4 max-w-7xl border-x px-4 py-16 overflow-hidden rounded-3xl bg-card transition-colors duration-500 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:border-zinc-800"
+      className="relative mx-4 max-w-7xl border-x px-4 py-16 overflow-hidden rounded-3xl bg-white transition-colors duration-500 [--color-border:color-mix(in_oklab,var(--color-zinc-200)_75%,transparent)] md:mx-auto dark:bg-zinc-950 dark:border-zinc-800"
     >
-      {/* Clean Minimalist Grid Pattern with Premium Edge Fade */}
-      <div className="absolute inset-0 pointer-events-none z-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]">
-        <svg
-          className="absolute inset-0 h-full w-full stroke-zinc-900/10 dark:stroke-white/10"
-          fill="none"
+      {/* Vertical Lines Pattern */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.015] bg-[linear-gradient(90deg,rgba(0,0,0,0.05)_1px,transparent_1px)] bg-[length:80px_100%] dark:bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)]"
+      />
+
+      {/* Subtle Grain Texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] pointer-events-none mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
+
+      {/* Circular blur effect - Top Left */}
+      <div
+        className="absolute -top-1/4 -left-1/4 h-1/2 w-1/2 pointer-events-none bg-[radial-gradient(circle,rgba(100,100,120,0.15)_0%,transparent_70%)] blur-[80px] dark:bg-[radial-gradient(circle,rgba(80,80,100,0.3)_0%,transparent_70%)]"
+      />
+
+      {/* Circular blur effect - Top Right */}
+      <div
+        className="absolute -top-1/4 -right-1/4 h-1/2 w-1/2 pointer-events-none bg-[radial-gradient(circle,rgba(80,80,100,0.12)_0%,transparent_70%)] blur-[100px] dark:bg-[radial-gradient(circle,rgba(60,60,80,0.25)_0%,transparent_70%)]"
+      />
+
+      {/* Circular blur effect - Bottom Center */}
+      <div
+        className="absolute -bottom-1/4 left-1/2 h-1/2 w-3/4 -translate-x-1/2 pointer-events-none bg-[radial-gradient(circle,rgba(90,90,110,0.1)_0%,transparent_70%)] blur-[120px] dark:bg-[radial-gradient(circle,rgba(70,70,90,0.2)_0%,transparent_70%)]"
+      />
+
+      {/* Circular blur effect - Bottom Left */}
+      <div
+        className="absolute bottom-0 -left-1/3 h-2/3 w-1/2 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(100,100,130,0.12)_0%,transparent_65%)] blur-[90px] dark:bg-[radial-gradient(circle_at_center,rgba(50,50,70,0.35)_0%,transparent_65%)]"
+      />
+
+      {/* Circular blur effect - Bottom Right */}
+      <div
+        className="absolute bottom-0 -right-1/3 h-2/3 w-1/2 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(90,90,120,0.1)_0%,transparent_70%)] blur-[100px] dark:bg-[radial-gradient(circle_at_center,rgba(40,40,60,0.3)_0%,transparent_70%)]"
+      />
+
+      {/* Large Background Text - Mobile */}
+      <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden md:hidden pb-4">
+        <motion.span
+          className="whitespace-nowrap bg-[linear-gradient(90deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.08)_50%,transparent_100%)] bg-clip-text text-center text-[100px] font-black leading-[0.9] tracking-[-0.03em] text-transparent select-none sm:text-[140px] dark:bg-[linear-gradient(90deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.08)_50%,transparent_100%)]"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
         >
-          <defs>
-            <pattern
-              id="grid-pattern"
-              width="32"
-              height="32"
-              patternUnits="userSpaceOnUse"
-            >
-              <path d="M.5 32V.5H32" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-        </svg>
+          Layered
+        </motion.span>
+      </div>
+
+      {/* Large Background Text - Tablet */}
+      <div className="absolute inset-0 hidden md:flex lg:hidden items-end justify-center pointer-events-none overflow-hidden pb-6">
+        <motion.span
+          className="bg-[linear-gradient(90deg,rgba(0,0,0,0.14)_0%,rgba(0,0,0,0.05)_50%,transparent_100%)] bg-clip-text text-center text-[200px] font-black leading-[0.9] tracking-[-0.03em] text-transparent select-none dark:bg-[linear-gradient(90deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.05)_50%,transparent_100%)]"
+          initial={{ opacity: 0, y: 80 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+        >
+          Layered
+        </motion.span>
+      </div>
+
+      {/* Large Background Text - Desktop */}
+      <div className="absolute inset-0 hidden lg:flex items-end justify-center pointer-events-none overflow-hidden pb-8">
+        <motion.span
+          className="bg-[linear-gradient(90deg,rgba(0,0,0,0.16)_0%,rgba(0,0,0,0.06)_50%,transparent_100%)] bg-clip-text text-center text-[320px] font-black leading-[0.9] tracking-[-0.03em] text-transparent select-none dark:bg-[linear-gradient(90deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0.06)_50%,transparent_100%)]"
+          initial={{ opacity: 0, y: 120 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: 'easeOut' }}
+        >
+          Layered
+        </motion.span>
       </div>
 
       {/* Content */}
@@ -203,9 +244,6 @@ export function Hero2(): ReactNode {
               {/* Badge - Animated Group */}
               <motion.div
                 className="flex items-center justify-center gap-2 sm:gap-3 mb-6 sm:mb-8"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
                 variants={animatedGroupVariants}
               >
                 <motion.div className="flex items-center" variants={groupItemVariants}>
@@ -226,9 +264,6 @@ export function Hero2(): ReactNode {
               {/* Main Heading - Text Effect Animation */}
               <motion.div
                 className="flex flex-col gap-4 items-center"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
                 variants={{
                   visible: {
                     transition: {
@@ -289,9 +324,6 @@ export function Hero2(): ReactNode {
               {/* Description */}
               <motion.p
                 className="text-gray-600 dark:text-gray-400 max-w-2xl text-base md:text-lg leading-relaxed"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
                 variants={descriptionVariants}
               >
                 Free and open-source component blocks and layouts built with{' '}
@@ -307,9 +339,6 @@ export function Hero2(): ReactNode {
               {/* CTA Buttons - Animated Group */}
               <motion.div
                 className="flex flex-col sm:flex-row gap-4 justify-center"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
                 variants={buttonGroupVariants}
               >
                 <motion.a
