@@ -12,7 +12,7 @@ interface ActiveCategoryLinksProps {
     blocks: Block[]
 }
 
-export function ActiveCategoryLinks({ currentKitFullName, currentKitShortName, allCategories, blocks }: ActiveCategoryLinksProps) {
+export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks }: ActiveCategoryLinksProps) {
     const pathname = usePathname()
 
     return (

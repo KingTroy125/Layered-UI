@@ -135,6 +135,7 @@ export function Hero2(): ReactNode {
   const { resolvedTheme } = useTheme()
 
   useEffect(() => {
+    // eslint-disable-next-line
     setMounted(true)
   }, [])
 

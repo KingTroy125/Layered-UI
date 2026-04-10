@@ -426,7 +426,7 @@ function BlockPreviewContent() {
 
 function BlockPreviewView() {
     // FIX: Consume iframeLoaded instead of relying on cachedHeight/isIframeCached for opacity
-    const { mode, resizablePanelRef, setWidth, blockRef, shouldLoadIframe, isIframeCached, iframeRef, title, category, cachedHeight, iframeHeight, preview, iframeLoaded } = useBlockPreview()
+    const { mode, resizablePanelRef, setWidth, blockRef, shouldLoadIframe, iframeRef, title, category, cachedHeight, iframeHeight, preview, iframeLoaded } = useBlockPreview()
     const isLarge = useMedia('(min-width: 1024px)')
 
     if (mode !== 'preview') return null
