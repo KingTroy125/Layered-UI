@@ -1,6 +1,6 @@
 <img
   alt="Layered UI – shadcn UI blocks for SaaS & Marketing websites"
-  src="https://github.com/KingTroy125/Layered-Blocks/blob/main/public/LayeredUI.png"
+  src="https://github.com/Layered-UI/Layered-UI/blob/main/public/LayeredUI.png"
   width="100%"
 />
 
