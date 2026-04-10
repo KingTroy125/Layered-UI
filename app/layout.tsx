@@ -20,11 +20,11 @@ export const metadata: Metadata = {
     title: 'Layered UI for Shadcn UI',
     description: 'Speed up your workflow with responsive, pre-built UI blocks designed for marketing websites.',
     openGraph: {
-        images: ['https://raw.githubusercontent.com/KingTroy125/Layered-Blocks/main/public/LayeredUI.png'],
+        images: ['https://raw.githubusercontent.com/Layered-UI/Layered-UI/main/public/LayeredUI.png'],
     },
     twitter: {
         card: 'summary_large_image',
-        images: ['https://raw.githubusercontent.com/KingTroy125/Layered-Blocks/main/public/LayeredUI.png'],
+        images: ['https://raw.githubusercontent.com/Layered-UI/Layered-UI/main/public/LayeredUI.png'],
     },
 }
 
