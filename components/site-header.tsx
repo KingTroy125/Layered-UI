@@ -19,7 +19,7 @@ export const SiteHeader = () => {
     const closeMobileMenu = () => setMobileMenuOpen(false)
 
     return (
-        <header className="border-b dark:[--color-border:color-mix(in_oklab,var(--color-zinc-800)_60%,transparent)]">
+        <header className="border-b">
             <div className="mx-auto flex max-w-7xl justify-between px-4 py-4 sm:px-6 lg:px-4">
                 {/* Logo & Desktop Navigation */}
                 <div className="flex gap-6">
