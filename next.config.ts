@@ -15,8 +15,20 @@ const nextConfig = {
         dangerouslyAllowSVG: true,
         contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
-    experimental: {},
+    experimental: {
+        optimizePackageImports: [
+            'lucide-react',
+            'framer-motion',
+            'gsap',
+            'recharts',
+            'lucide-react',
+            '@radix-ui/react-icons',
+            'shiki'
+        ],
+    },
     allowedDevOrigins: ["localhost:3000", "trist-laptop:3000", "192.168.0.179", "192.168.0.179:3000"],
+    reactStrictMode: true,
+    poweredByHeader: false,
 }
 
 export default nextConfig
