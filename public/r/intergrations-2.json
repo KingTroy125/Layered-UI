@@ -5,8 +5,7 @@
     "title": "Integrations Block 2",
     "description": "Shadcn/ui website integrations block for Layered UI",
     "registryDependencies": [
-        "button",
-        "badge"
+        "button"
     ],
     "dependencies": [
         "framer-motion"
