@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Iphone } from '@/components/ui/iphone';
+import { Iphone } from '@/components/LayeredUI/iphone';
 import { motion, type Variants } from 'framer-motion';
 
 const containerVariants: Variants = {
