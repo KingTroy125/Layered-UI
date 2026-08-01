@@ -161,6 +161,10 @@ Measure Height
       ▼
 Cache Layout
 ```
+```mermaid
+flowchart LR
+      A[Catelog Page] --> B[Intersec]
+      B --> C[]
 
 This strategy reduces unnecessary rendering while improving scrolling performance on pages containing many components.
 
