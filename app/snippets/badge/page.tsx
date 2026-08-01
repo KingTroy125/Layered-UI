@@ -3,7 +3,6 @@ import { VariantProps } from 'class-variance-authority'
 
 import SnippetPreview from '@/components/SnippetPreview'
 import { Badge, badgeVariants } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 
 /* -------------------------------------------------------------------------- */
 /*                                   Types                                    */
@@ -17,14 +16,14 @@ type BadgeVariant = VariantProps<typeof badgeVariants>['variant']
 
 export const metadata: Metadata = {
   title: 'Shadcn Badge Snippets',
-  description: 'Custom shadcn badges and buttons for your marketing website.',
+  description: 'Custom shadcn badges for your marketing website.',
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                   Page                                     */
 /* -------------------------------------------------------------------------- */
 
-export default function BadgesPage() {
+export default function BadgePage() {
   return (
     <div className="*:has-[[data-state=open]]:bg-muted/25 *:hover:bg-muted/25 grid grid-cols-2 divide-x divide-y divide-dashed *:relative *:flex *:aspect-square *:items-center *:justify-center *:p-12 sm:grid-cols-2 lg:grid-cols-3 lg:*:aspect-video 2xl:mx-auto 2xl:max-w-7xl">
       {/* Full Badge Component (with lines) */}
@@ -47,32 +46,19 @@ export default function BadgesPage() {
         </div>
       </div>
 
-      {/* ────────────────────────── Button Snippets ──────────────────────────── */}
-
-      {/* Ghost Button */}
+      {/* Outline Badge */}
       <div className="group">
-        <Button variant="ghost">Ghost</Button>
+        <Badge variant="outline">
+          <span className="text-sm font-normal">Outline</span>
+        </Badge>
         <div className={actionClasses}>
           <SnippetPreview
-            description="Ghost Button - Usage snippet"
-            codeToCopy={ghostButtonUsageCode}
-            displayedCode={ghostButtonUsageCode}
+            description="Outline Badge - Usage snippet"
+            codeToCopy={outlineBadgeUsageCode}
+            displayedCode={outlineBadgeUsageCode}
           />
         </div>
       </div>
-
-      {/* Link Button */}
-      <div className="group">
-        <Button variant="link">Link</Button>
-        <div className={actionClasses}>
-          <SnippetPreview
-            description="Link Button - Usage snippet"
-            codeToCopy={linkButtonUsageCode}
-            displayedCode={linkButtonUsageCode}
-          />
-        </div>
-      </div>
-
     </div>
   )
 }
@@ -80,16 +66,6 @@ export default function BadgesPage() {
 /* -------------------------------------------------------------------------- */
 /*                           Badge Usage Snippets                              */
 /* -------------------------------------------------------------------------- */
-
-const heroBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
-
-<div className="flex items-center justify-center gap-3">
-  <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
-  <Badge variant="hero">
-    <span className="text-sm font-normal">Join us</span>
-  </Badge>
-  <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
-</div>`
 
 const defaultBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
 
@@ -115,33 +91,11 @@ const outlineBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
   <span className="text-sm font-normal">Outline</span>
 </Badge>`
 
-/* -------------------------------------------------------------------------- */
-/*                           Button Usage Snippets                             */
-/* -------------------------------------------------------------------------- */
+const heroBadgeWithLinesUsageCode = `import { Badge } from '@/components/ui/badge'
 
-const defaultButtonUsageCode = `import { Button } from '@/components/ui/button'
-
-<Button variant="default">Default</Button>`
-
-const outlineButtonUsageCode = `import { Button } from '@/components/ui/button'
-
-<Button variant="outline">Outline</Button>`
-
-const secondaryButtonUsageCode = `import { Button } from '@/components/ui/button'
-
-<Button variant="secondary">Secondary</Button>`
-
-const destructiveButtonUsageCode = `import { Button } from '@/components/ui/button'
-
-<Button variant="destructive">Destructive</Button>`
-
-const ghostButtonUsageCode = `import { Button } from '@/components/ui/button'
-
-<Button variant="ghost">Ghost</Button>`
-
-const linkButtonUsageCode = `import { Button } from '@/components/ui/button'
-
-<Button variant="link">Link</Button>`
+<Badge variant="hero" showLines>
+  <span className="text-sm font-normal">Announcing v2.0</span>
+</Badge>`
 
 /* -------------------------------------------------------------------------- */
 /*                            Badge Component Code                             */

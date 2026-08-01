@@ -10,9 +10,11 @@ interface ActiveCategoryLinksProps {
     currentKitShortName: string
     allCategories: string[]
     blocks: Block[]
+    /** Overrides href generation, e.g. "/snippets" so links resolve to /snippets/{category} */
+    basePath?: string
 }
 
-export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks }: ActiveCategoryLinksProps) {
+export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks, basePath }: ActiveCategoryLinksProps) {
     const pathname = usePathname()
 
     return (
@@ -22,7 +24,7 @@ export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks
             {allCategories.map((category) => {
                 const hasBlocksInKit = blocks.some((block) => block.category === category)
 
-                const href = currentKitShortName === 'default' ? `/${category}` : `/${currentKitShortName}/${category}`
+                const href = basePath ? `${basePath}/${category}` : currentKitShortName === 'default' ? `/${category}` : `/${currentKitShortName}/${category}`
 
                 const isActive = pathname === href
 

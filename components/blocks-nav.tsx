@@ -8,13 +8,15 @@ interface BlocksNavProps {
     currentKitShortName: string
     allCategories: string[]
     blocks: Block[]
+    basePath?: string
 }
 
 const BlocksNav = ({ 
     currentKitFullName,
     currentKitShortName,
     allCategories,
-    blocks
+    blocks,
+    basePath
 }: BlocksNavProps) => {
     return (
         <div className="dark:border-border/50 relative z-50 border-b">
@@ -36,6 +38,7 @@ const BlocksNav = ({
                                 currentKitShortName={currentKitShortName}
                                 allCategories={allCategories} 
                                 blocks={blocks} 
+                                basePath={basePath}
                             />
                         </CategoryScrollManager>
                         <ScrollBar orientation="horizontal" />
