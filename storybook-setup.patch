@@ -1,0 +1,2036 @@
+diff --git a/.gitignore b/.gitignore
+index 1497ca1..0fdf2b9 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -40,3 +40,6 @@ yarn-error.log*
+ # typescript
+ *.tsbuildinfo
+ next-env.d.ts
++
++*storybook.log
++storybook-static
+diff --git a/.storybook/main.ts b/.storybook/main.ts
+new file mode 100644
+index 0000000..f1754d4
+--- /dev/null
++++ b/.storybook/main.ts
+@@ -0,0 +1,10 @@
++import type { StorybookConfig } from '@storybook/nextjs'
++
++const config: StorybookConfig = {
++    stories: ['../components/**/*.mdx', '../components/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
++    addons: ['@storybook/addon-a11y', '@storybook/addon-docs'],
++    framework: '@storybook/nextjs',
++    staticDirs: ['../public'],
++}
++
++export default config
+diff --git a/.storybook/preview.tsx b/.storybook/preview.tsx
+new file mode 100644
+index 0000000..afb87a2
+--- /dev/null
++++ b/.storybook/preview.tsx
+@@ -0,0 +1,28 @@
++import type { Preview } from '@storybook/nextjs'
++
++import '../app/globals.css'
++
++const preview: Preview = {
++    parameters: {
++        controls: {
++            matchers: {
++                color: /(background|color)$/i,
++                date: /Date$/i,
++            },
++        },
++        // This project only uses the App Router, so treat every story as
++        // living under app/ (enables next/navigation hooks in stories).
++        nextjs: {
++            appDirectory: true,
++        },
++        backgrounds: {
++            default: 'light',
++            values: [
++                { name: 'light', value: '#ffffff' },
++                { name: 'dark', value: '#0a0a0a' },
++            ],
++        },
++    },
++}
++
++export default preview
+diff --git a/app/snippets/[category]/page.tsx b/app/snippets/[category]/page.tsx
+new file mode 100644
+index 0000000..965b418
+--- /dev/null
++++ b/app/snippets/[category]/page.tsx
+@@ -0,0 +1,93 @@
++import { Metadata } from 'next'
++import { notFound } from 'next/navigation'
++
++import SnippetPreview from '@/components/SnippetPreview'
++import { snippetRenderers } from '@/components/snippets/registry'
++import { getComponentSource, getSnippetCategory, snippetCategories } from '@/data/snippets'
++
++/* -------------------------------------------------------------------------- */
++/*                                   Types                                    */
++/* -------------------------------------------------------------------------- */
++
++interface PageProps {
++    params: Promise<{ category: string }>
++}
++
++/* -------------------------------------------------------------------------- */
++/*                              Static Generation                            */
++/* -------------------------------------------------------------------------- */
++
++export const dynamic = 'force-static'
++export const revalidate = 3600
++
++export async function generateStaticParams() {
++    return snippetCategories.map((category) => ({
++        category,
++    }))
++}
++
++export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
++    const { category } = await params
++    const meta = getSnippetCategory(category)
++
++    return {
++        title: `Shadcn ${meta?.label ?? category} Snippets`,
++        description: meta?.description,
++    }
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                   Page                                     */
++/* -------------------------------------------------------------------------- */
++
++export default async function SnippetCategoryPage({ params }: PageProps) {
++    const { category } = await params
++    const meta = getSnippetCategory(category)
++
++    if (!meta) {
++        notFound()
++    }
++
++    const componentCode = await getComponentSource(meta)
++    const renderers = snippetRenderers[category] ?? {}
++
++    return (
++        <div className="*:has-[[data-state=open]]:bg-muted/25 *:hover:bg-muted/25 grid grid-cols-2 divide-x divide-y divide-dashed *:relative *:flex *:aspect-square *:items-center *:justify-center *:p-12 sm:grid-cols-2 lg:grid-cols-3 lg:*:aspect-video 2xl:mx-auto 2xl:max-w-7xl">
++            {/* Full component (with lines/wrapper if the default render includes them) */}
++            <div className="group">
++                {renderers[meta.fullSourceVariantKey]}
++                <div className={actionClasses}>
++                    <SnippetPreview
++                        description={`Complete ${meta.label} component - Copy and paste into components/ui/${category}.tsx`}
++                        codeToCopy={componentCode}
++                        displayedCode={componentCode}
++                    />
++                </div>
++            </div>
++
++            {/* ──────────────────────── Usage Snippets ──────────────────────── */}
++
++            {meta.variants.map((variant) => (
++                <div
++                    className="group"
++                    key={variant.key}>
++                    {renderers[variant.key]}
++                    <div className={actionClasses}>
++                        <SnippetPreview
++                            description={`${variant.title} - Usage snippet`}
++                            codeToCopy={variant.usageCode}
++                            displayedCode={variant.usageCode}
++                        />
++                    </div>
++                </div>
++            ))}
++        </div>
++    )
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                   Styles                                   */
++/* -------------------------------------------------------------------------- */
++
++const actionClasses =
++    'lg:scale-55 absolute inset-x-0 bottom-4 mx-auto size-fit duration-200 lg:opacity-0 lg:group-hover:scale-100 lg:group-hover:opacity-100'
+diff --git a/app/snippets/button/page.tsx b/app/snippets/button/page.tsx
+deleted file mode 100644
+index 4e04a98..0000000
+--- a/app/snippets/button/page.tsx
++++ /dev/null
+@@ -1,210 +0,0 @@
+-import { Metadata } from 'next'
+-import { VariantProps } from 'class-variance-authority'
+-
+-import SnippetPreview from '@/components/SnippetPreview'
+-import { Badge, badgeVariants } from '@/components/ui/badge'
+-import { Button } from '@/components/ui/button'
+-
+-/* -------------------------------------------------------------------------- */
+-/*                                   Types                                    */
+-/* -------------------------------------------------------------------------- */
+-
+-type BadgeVariant = VariantProps<typeof badgeVariants>['variant']
+-
+-/* -------------------------------------------------------------------------- */
+-/*                                  Metadata                                  */
+-/* -------------------------------------------------------------------------- */
+-
+-export const metadata: Metadata = {
+-  title: 'Shadcn Badge Snippets',
+-  description: 'Custom shadcn badges and buttons for your marketing website.',
+-}
+-
+-/* -------------------------------------------------------------------------- */
+-/*                                   Page                                     */
+-/* -------------------------------------------------------------------------- */
+-
+-export default function BadgesPage() {
+-  return (
+-    <div className="*:has-[[data-state=open]]:bg-muted/25 *:hover:bg-muted/25 grid grid-cols-2 divide-x divide-y divide-dashed *:relative *:flex *:aspect-square *:items-center *:justify-center *:p-12 sm:grid-cols-2 lg:grid-cols-3 lg:*:aspect-video 2xl:mx-auto 2xl:max-w-7xl">
+-      {/* Full Badge Component (with lines) */}
+-      <div className="group">
+-        <div className="flex items-center justify-center gap-3">
+-          <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
+-          <div className="flex flex-col items-center gap-2">
+-            <Badge variant="hero">
+-              <span className="text-sm font-normal">Join us</span>
+-            </Badge>
+-          </div>
+-          <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
+-        </div>
+-        <div className={actionClasses}>
+-          <SnippetPreview
+-            description="Complete Badge component - Copy and paste into components/ui/badge.tsx"
+-            codeToCopy={badgeComponentCode}
+-            displayedCode={badgeComponentCode}
+-          />
+-        </div>
+-      </div>
+-
+-      {/* ────────────────────────── Button Snippets ──────────────────────────── */}
+-
+-      {/* Ghost Button */}
+-      <div className="group">
+-        <Button variant="ghost">Ghost</Button>
+-        <div className={actionClasses}>
+-          <SnippetPreview
+-            description="Ghost Button - Usage snippet"
+-            codeToCopy={ghostButtonUsageCode}
+-            displayedCode={ghostButtonUsageCode}
+-          />
+-        </div>
+-      </div>
+-
+-      {/* Link Button */}
+-      <div className="group">
+-        <Button variant="link">Link</Button>
+-        <div className={actionClasses}>
+-          <SnippetPreview
+-            description="Link Button - Usage snippet"
+-            codeToCopy={linkButtonUsageCode}
+-            displayedCode={linkButtonUsageCode}
+-          />
+-        </div>
+-      </div>
+-
+-    </div>
+-  )
+-}
+-
+-/* -------------------------------------------------------------------------- */
+-/*                           Badge Usage Snippets                              */
+-/* -------------------------------------------------------------------------- */
+-
+-const heroBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
+-
+-<div className="flex items-center justify-center gap-3">
+-  <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
+-  <Badge variant="hero">
+-    <span className="text-sm font-normal">Join us</span>
+-  </Badge>
+-  <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
+-</div>`
+-
+-const defaultBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
+-
+-<Badge variant="default">
+-  <span className="text-sm font-normal">Default</span>
+-</Badge>`
+-
+-const secondaryBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
+-
+-<Badge variant="secondary">
+-  <span className="text-sm font-normal">Secondary</span>
+-</Badge>`
+-
+-const destructiveBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
+-
+-<Badge variant="destructive">
+-  <span className="text-sm font-normal">Destructive</span>
+-</Badge>`
+-
+-const outlineBadgeUsageCode = `import { Badge } from '@/components/ui/badge'
+-
+-<Badge variant="outline">
+-  <span className="text-sm font-normal">Outline</span>
+-</Badge>`
+-
+-/* -------------------------------------------------------------------------- */
+-/*                           Button Usage Snippets                             */
+-/* -------------------------------------------------------------------------- */
+-
+-const defaultButtonUsageCode = `import { Button } from '@/components/ui/button'
+-
+-<Button variant="default">Default</Button>`
+-
+-const outlineButtonUsageCode = `import { Button } from '@/components/ui/button'
+-
+-<Button variant="outline">Outline</Button>`
+-
+-const secondaryButtonUsageCode = `import { Button } from '@/components/ui/button'
+-
+-<Button variant="secondary">Secondary</Button>`
+-
+-const destructiveButtonUsageCode = `import { Button } from '@/components/ui/button'
+-
+-<Button variant="destructive">Destructive</Button>`
+-
+-const ghostButtonUsageCode = `import { Button } from '@/components/ui/button'
+-
+-<Button variant="ghost">Ghost</Button>`
+-
+-const linkButtonUsageCode = `import { Button } from '@/components/ui/button'
+-
+-<Button variant="link">Link</Button>`
+-
+-/* -------------------------------------------------------------------------- */
+-/*                            Badge Component Code                             */
+-/* -------------------------------------------------------------------------- */
+-
+-const badgeComponentCode = `import type * as React from "react"
+-import { Slot } from "@radix-ui/react-slot"
+-import { cva, type VariantProps } from "class-variance-authority"
+-
+-import { cn } from "@/lib/utils"
+-
+-const badgeVariants = cva(
+-  "inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden",
+-  {
+-    variants: {
+-      variant: {
+-        default: "border-transparent bg-primary text-primary-foreground [a&]:hover:bg-primary/90",
+-        secondary: "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90",
+-        destructive:
+-          "border-transparent bg-destructive text-white [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+-        outline: "text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground",
+-        hero: "border-border/50 bg-secondary/50 text-foreground backdrop-blur-sm px-4 py-2 rounded-full",
+-      },
+-    },
+-    defaultVariants: {
+-      variant: "default",
+-    },
+-  },
+-)
+-
+-function Badge({
+-  className,
+-  variant,
+-  asChild = false,
+-  showLines = false,
+-  lineClassName,
+-  ...props
+-}: React.ComponentProps<"span"> &
+-  VariantProps<typeof badgeVariants> & {
+-    asChild?: boolean
+-    showLines?: boolean
+-    lineClassName?: string
+-  }) {
+-  const Comp = asChild ? Slot : "span"
+-
+-  if (showLines) {
+-    return (
+-      <div className="flex items-center gap-2 sm:gap-3">
+-        <div className={cn("w-12 sm:w-20 h-px bg-gradient-to-l from-primary/30 to-transparent", lineClassName)} />
+-        <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
+-        <div className={cn("w-12 sm:w-20 h-px bg-gradient-to-r from-primary/30 to-transparent", lineClassName)} />
+-      </div>
+-    )
+-  }
+-
+-  return <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...props} />
+-}
+-
+-export { Badge, badgeVariants }`
+-
+-/* -------------------------------------------------------------------------- */
+-/*                                   Styles                                   */
+-/* -------------------------------------------------------------------------- */
+-
+-const actionClasses =
+-  'lg:scale-55 absolute inset-x-0 bottom-4 mx-auto size-fit duration-200 lg:opacity-0 lg:group-hover:scale-100 lg:group-hover:opacity-100'
+\ No newline at end of file
+diff --git a/app/snippets/layout.tsx b/app/snippets/layout.tsx
+index 6fb40a2..a335730 100644
+--- a/app/snippets/layout.tsx
++++ b/app/snippets/layout.tsx
+@@ -1,7 +1,10 @@
++import type { Block } from '@/data/blocks'
++import { snippetCategories } from '@/data/snippets'
++import CategoryNavigation from '@/components/blocks-nav'
+ import { SiteFooter } from '@/components/site-footer'
+ import { SiteHeader } from '@/components/site-header'
+ 
+-export default function CategoryLayout({
++export default function SnippetsLayout({
+     children,
+ }: Readonly<{
+     children: React.ReactNode
+@@ -9,6 +12,18 @@ export default function CategoryLayout({
+     return (
+         <>
+             <SiteHeader />
++            <CategoryNavigation
++                currentKitFullName="default"
++                currentKitShortName="default"
++                basePath="/snippets"
++                allCategories={snippetCategories}
++                blocks={snippetCategories.map((category) => ({
++                    slug: category,
++                    title: category,
++                    category,
++                    preview: `/snippets/${category}`,
++                })) as Block[]}
++            />
+             <main className="mb-12 lg:mb-16">{children}</main>
+ 
+             <SiteFooter />
+diff --git a/app/snippets/page.tsx b/app/snippets/page.tsx
+new file mode 100644
+index 0000000..8adfbbe
+--- /dev/null
++++ b/app/snippets/page.tsx
+@@ -0,0 +1,7 @@
++import { redirect } from 'next/navigation'
++
++import { snippetCategories } from '@/data/snippets'
++
++export default function SnippetsIndexPage() {
++    redirect(`/snippets/${snippetCategories[0]}`)
++}
+diff --git a/components/active-category-links.tsx b/components/active-category-links.tsx
+index a760e67..1590146 100644
+--- a/components/active-category-links.tsx
++++ b/components/active-category-links.tsx
+@@ -10,9 +10,11 @@ interface ActiveCategoryLinksProps {
+     currentKitShortName: string
+     allCategories: string[]
+     blocks: Block[]
++    /** Overrides href generation, e.g. "/snippets" so links resolve to /snippets/{category} */
++    basePath?: string
+ }
+ 
+-export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks }: ActiveCategoryLinksProps) {
++export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks, basePath }: ActiveCategoryLinksProps) {
+     const pathname = usePathname()
+ 
+     return (
+@@ -22,7 +24,7 @@ export function ActiveCategoryLinks({ currentKitShortName, allCategories, blocks
+             {allCategories.map((category) => {
+                 const hasBlocksInKit = blocks.some((block) => block.category === category)
+ 
+-                const href = currentKitShortName === 'default' ? `/${category}` : `/${currentKitShortName}/${category}`
++                const href = basePath ? `${basePath}/${category}` : currentKitShortName === 'default' ? `/${category}` : `/${currentKitShortName}/${category}`
+ 
+                 const isActive = pathname === href
+ 
+diff --git a/components/blocks-nav.tsx b/components/blocks-nav.tsx
+index f89ec7d..b63e100 100644
+--- a/components/blocks-nav.tsx
++++ b/components/blocks-nav.tsx
+@@ -8,13 +8,15 @@ interface BlocksNavProps {
+     currentKitShortName: string
+     allCategories: string[]
+     blocks: Block[]
++    basePath?: string
+ }
+ 
+ const BlocksNav = ({ 
+     currentKitFullName,
+     currentKitShortName,
+     allCategories,
+-    blocks
++    blocks,
++    basePath
+ }: BlocksNavProps) => {
+     return (
+         <div className="dark:border-border/50 relative z-50 border-b">
+@@ -36,6 +38,7 @@ const BlocksNav = ({
+                                 currentKitShortName={currentKitShortName}
+                                 allCategories={allCategories} 
+                                 blocks={blocks} 
++                                basePath={basePath}
+                             />
+                         </CategoryScrollManager>
+                         <ScrollBar orientation="horizontal" />
+diff --git a/components/snippets/registry.tsx b/components/snippets/registry.tsx
+new file mode 100644
+index 0000000..9869076
+--- /dev/null
++++ b/components/snippets/registry.tsx
+@@ -0,0 +1,102 @@
++import type * as React from 'react'
++
++import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
++import { Badge } from '@/components/ui/badge'
++import { Button } from '@/components/ui/button'
++import { Checkbox } from '@/components/ui/checkbox'
++import { Input } from '@/components/ui/input'
++import { Label } from '@/components/ui/label'
++
++/* -------------------------------------------------------------------------- */
++/*                             Snippet Renderers                             */
++/* -------------------------------------------------------------------------- */
++/*
++ * Maps `${category}.${variant.key}` (see data/snippets.ts) to the actual
++ * live preview rendered inside each catalog card. Kept separate from the
++ * metadata so data/snippets.ts stays plain, serializable, server-safe data.
++ */
++
++export const snippetRenderers: Record<string, Record<string, React.ReactNode>> = {
++    button: {
++        default: <Button variant="default">Default</Button>,
++        outline: <Button variant="outline">Outline</Button>,
++        secondary: <Button variant="secondary">Secondary</Button>,
++        destructive: <Button variant="destructive">Destructive</Button>,
++        ghost: <Button variant="ghost">Ghost</Button>,
++        link: <Button variant="link">Link</Button>,
++    },
++
++    badge: {
++        hero: (
++            <div className="flex items-center justify-center gap-3">
++                <div className="h-px w-12 bg-gradient-to-l from-primary/30 to-transparent sm:w-20" />
++                <Badge variant="hero">
++                    <span className="text-sm font-normal">Join us</span>
++                </Badge>
++                <div className="h-px w-12 bg-gradient-to-r from-primary/30 to-transparent sm:w-20" />
++            </div>
++        ),
++        default: (
++            <Badge variant="default">
++                <span className="text-sm font-normal">Default</span>
++            </Badge>
++        ),
++        secondary: (
++            <Badge variant="secondary">
++                <span className="text-sm font-normal">Secondary</span>
++            </Badge>
++        ),
++        destructive: (
++            <Badge variant="destructive">
++                <span className="text-sm font-normal">Destructive</span>
++            </Badge>
++        ),
++        outline: (
++            <Badge variant="outline">
++                <span className="text-sm font-normal">Outline</span>
++            </Badge>
++        ),
++    },
++
++    input: {
++        default: <Input type="email" placeholder="Email" className="max-w-56" />,
++        disabled: <Input placeholder="Disabled" disabled className="max-w-56" />,
++        file: <Input type="file" className="max-w-56" />,
++    },
++
++    avatar: {
++        image: (
++            <Avatar>
++                <AvatarImage
++                    src="https://github.com/shadcn.png"
++                    alt="User avatar"
++                />
++                <AvatarFallback>CN</AvatarFallback>
++            </Avatar>
++        ),
++        fallback: (
++            <Avatar>
++                <AvatarFallback>JD</AvatarFallback>
++            </Avatar>
++        ),
++    },
++
++    checkbox: {
++        default: <Checkbox id="terms" />,
++        withLabel: (
++            <div className="flex items-center gap-2">
++                <Checkbox
++                    id="terms-2"
++                    defaultChecked
++                />
++                <Label htmlFor="terms-2">Accept terms</Label>
++            </div>
++        ),
++        disabled: (
++            <Checkbox
++                id="disabled"
++                disabled
++            />
++        ),
++    },
++}
+diff --git a/components/ui/accordion.stories.tsx b/components/ui/accordion.stories.tsx
+new file mode 100644
+index 0000000..e9713e6
+--- /dev/null
++++ b/components/ui/accordion.stories.tsx
+@@ -0,0 +1,58 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './accordion'
++
++const meta = {
++    title: 'ui/Accordion',
++    component: Accordion,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Accordion>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Single: Story = {
++    args: {
++        type: 'single',
++        collapsible: true,
++        className: 'w-96',
++    },
++    render: (args) => (
++        <Accordion {...args}>
++            <AccordionItem value="item-1">
++                <AccordionTrigger>Is it accessible?</AccordionTrigger>
++                <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
++            </AccordionItem>
++            <AccordionItem value="item-2">
++                <AccordionTrigger>Is it styled?</AccordionTrigger>
++                <AccordionContent>Yes. It comes with default styles that match the other components.</AccordionContent>
++            </AccordionItem>
++            <AccordionItem value="item-3">
++                <AccordionTrigger>Is it animated?</AccordionTrigger>
++                <AccordionContent>Yes. It's animated by default, but you can disable it if you prefer.</AccordionContent>
++            </AccordionItem>
++        </Accordion>
++    ),
++}
++
++export const Multiple: Story = {
++    args: {
++        type: 'multiple',
++        className: 'w-96',
++    },
++    render: (args) => (
++        <Accordion {...args}>
++            <AccordionItem value="item-1">
++                <AccordionTrigger>First item</AccordionTrigger>
++                <AccordionContent>Multiple items can be open at the same time.</AccordionContent>
++            </AccordionItem>
++            <AccordionItem value="item-2">
++                <AccordionTrigger>Second item</AccordionTrigger>
++                <AccordionContent>Try opening this one too.</AccordionContent>
++            </AccordionItem>
++        </Accordion>
++    ),
++}
+diff --git a/components/ui/avatar.stories.tsx b/components/ui/avatar.stories.tsx
+new file mode 100644
+index 0000000..dd1db0f
+--- /dev/null
++++ b/components/ui/avatar.stories.tsx
+@@ -0,0 +1,55 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Avatar, AvatarFallback, AvatarImage } from './avatar'
++
++const meta = {
++    title: 'ui/Avatar',
++    component: Avatar,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Avatar>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const WithImage: Story = {
++    render: () => (
++        <Avatar>
++            <AvatarImage
++                src="https://github.com/shadcn.png"
++                alt="User avatar"
++            />
++            <AvatarFallback>CN</AvatarFallback>
++        </Avatar>
++    ),
++}
++
++export const FallbackOnly: Story = {
++    render: () => (
++        <Avatar>
++            <AvatarFallback>JD</AvatarFallback>
++        </Avatar>
++    ),
++}
++
++export const Group: Story = {
++    render: () => (
++        <div className="flex -space-x-3">
++            <Avatar className="border-background border-2">
++                <AvatarImage
++                    src="https://github.com/shadcn.png"
++                    alt="User avatar"
++                />
++                <AvatarFallback>CN</AvatarFallback>
++            </Avatar>
++            <Avatar className="border-background border-2">
++                <AvatarFallback>JD</AvatarFallback>
++            </Avatar>
++            <Avatar className="border-background border-2">
++                <AvatarFallback>AB</AvatarFallback>
++            </Avatar>
++        </div>
++    ),
++}
+diff --git a/components/ui/badge.stories.tsx b/components/ui/badge.stories.tsx
+new file mode 100644
+index 0000000..9b0ed62
+--- /dev/null
++++ b/components/ui/badge.stories.tsx
+@@ -0,0 +1,56 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Badge } from './badge'
++
++const meta = {
++    title: 'ui/Badge',
++    component: Badge,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    argTypes: {
++        variant: {
++            control: 'select',
++            options: ['default', 'secondary', 'destructive', 'outline', 'hero'],
++        },
++    },
++    args: {
++        children: 'Badge',
++    },
++} satisfies Meta<typeof Badge>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { variant: 'default' },
++}
++
++export const Secondary: Story = {
++    args: { variant: 'secondary' },
++}
++
++export const Destructive: Story = {
++    args: { variant: 'destructive' },
++}
++
++export const Outline: Story = {
++    args: { variant: 'outline' },
++}
++
++export const Hero: Story = {
++    args: { variant: 'hero', children: 'Join us' },
++}
++
++export const AllVariants: Story = {
++    render: () => (
++        <div className="flex flex-wrap items-center gap-3">
++            <Badge variant="default">Default</Badge>
++            <Badge variant="secondary">Secondary</Badge>
++            <Badge variant="destructive">Destructive</Badge>
++            <Badge variant="outline">Outline</Badge>
++            <Badge variant="hero">Hero</Badge>
++        </div>
++    ),
++}
+diff --git a/components/ui/blur-in.stories.tsx b/components/ui/blur-in.stories.tsx
+new file mode 100644
+index 0000000..b2e47fa
+--- /dev/null
++++ b/components/ui/blur-in.stories.tsx
+@@ -0,0 +1,32 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { BlurIn } from './blur-in'
++
++const meta = {
++    title: 'ui/BlurIn',
++    component: BlurIn,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++        // BlurIn only animates once it scrolls into view, which the
++        // isolated Storybook canvas already satisfies on mount.
++    },
++} satisfies Meta<typeof BlurIn>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: {
++        children: 'Blurs and fades into view',
++        className: 'text-2xl font-semibold',
++    },
++}
++
++export const AsHeading: Story = {
++    args: {
++        as: 'h2',
++        children: 'Rendered as an h2',
++        className: 'text-3xl font-bold tracking-tight',
++    },
++}
+diff --git a/components/ui/button.stories.tsx b/components/ui/button.stories.tsx
+new file mode 100644
+index 0000000..b3de6a6
+--- /dev/null
++++ b/components/ui/button.stories.tsx
+@@ -0,0 +1,78 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++import { fn } from 'storybook/test'
++
++import { Button } from './button'
++
++const meta = {
++    title: 'ui/Button',
++    component: Button,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    argTypes: {
++        variant: {
++            control: 'select',
++            options: ['default', 'destructive', 'outline', 'secondary', 'ghost', 'link', 'hero'],
++        },
++        size: {
++            control: 'select',
++            options: ['default', 'sm', 'lg', 'icon', 'icon-sm', 'icon-lg'],
++        },
++    },
++    args: {
++        children: 'Button',
++        onClick: fn(),
++    },
++} satisfies Meta<typeof Button>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { variant: 'default' },
++}
++
++export const Destructive: Story = {
++    args: { variant: 'destructive' },
++}
++
++export const Outline: Story = {
++    args: { variant: 'outline' },
++}
++
++export const Secondary: Story = {
++    args: { variant: 'secondary' },
++}
++
++export const Ghost: Story = {
++    args: { variant: 'ghost' },
++}
++
++export const Link: Story = {
++    args: { variant: 'link' },
++}
++
++export const Hero: Story = {
++    args: { variant: 'hero' },
++}
++
++export const Disabled: Story = {
++    args: { variant: 'default', disabled: true },
++}
++
++export const Sizes: Story = {
++    render: (args) => (
++        <div className="flex items-center gap-3">
++            <Button {...args} size="sm">
++                Small
++            </Button>
++            <Button {...args} size="default">
++                Default
++            </Button>
++            <Button {...args} size="lg">
++                Large
++            </Button>
++        </div>
++    ),
++}
+diff --git a/components/ui/card.stories.tsx b/components/ui/card.stories.tsx
+new file mode 100644
+index 0000000..b9fc531
+--- /dev/null
++++ b/components/ui/card.stories.tsx
+@@ -0,0 +1,44 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Button } from './button'
++import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card'
++
++const meta = {
++    title: 'ui/Card',
++    component: Card,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Card>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    render: () => (
++        <Card className="w-80">
++            <CardHeader>
++                <CardTitle>Create project</CardTitle>
++                <CardDescription>Deploy your new project in one click.</CardDescription>
++            </CardHeader>
++            <CardContent>
++                <p className="text-muted-foreground text-sm">Name, framework, and team settings can all be changed later.</p>
++            </CardContent>
++            <CardFooter className="justify-end gap-2">
++                <Button variant="outline">Cancel</Button>
++                <Button>Deploy</Button>
++            </CardFooter>
++        </Card>
++    ),
++}
++
++export const ContentOnly: Story = {
++    render: () => (
++        <Card className="w-80">
++            <CardContent>
++                <p className="text-sm">A minimal card with just content, no header or footer.</p>
++            </CardContent>
++        </Card>
++    ),
++}
+diff --git a/components/ui/carousel.stories.tsx b/components/ui/carousel.stories.tsx
+new file mode 100644
+index 0000000..633dfdb
+--- /dev/null
++++ b/components/ui/carousel.stories.tsx
+@@ -0,0 +1,49 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './carousel'
++
++const meta = {
++    title: 'ui/Carousel',
++    component: Carousel,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Carousel>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    render: () => (
++        <Carousel className="w-72">
++            <CarouselContent>
++                {Array.from({ length: 5 }).map((_, index) => (
++                    <CarouselItem key={index}>
++                        <div className="bg-muted flex aspect-square items-center justify-center rounded-lg text-4xl font-semibold">{index + 1}</div>
++                    </CarouselItem>
++                ))}
++            </CarouselContent>
++            <CarouselPrevious />
++            <CarouselNext />
++        </Carousel>
++    ),
++}
++
++export const Vertical: Story = {
++    render: () => (
++        <Carousel
++            orientation="vertical"
++            className="h-72 w-72">
++            <CarouselContent className="h-72">
++                {Array.from({ length: 5 }).map((_, index) => (
++                    <CarouselItem key={index}>
++                        <div className="bg-muted flex h-full items-center justify-center rounded-lg text-4xl font-semibold">{index + 1}</div>
++                    </CarouselItem>
++                ))}
++            </CarouselContent>
++            <CarouselPrevious />
++            <CarouselNext />
++        </Carousel>
++    ),
++}
+diff --git a/components/ui/chart.stories.tsx b/components/ui/chart.stories.tsx
+new file mode 100644
+index 0000000..e4f616d
+--- /dev/null
++++ b/components/ui/chart.stories.tsx
+@@ -0,0 +1,63 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
++
++import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from './chart'
++
++const data = [
++    { month: 'Jan', visitors: 186 },
++    { month: 'Feb', visitors: 305 },
++    { month: 'Mar', visitors: 237 },
++    { month: 'Apr', visitors: 273 },
++    { month: 'May', visitors: 209 },
++    { month: 'Jun', visitors: 314 },
++]
++
++const chartConfig = {
++    visitors: {
++        label: 'Visitors',
++        color: 'var(--color-primary)',
++    },
++} satisfies ChartConfig
++
++// ChartContainer requires `config` and `children` with no defaults, so we
++// supply base args on the meta itself. Every story overrides them via
++// `render` anyway, but this keeps the CSF3 `Story` type satisfied without
++// each story having to restate the required props.
++const meta = {
++    title: 'ui/Chart',
++    component: ChartContainer,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    args: {
++        config: chartConfig,
++        children: <BarChart data={data} />,
++    },
++} satisfies Meta<typeof ChartContainer>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const BarExample: Story = {
++    render: () => (
++        <ChartContainer
++            config={chartConfig}
++            className="h-64 w-96">
++            <BarChart data={data}>
++                <CartesianGrid vertical={false} />
++                <XAxis
++                    dataKey="month"
++                    tickLine={false}
++                    axisLine={false}
++                />
++                <ChartTooltip content={<ChartTooltipContent />} />
++                <Bar
++                    dataKey="visitors"
++                    fill="var(--color-visitors)"
++                    radius={4}
++                />
++            </BarChart>
++        </ChartContainer>
++    ),
++}
+diff --git a/components/ui/checkbox.stories.tsx b/components/ui/checkbox.stories.tsx
+new file mode 100644
+index 0000000..d20630c
+--- /dev/null
++++ b/components/ui/checkbox.stories.tsx
+@@ -0,0 +1,44 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++import { fn } from 'storybook/test'
++
++import { Checkbox } from './checkbox'
++import { Label } from './label'
++
++const meta = {
++    title: 'ui/Checkbox',
++    component: Checkbox,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    args: {
++        onCheckedChange: fn(),
++    },
++} satisfies Meta<typeof Checkbox>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { id: 'terms' },
++}
++
++export const CheckedByDefault: Story = {
++    args: { id: 'terms-checked', defaultChecked: true },
++}
++
++export const Disabled: Story = {
++    args: { id: 'terms-disabled', disabled: true },
++}
++
++export const WithLabel: Story = {
++    render: (args) => (
++        <div className="flex items-center gap-2">
++            <Checkbox
++                {...args}
++                id="terms-with-label"
++            />
++            <Label htmlFor="terms-with-label">Accept terms and conditions</Label>
++        </div>
++    ),
++}
+diff --git a/components/ui/dialog.stories.tsx b/components/ui/dialog.stories.tsx
+new file mode 100644
+index 0000000..71cf48b
+--- /dev/null
++++ b/components/ui/dialog.stories.tsx
+@@ -0,0 +1,38 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Button } from './button'
++import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './dialog'
++
++const meta = {
++    title: 'ui/Dialog',
++    component: Dialog,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Dialog>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    render: () => (
++        <Dialog>
++            <DialogTrigger asChild>
++                <Button variant="outline">Edit profile</Button>
++            </DialogTrigger>
++            <DialogContent>
++                <DialogHeader>
++                    <DialogTitle>Edit profile</DialogTitle>
++                    <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
++                </DialogHeader>
++                <DialogFooter>
++                    <DialogClose asChild>
++                        <Button variant="outline">Cancel</Button>
++                    </DialogClose>
++                    <Button>Save changes</Button>
++                </DialogFooter>
++            </DialogContent>
++        </Dialog>
++    ),
++}
+diff --git a/components/ui/full-width-divider.stories.tsx b/components/ui/full-width-divider.stories.tsx
+new file mode 100644
+index 0000000..efbaf44
+--- /dev/null
++++ b/components/ui/full-width-divider.stories.tsx
+@@ -0,0 +1,39 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { FullWidthDivider } from './full-width-divider'
++
++const meta = {
++    title: 'ui/FullWidthDivider',
++    component: FullWidthDivider,
++    tags: ['autodocs'],
++    argTypes: {
++        position: {
++            control: 'select',
++            options: ['top', 'middle', 'bottom'],
++        },
++    },
++} satisfies Meta<typeof FullWidthDivider>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Middle: Story = {
++    args: { position: 'middle' },
++    render: (args) => (
++        <div className="w-96 space-y-4">
++            <div className="bg-muted h-16 rounded" />
++            <FullWidthDivider {...args} />
++            <div className="bg-muted h-16 rounded" />
++        </div>
++    ),
++}
++
++export const Top: Story = {
++    args: { position: 'top' },
++    render: Middle.render,
++}
++
++export const Bottom: Story = {
++    args: { position: 'bottom' },
++    render: Middle.render,
++}
+diff --git a/components/ui/input.stories.tsx b/components/ui/input.stories.tsx
+new file mode 100644
+index 0000000..8af7159
+--- /dev/null
++++ b/components/ui/input.stories.tsx
+@@ -0,0 +1,45 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Input } from './input'
++import { Label } from './label'
++
++const meta = {
++    title: 'ui/Input',
++    component: Input,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    args: {
++        className: 'w-64',
++    },
++} satisfies Meta<typeof Input>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { type: 'email', placeholder: 'Email' },
++}
++
++export const Disabled: Story = {
++    args: { placeholder: 'Disabled', disabled: true },
++}
++
++export const File: Story = {
++    args: { type: 'file' },
++}
++
++export const WithLabel: Story = {
++    render: (args) => (
++        <div className="grid w-64 gap-1.5">
++            <Label htmlFor="email-input">Email</Label>
++            <Input
++                {...args}
++                id="email-input"
++                type="email"
++                placeholder="you@example.com"
++            />
++        </div>
++    ),
++}
+diff --git a/components/ui/label.stories.tsx b/components/ui/label.stories.tsx
+new file mode 100644
+index 0000000..f3e4035
+--- /dev/null
++++ b/components/ui/label.stories.tsx
+@@ -0,0 +1,33 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Input } from './input'
++import { Label } from './label'
++
++const meta = {
++    title: 'ui/Label',
++    component: Label,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Label>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { children: 'Email address' },
++}
++
++export const WithInput: Story = {
++    render: () => (
++        <div className="grid w-64 gap-1.5">
++            <Label htmlFor="label-input-example">Email</Label>
++            <Input
++                id="label-input-example"
++                type="email"
++                placeholder="you@example.com"
++            />
++        </div>
++    ),
++}
+diff --git a/components/ui/marquee.stories.tsx b/components/ui/marquee.stories.tsx
+new file mode 100644
+index 0000000..242388a
+--- /dev/null
++++ b/components/ui/marquee.stories.tsx
+@@ -0,0 +1,72 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Marquee } from './marquee'
++
++const meta = {
++    title: 'ui/Marquee',
++    component: Marquee,
++    tags: ['autodocs'],
++    argTypes: {
++        pauseOnHover: { control: 'boolean' },
++        reverse: { control: 'boolean' },
++        vertical: { control: 'boolean' },
++        repeat: { control: 'number' },
++    },
++} satisfies Meta<typeof Marquee>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++const items = ['Acme', 'Globex', 'Initech', 'Umbrella', 'Soylent']
++
++function MarqueeItems() {
++    return (
++        <>
++            {items.map((item) => (
++                <div
++                    key={item}
++                    className="bg-muted mx-4 flex h-12 w-32 items-center justify-center rounded-md text-sm font-medium">
++                    {item}
++                </div>
++            ))}
++        </>
++    )
++}
++
++export const Default: Story = {
++    args: {
++        pauseOnHover: true,
++        className: 'w-96',
++    },
++    render: (args) => (
++        <Marquee {...args}>
++            <MarqueeItems />
++        </Marquee>
++    ),
++}
++
++export const Reverse: Story = {
++    args: {
++        reverse: true,
++        pauseOnHover: true,
++        className: 'w-96',
++    },
++    render: (args) => (
++        <Marquee {...args}>
++            <MarqueeItems />
++        </Marquee>
++    ),
++}
++
++export const Vertical: Story = {
++    args: {
++        vertical: true,
++        pauseOnHover: true,
++        className: 'h-64 w-32',
++    },
++    render: (args) => (
++        <Marquee {...args}>
++            <MarqueeItems />
++        </Marquee>
++    ),
++}
+diff --git a/components/ui/radio-group.stories.tsx b/components/ui/radio-group.stories.tsx
+new file mode 100644
+index 0000000..8af6bbb
+--- /dev/null
++++ b/components/ui/radio-group.stories.tsx
+@@ -0,0 +1,47 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Label } from './label'
++import { RadioGroup, RadioGroupItem } from './radio-group'
++
++const meta = {
++    title: 'ui/RadioGroup',
++    component: RadioGroup,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof RadioGroup>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: {
++        defaultValue: 'comfortable',
++    },
++    render: (args) => (
++        <RadioGroup {...args}>
++            <div className="flex items-center gap-2">
++                <RadioGroupItem
++                    value="default"
++                    id="r1"
++                />
++                <Label htmlFor="r1">Default</Label>
++            </div>
++            <div className="flex items-center gap-2">
++                <RadioGroupItem
++                    value="comfortable"
++                    id="r2"
++                />
++                <Label htmlFor="r2">Comfortable</Label>
++            </div>
++            <div className="flex items-center gap-2">
++                <RadioGroupItem
++                    value="compact"
++                    id="r3"
++                />
++                <Label htmlFor="r3">Compact</Label>
++            </div>
++        </RadioGroup>
++    ),
++}
+diff --git a/components/ui/scroll-area.stories.tsx b/components/ui/scroll-area.stories.tsx
+new file mode 100644
+index 0000000..9b249f6
+--- /dev/null
++++ b/components/ui/scroll-area.stories.tsx
+@@ -0,0 +1,34 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { ScrollArea } from './scroll-area'
++import { Separator } from './separator'
++
++const meta = {
++    title: 'ui/ScrollArea',
++    component: ScrollArea,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof ScrollArea>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++const tags = Array.from({ length: 30 }).map((_, i) => `Item ${i + 1}`)
++
++export const Default: Story = {
++    render: () => (
++        <ScrollArea className="h-72 w-56 rounded-md border">
++            <div className="p-4">
++                <h4 className="mb-4 text-sm leading-none font-medium">Items</h4>
++                {tags.map((tag) => (
++                    <div key={tag}>
++                        <div className="text-sm">{tag}</div>
++                        <Separator className="my-2" />
++                    </div>
++                ))}
++            </div>
++        </ScrollArea>
++    ),
++}
+diff --git a/components/ui/select.stories.tsx b/components/ui/select.stories.tsx
+new file mode 100644
+index 0000000..37975be
+--- /dev/null
++++ b/components/ui/select.stories.tsx
+@@ -0,0 +1,48 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './select'
++
++const meta = {
++    title: 'ui/Select',
++    component: Select,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Select>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    render: () => (
++        <Select>
++            <SelectTrigger className="w-56">
++                <SelectValue placeholder="Select a fruit" />
++            </SelectTrigger>
++            <SelectContent>
++                <SelectGroup>
++                    <SelectLabel>Fruits</SelectLabel>
++                    <SelectItem value="apple">Apple</SelectItem>
++                    <SelectItem value="banana">Banana</SelectItem>
++                    <SelectItem value="blueberry">Blueberry</SelectItem>
++                    <SelectItem value="grapes">Grapes</SelectItem>
++                    <SelectItem value="pineapple">Pineapple</SelectItem>
++                </SelectGroup>
++            </SelectContent>
++        </Select>
++    ),
++}
++
++export const Disabled: Story = {
++    render: () => (
++        <Select disabled>
++            <SelectTrigger className="w-56">
++                <SelectValue placeholder="Disabled" />
++            </SelectTrigger>
++            <SelectContent>
++                <SelectItem value="apple">Apple</SelectItem>
++            </SelectContent>
++        </Select>
++    ),
++}
+diff --git a/components/ui/separator.stories.tsx b/components/ui/separator.stories.tsx
+new file mode 100644
+index 0000000..ca21f90
+--- /dev/null
++++ b/components/ui/separator.stories.tsx
+@@ -0,0 +1,37 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Separator } from './separator'
++
++const meta = {
++    title: 'ui/Separator',
++    component: Separator,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Separator>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Horizontal: Story = {
++    render: () => (
++        <div className="w-72">
++            <div className="text-sm">Layered UI</div>
++            <Separator className="my-4" />
++            <div className="text-muted-foreground text-sm">A component library.</div>
++        </div>
++    ),
++}
++
++export const Vertical: Story = {
++    render: () => (
++        <div className="flex h-8 items-center gap-4 text-sm">
++            <span>Docs</span>
++            <Separator orientation="vertical" />
++            <span>Components</span>
++            <Separator orientation="vertical" />
++            <span>Blocks</span>
++        </div>
++    ),
++}
+diff --git a/components/ui/switch.stories.tsx b/components/ui/switch.stories.tsx
+new file mode 100644
+index 0000000..aa0a9d4
+--- /dev/null
++++ b/components/ui/switch.stories.tsx
+@@ -0,0 +1,44 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++import { fn } from 'storybook/test'
++
++import { Label } from './label'
++import { Switch } from './switch'
++
++const meta = {
++    title: 'ui/Switch',
++    component: Switch,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    args: {
++        onCheckedChange: fn(),
++    },
++} satisfies Meta<typeof Switch>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { id: 'airplane-mode' },
++}
++
++export const CheckedByDefault: Story = {
++    args: { id: 'airplane-mode-on', defaultChecked: true },
++}
++
++export const Disabled: Story = {
++    args: { id: 'airplane-mode-disabled', disabled: true },
++}
++
++export const WithLabel: Story = {
++    render: (args) => (
++        <div className="flex items-center gap-2">
++            <Switch
++                {...args}
++                id="switch-with-label"
++            />
++            <Label htmlFor="switch-with-label">Airplane mode</Label>
++        </div>
++    ),
++}
+diff --git a/components/ui/textarea.stories.tsx b/components/ui/textarea.stories.tsx
+new file mode 100644
+index 0000000..0489f9e
+--- /dev/null
++++ b/components/ui/textarea.stories.tsx
+@@ -0,0 +1,40 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Label } from './label'
++import { Textarea } from './textarea'
++
++const meta = {
++    title: 'ui/Textarea',
++    component: Textarea,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++    args: {
++        className: 'w-64',
++    },
++} satisfies Meta<typeof Textarea>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    args: { placeholder: 'Type your message here.' },
++}
++
++export const Disabled: Story = {
++    args: { placeholder: 'Disabled', disabled: true },
++}
++
++export const WithLabel: Story = {
++    render: (args) => (
++        <div className="grid w-64 gap-1.5">
++            <Label htmlFor="message">Message</Label>
++            <Textarea
++                {...args}
++                id="message"
++                placeholder="Type your message here."
++            />
++        </div>
++    ),
++}
+diff --git a/components/ui/tooltip.stories.tsx b/components/ui/tooltip.stories.tsx
+new file mode 100644
+index 0000000..aef8a90
+--- /dev/null
++++ b/components/ui/tooltip.stories.tsx
+@@ -0,0 +1,29 @@
++import type { Meta, StoryObj } from '@storybook/nextjs'
++
++import { Button } from './button'
++import { Tooltip, TooltipContent, TooltipTrigger } from './tooltip'
++
++const meta = {
++    title: 'ui/Tooltip',
++    component: Tooltip,
++    tags: ['autodocs'],
++    parameters: {
++        layout: 'centered',
++    },
++} satisfies Meta<typeof Tooltip>
++
++export default meta
++type Story = StoryObj<typeof meta>
++
++export const Default: Story = {
++    render: () => (
++        <Tooltip>
++            <TooltipTrigger asChild>
++                <Button variant="outline">Hover me</Button>
++            </TooltipTrigger>
++            <TooltipContent>
++                <p>Add to library</p>
++            </TooltipContent>
++        </Tooltip>
++    ),
++}
+diff --git a/data/blocks.ts b/data/blocks.ts
+index a59ef85..926467d 100644
+--- a/data/blocks.ts
++++ b/data/blocks.ts
+@@ -11,7 +11,7 @@ export interface Block {
+ }
+ 
+ async function loadCode(filePath: string): Promise<string> {
+-    const fullPath = path.join(process.cwd(), filePath)
++    const fullPath = path.join(/* turbopackIgnore: true */ process.cwd(), filePath)
+     return fs.promises.readFile(fullPath, 'utf-8')
+ }
+ 
+diff --git a/data/snippets.ts b/data/snippets.ts
+new file mode 100644
+index 0000000..9859c8f
+--- /dev/null
++++ b/data/snippets.ts
+@@ -0,0 +1,262 @@
++import fs from 'fs'
++import path from 'path'
++
++/* -------------------------------------------------------------------------- */
++/*                                   Types                                    */
++/* -------------------------------------------------------------------------- */
++
++export interface SnippetVariant {
++    /** Matches a key in components/snippets/registry.tsx for this category */
++    key: string
++    title: string
++    usageCode: string
++}
++
++export interface SnippetCategoryMeta {
++    slug: string
++    label: string
++    description: string
++    /** Path (relative to repo root) to the full component source, e.g. components/ui/button.tsx */
++    componentSourcePath: string
++    /** Which variant's render is shown behind the "full component" card */
++    fullSourceVariantKey: string
++    variants: SnippetVariant[]
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                   Loader                                   */
++/* -------------------------------------------------------------------------- */
++
++async function loadCode(filePath: string): Promise<string> {
++    const fullPath = path.join(/* turbopackIgnore: true */ process.cwd(), filePath)
++    return fs.promises.readFile(fullPath, 'utf-8')
++}
++
++export async function getComponentSource(meta: SnippetCategoryMeta): Promise<string> {
++    return loadCode(meta.componentSourcePath)
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                   Button                                   */
++/* -------------------------------------------------------------------------- */
++
++const buttonMeta: SnippetCategoryMeta = {
++    slug: 'button',
++    label: 'Button',
++    description: 'Custom shadcn buttons for your marketing website.',
++    componentSourcePath: 'components/ui/button.tsx',
++    fullSourceVariantKey: 'default',
++    variants: [
++        {
++            key: 'default',
++            title: 'Default Button',
++            usageCode: `import { Button } from '@/components/ui/button'
++
++<Button variant="default">Default</Button>`,
++        },
++        {
++            key: 'outline',
++            title: 'Outline Button',
++            usageCode: `import { Button } from '@/components/ui/button'
++
++<Button variant="outline">Outline</Button>`,
++        },
++        {
++            key: 'secondary',
++            title: 'Secondary Button',
++            usageCode: `import { Button } from '@/components/ui/button'
++
++<Button variant="secondary">Secondary</Button>`,
++        },
++        {
++            key: 'destructive',
++            title: 'Destructive Button',
++            usageCode: `import { Button } from '@/components/ui/button'
++
++<Button variant="destructive">Destructive</Button>`,
++        },
++        {
++            key: 'ghost',
++            title: 'Ghost Button',
++            usageCode: `import { Button } from '@/components/ui/button'
++
++<Button variant="ghost">Ghost</Button>`,
++        },
++        {
++            key: 'link',
++            title: 'Link Button',
++            usageCode: `import { Button } from '@/components/ui/button'
++
++<Button variant="link">Link</Button>`,
++        },
++    ],
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                    Badge                                   */
++/* -------------------------------------------------------------------------- */
++
++const badgeMeta: SnippetCategoryMeta = {
++    slug: 'badge',
++    label: 'Badge',
++    description: 'Custom shadcn badges for your marketing website.',
++    componentSourcePath: 'components/ui/badge.tsx',
++    fullSourceVariantKey: 'hero',
++    variants: [
++        {
++            key: 'default',
++            title: 'Default Badge',
++            usageCode: `import { Badge } from '@/components/ui/badge'
++
++<Badge variant="default">
++  <span className="text-sm font-normal">Default</span>
++</Badge>`,
++        },
++        {
++            key: 'secondary',
++            title: 'Secondary Badge',
++            usageCode: `import { Badge } from '@/components/ui/badge'
++
++<Badge variant="secondary">
++  <span className="text-sm font-normal">Secondary</span>
++</Badge>`,
++        },
++        {
++            key: 'destructive',
++            title: 'Destructive Badge',
++            usageCode: `import { Badge } from '@/components/ui/badge'
++
++<Badge variant="destructive">
++  <span className="text-sm font-normal">Destructive</span>
++</Badge>`,
++        },
++        {
++            key: 'outline',
++            title: 'Outline Badge',
++            usageCode: `import { Badge } from '@/components/ui/badge'
++
++<Badge variant="outline">
++  <span className="text-sm font-normal">Outline</span>
++</Badge>`,
++        },
++    ],
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                    Input                                   */
++/* -------------------------------------------------------------------------- */
++
++const inputMeta: SnippetCategoryMeta = {
++    slug: 'input',
++    label: 'Input',
++    description: 'Custom shadcn inputs for your marketing website.',
++    componentSourcePath: 'components/ui/input.tsx',
++    fullSourceVariantKey: 'default',
++    variants: [
++        {
++            key: 'default',
++            title: 'Default Input',
++            usageCode: `import { Input } from '@/components/ui/input'
++
++<Input type="email" placeholder="Email" />`,
++        },
++        {
++            key: 'disabled',
++            title: 'Disabled Input',
++            usageCode: `import { Input } from '@/components/ui/input'
++
++<Input placeholder="Disabled" disabled />`,
++        },
++        {
++            key: 'file',
++            title: 'File Input',
++            usageCode: `import { Input } from '@/components/ui/input'
++
++<Input type="file" />`,
++        },
++    ],
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                    Avatar                                  */
++/* -------------------------------------------------------------------------- */
++
++const avatarMeta: SnippetCategoryMeta = {
++    slug: 'avatar',
++    label: 'Avatar',
++    description: 'Custom shadcn avatars for your marketing website.',
++    componentSourcePath: 'components/ui/avatar.tsx',
++    fullSourceVariantKey: 'image',
++    variants: [
++        {
++            key: 'image',
++            title: 'Avatar with Image',
++            usageCode: `import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
++
++<Avatar>
++  <AvatarImage src="/avatar.png" alt="User avatar" />
++  <AvatarFallback>CN</AvatarFallback>
++</Avatar>`,
++        },
++        {
++            key: 'fallback',
++            title: 'Avatar Fallback',
++            usageCode: `import { Avatar, AvatarFallback } from '@/components/ui/avatar'
++
++<Avatar>
++  <AvatarFallback>JD</AvatarFallback>
++</Avatar>`,
++        },
++    ],
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                  Checkbox                                  */
++/* -------------------------------------------------------------------------- */
++
++const checkboxMeta: SnippetCategoryMeta = {
++    slug: 'checkbox',
++    label: 'Checkbox',
++    description: 'Custom shadcn checkboxes for your marketing website.',
++    componentSourcePath: 'components/ui/checkbox.tsx',
++    fullSourceVariantKey: 'default',
++    variants: [
++        {
++            key: 'default',
++            title: 'Default Checkbox',
++            usageCode: `import { Checkbox } from '@/components/ui/checkbox'
++
++<Checkbox id="terms" />`,
++        },
++        {
++            key: 'withLabel',
++            title: 'Checkbox with Label',
++            usageCode: `import { Checkbox } from '@/components/ui/checkbox'
++import { Label } from '@/components/ui/label'
++
++<div className="flex items-center gap-2">
++  <Checkbox id="terms-2" defaultChecked />
++  <Label htmlFor="terms-2">Accept terms</Label>
++</div>`,
++        },
++        {
++            key: 'disabled',
++            title: 'Disabled Checkbox',
++            usageCode: `import { Checkbox } from '@/components/ui/checkbox'
++
++<Checkbox id="disabled" disabled />`,
++        },
++    ],
++}
++
++/* -------------------------------------------------------------------------- */
++/*                                  Catalog                                   */
++/* -------------------------------------------------------------------------- */
++
++export const snippetCategoriesMeta: SnippetCategoryMeta[] = [buttonMeta, badgeMeta, inputMeta, avatarMeta, checkboxMeta]
++
++export const snippetCategories = snippetCategoriesMeta.map((c) => c.slug)
++
++export function getSnippetCategory(slug: string) {
++    return snippetCategoriesMeta.find((c) => c.slug === slug)
++}
+diff --git a/eslint.config.mjs b/eslint.config.mjs
+index ab7e165..ff79788 100644
+--- a/eslint.config.mjs
++++ b/eslint.config.mjs
+@@ -1,3 +1,6 @@
++// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
++import storybook from "eslint-plugin-storybook";
++
+ import { dirname } from 'path'
+ import { fileURLToPath } from 'url'
+ import { createRequire } from 'module'
+@@ -54,6 +57,7 @@ const eslintConfig = [
+             '@next/next/no-html-link-for-pages': 'warn',
+         },
+     },
++    ...storybook.configs["flat/recommended"]
+ ]
+ 
+ export default eslintConfig
+diff --git a/package.json b/package.json
+index 0ee71f9..0faecc9 100644
+--- a/package.json
++++ b/package.json
+@@ -7,7 +7,9 @@
+     "build": "next build",
+     "start": "next start",
+     "lint": "eslint .",
+-    "registry:build": "shadcn build"
++    "registry:build": "shadcn build",
++    "storybook": "storybook dev -p 6006",
++    "build-storybook": "storybook build"
+   },
+   "dependencies": {
+     "@next/third-parties": "^16.2.1",
+@@ -53,16 +55,21 @@
+   },
+   "devDependencies": {
+     "@eslint/eslintrc": "^3",
++    "@storybook/addon-a11y": "^10.5.5",
++    "@storybook/addon-docs": "^10.5.5",
++    "@storybook/nextjs": "^10.5.5",
+     "@tailwindcss/postcss": "^4.2.2",
+     "@types/node": "^20",
+     "@types/react": "^19.2.14",
+     "@types/react-dom": "^19",
+     "eslint": "^9",
+     "eslint-config-next": "16.2.3",
++    "eslint-plugin-storybook": "^10.5.5",
+     "postcss": "^8",
+     "prettier": "3.8.1",
+     "prettier-plugin-tailwindcss": "0.7.2",
+     "shiki": "^2.4.1",
++    "storybook": "^10.5.5",
+     "tailwindcss": "^4.0.0",
+     "typescript": "^5"
+   }
