@@ -28,7 +28,7 @@ export interface SnippetCategoryMeta {
 /* -------------------------------------------------------------------------- */
 
 async function loadCode(filePath: string): Promise<string> {
-    const fullPath = path.join(process.cwd(), filePath)
+    const fullPath = path.join(/*turbopackIgnore: true*/ process.cwd(), filePath)
     return fs.promises.readFile(fullPath, 'utf-8')
 }
 
