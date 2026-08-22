@@ -1,61 +1,51 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
-import { Eye, Code2, Copy, Check } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
+import type { CSSProperties } from 'react';
 import { Button } from '@/components/ui/button';
-import { motion, useInView, type Variants, AnimatePresence } from 'framer-motion';
-import { useRef, useState } from 'react';
-import { useCopyToClipboard } from '@/hooks/useClipboard';
-import CodeBlock from '@/components/code-block';
+import { motion, useInView, type Variants } from 'framer-motion';
+import { useRef } from 'react';
 
 // You can easily swap these out for real components/blocks you want to feature
 const previewComponents = [
   {
     title: "Hero Section",
-    previewUrl: "/preview/hero-section/one",
+    href: "/preview/hero-section/one",
+    imageUrl: "/assets/2.jpeg",
     tag: "Marketing",
+    imagePosition: "object-right",
   },
   {
     title: "AI Input Form",
-    previewUrl: "/preview/ai-interfaces/one",
+    href: "/preview/ai-interfaces/one",
+    imageUrl: "/assets/3.jpeg",
     tag: "AI Interfaces",
-  },
-  {
-    title: "Integrations",
-    previewUrl: "/preview/integrations/one",
-    tag: "Integrations",
-  },
-  {
-    title: "How it works",
-    previewUrl: "/preview/how-it-works/one",
-    tag: "How it works",
+    imagePosition: "object-right",
   },
   {
     title: "Bento Grid",
-    previewUrl: "/preview/bento/one",
+    href: "/preview/bento/one",
+    imageUrl: "/assets/1.jpeg",
     tag: "Layout",
   },
   {
     title: "Features Section",
-    previewUrl: "/preview/features/one",
+    href: "/preview/features/one",
+    imageUrl: "/assets/4.jpeg",
     tag: "Features",
   },
   {
+    title: "Integrations",
+    href: "/preview/integrations/one",
+    imageUrl: "/assets/6.jpeg",
+    tag: "Integrations",
+  },
+  {
     title: "Logo-Cloud",
-    previewUrl: "/preview/logo-cloud/five",
+    href: "/preview/logo-cloud/five",
+    imageUrl: "/assets/5.jpeg",
     tag: "Logo Cloud",
-  },
-  {
-    title: "Pricing Cards",
-    previewUrl: "/preview/pricing/one",
-    tag: "Pricing",
-  },
-  {
-    title: "Team Section",
-    previewUrl: "/preview/team/four",
-    tag: "Team",
   },
 ];
 
@@ -66,15 +56,17 @@ function getLayout(count: number): string[] {
     case 3: return ['md:col-span-3', 'md:col-span-1', 'md:col-span-2'];
     case 4: return ['md:col-span-2', 'md:col-span-1', 'md:col-span-1', 'md:col-span-2'];
     case 5: return ['md:col-span-2', 'md:col-span-1', 'md:col-span-1', 'md:col-span-1', 'md:col-span-1'];
-    case 6: return Array(6).fill('md:col-span-1');
+    case 6: return [
+      'md:col-span-2 md:row-span-2',
+      'md:col-start-3 md:col-span-1',
+      'md:col-start-3 md:col-span-1',
+      'md:col-span-1',
+      'md:col-span-1',
+      'md:col-span-1',
+    ];
     case 7: return ['md:col-span-2', 'md:col-span-1', ...Array(5).fill('md:col-span-1')];
     case 8: return ['md:col-span-2', 'md:col-span-1', 'md:col-span-1', 'md:col-span-2', 'md:col-span-3', 'md:col-span-1', 'md:col-span-1', 'md:col-span-1'];
-    case 9: return [
-      'md:col-span-2', 'md:col-span-1',
-      'md:col-span-1', 'md:col-span-2',
-      'md:col-span-1', 'md:col-span-1', 'md:col-span-1',
-      'md:col-span-2', 'md:col-span-1'
-    ];
+    case 9: return ['md:col-span-2', 'md:col-span-1','md:col-span-1', 'md:col-span-2','md:col-span-1', 'md:col-span-1', 'md:col-span-1','md:col-span-2', 'md:col-span-1'];
     default:
       return Array(count).fill('md:col-span-1');
   }
@@ -89,24 +81,6 @@ const fadeUp: Variants = {
     y: 0,
     transition: { duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94], delay },
   }),
-};
-
-const lineVariant: Variants = {
-  hidden: { scaleX: 0, opacity: 0 },
-  visible: {
-    scaleX: 1,
-    opacity: 1,
-    transition: { duration: 0.5, ease: 'easeOut', delay: 0.15 },
-  },
-};
-
-const badgeVariant: Variants = {
-  hidden: { opacity: 0, scale: 0.85 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.45, ease: 'easeOut' },
-  },
 };
 
 const gridVariants: Variants = {
@@ -126,41 +100,71 @@ const cardVariants: Variants = {
   },
 };
 
-// ComponentPreviewCard
+const ArrowIcon = () => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5"
+    aria-hidden="true"
+  >
+    <path d="M7 17 17 7M8 7h9v9" />
+  </svg>
+);
 
 const ComponentPreviewCard = ({
   title,
-  previewUrl,
+  href,
+  imageUrl,
   tag,
   className,
+  imagePosition = "object-top",
 }: {
   title: string;
-  previewUrl: string;
+  href: string;
+  imageUrl: string;
   tag: string;
   className?: string;
+  imagePosition?: string;
 }) => {
   return (
-    <motion.div
-      variants={cardVariants}
-      className={cn(
-        'group relative overflow-hidden rounded-xl min-h-[350px] border border-border shadow shadow-black/4 bg-card dark:bg-background flex flex-col',
-        className,
-      )}
-    >
-      <div className="absolute inset-0 overflow-hidden bg-zinc-50 dark:bg-zinc-950/50">
-        <iframe
-          src={previewUrl}
-          className="absolute left-1/2 top-1/2 w-[250%] h-[250%] -translate-x-1/2 -translate-y-1/2 scale-[0.4] border-0 bg-transparent pointer-events-none"
-          title={title}
-          loading="lazy"
-          scrolling="no"
-        />
-      </div>
+    <motion.div variants={cardVariants} className={className}>
+      <Link
+        href={href}
+        className="group flex flex-col rounded-[32px] border border-black/[0.04] bg-[#F5F5F7] p-2 transition-colors duration-200 ease-out hover:bg-zinc-100 dark:border-transparent dark:border-apple dark:bg-[#121212] dark:hover:bg-muted"
+        style={{ cornerShape: "squircle" } as CSSProperties}
+      >
+        <div
+          className="relative aspect-video w-full overflow-hidden rounded-3xl border border-black/[0.06] bg-black dark:border-neutral-500/15 dark:bg-black"
+          style={{ cornerShape: "squircle" } as CSSProperties}
+        >
+          <Image
+            src={imageUrl}
+            alt={`${title} preview`}
+            fill
+            className={`object-contain ${imagePosition} p-2 transition-transform duration-500 ease-out group-hover:scale-[1.02]`}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          <span className="absolute left-3 top-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
+            {tag}
+          </span>
+        </div>
 
-      {/* Tag pill */}
-      <span className="absolute top-3 left-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm pointer-events-none">
-        {tag}
-      </span>
+        <div className="flex items-center justify-between gap-3 px-3 pb-1 pt-2">
+          <div className="min-w-0">
+            <h3 className="font-runde truncate text-base font-semibold tracking-tight">
+              {title}
+            </h3>
+          </div>
+          <span className="flex shrink-0 items-center justify-center text-[#ffffff]">
+            <ArrowIcon />
+          </span>
+        </div>
+      </Link>
     </motion.div>
   );
 };
@@ -205,7 +209,7 @@ export const ComponentsBentoSection = () => {
         transition={{ duration: 0.45, ease: 'easeOut' }}
       >
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+          className="grid grid-cols-1 gap-0 md:grid-cols-3"
           variants={gridVariants}
           initial="hidden"
           animate={gridInView ? 'visible' : 'hidden'}
