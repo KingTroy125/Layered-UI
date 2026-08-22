@@ -1,11 +1,11 @@
 'use client';
 
+import Image from 'next/image';
 import { motion, type Variants } from 'framer-motion';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { Eye, ShoppingCart, ArrowRight } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { SiteFooter } from '@/components/site-footer';
 import { SiteHeader } from '@/components/site-header';
 
@@ -62,7 +62,7 @@ const templates: TemplateItem[] = [
     title: 'Vaulto',
     description:
       'A beautifully designed template optimized for high-conversion SaaS landing pages, packed with modern animations and polished components.',
-    imageUrl: './Templates/Vaulto.png',
+    imageUrl: '/Templates/Vaulto.png',
     livePreviewUrl: 'https://vaulto-nextjs-template.vercel.app/',
     buyUrl: '#',
     tag: 'SaaS',
@@ -77,7 +77,7 @@ const templates: TemplateItem[] = [
     title: 'Modula Landing Page',
     description:
       'An enterprise-grade landing page template featuring complex layouts, rich typography, and a comprehensive component system.',
-    imageUrl: './Templates/Modula.png',
+    imageUrl: '/Templates/Modula.png',
     livePreviewUrl: 'https://modula-nj.vercel.app/',
     buyUrl: '#',
     tag: 'Landing',
@@ -92,7 +92,7 @@ const templates: TemplateItem[] = [
     title: 'Opencal PureLanding',
     description:
       'Create a stunning scheduling experience with smooth interactions, clean layouts, and an optimized conversion funnel.',
-    imageUrl: './Templates/Opencal.png',
+    imageUrl: '/Templates/Opencal.png',
     livePreviewUrl: 'https://opencal-nextjs.vercel.app/',
     buyUrl: '#',
     tag: 'Landing',
@@ -107,7 +107,7 @@ const templates: TemplateItem[] = [
     title: 'Qupo Landing Page',
     description:
       'A marketing-focused template with bold visuals, smooth scroll animations, and conversion-optimized sections.',
-    imageUrl: './Templates/Qupo.png',
+    imageUrl: '/Templates/Qupo.png',
     livePreviewUrl: 'https://nextjs-template-qupo.vercel.app/',
     buyUrl: '#',
     tag: 'Marketing',
@@ -125,10 +125,12 @@ const templates: TemplateItem[] = [
 const TemplateCard = ({ template }: { template: TemplateItem }) => {
   return (
     <div className="group relative overflow-hidden rounded-xl aspect-video ring ring-border shadow shadow-black/4 bg-card dark:bg-background">
-      <img
+      <Image
         src={template.imageUrl}
         alt={template.title}
-        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className="h-full w-full object-contain object-center p-2 transition-transform duration-500 group-hover:scale-[1.02]"
       />
 
       {/* Tag pill */}
