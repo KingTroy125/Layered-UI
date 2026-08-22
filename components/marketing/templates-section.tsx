@@ -121,7 +121,7 @@ const TemplateCard = ({
       variants={cardVariants}
       whileHover={{ y: -4, transition: { duration: 0.22, ease: 'easeOut' } }}
       className={cn(
-        'group relative overflow-hidden rounded-xl aspect-video border border-border shadow shadow-black/4 bg-card dark:bg-background',
+        'group relative overflow-hidden rounded-xl aspect-video border border-border bg-muted/30 shadow shadow-black/4 dark:bg-muted/10',
         className,
       )}
     >
@@ -129,7 +129,7 @@ const TemplateCard = ({
         src={imageUrl.replace('./', '/')}
         alt={title}
         fill
-        className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.03]"
+        className="object-contain object-center p-2 transition-transform duration-500 group-hover:scale-[1.02]"
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
       />
 
