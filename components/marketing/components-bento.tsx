@@ -146,7 +146,7 @@ const ComponentPreviewCard = ({
             src={imageUrl}
             alt={`${title} preview`}
             fill
-            className={`object-contain ${imagePosition} p-2 transition-transform duration-500 ease-out group-hover:scale-[1.02]`}
+            className={`object-cover ${imagePosition} transition-transform duration-500 ease-out group-hover:scale-[1.02]`}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <span className="absolute left-3 top-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
@@ -200,28 +200,21 @@ export const ComponentsBentoSection = () => {
         </motion.p>
       </div>
 
-      {/* Bento Grid */}
+      {/* Preview Cards */}
       <motion.div
         ref={gridRef}
-        className="bg-muted/30 border rounded-2xl p-4"
-        initial={{ opacity: 0, scale: 0.99 }}
-        animate={gridInView ? { opacity: 1, scale: 1 } : {}}
-        transition={{ duration: 0.45, ease: 'easeOut' }}
+        className="grid grid-cols-1 gap-4 md:grid-cols-3"
+        variants={gridVariants}
+        initial="hidden"
+        animate={gridInView ? 'visible' : 'hidden'}
       >
-        <motion.div
-          className="grid grid-cols-1 gap-0 md:grid-cols-3"
-          variants={gridVariants}
-          initial="hidden"
-          animate={gridInView ? 'visible' : 'hidden'}
-        >
-          {previewComponents.map((component, index) => (
-            <ComponentPreviewCard
-              key={index}
-              {...component}
-              className={layout[index]}
-            />
-          ))}
-        </motion.div>
+        {previewComponents.map((component, index) => (
+          <ComponentPreviewCard
+            key={index}
+            {...component}
+            className={layout[index]}
+          />
+        ))}
       </motion.div>
 
       {/* Footer CTA */}
