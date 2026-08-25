@@ -13,39 +13,33 @@ const previewComponents = [
     title: "Hero Section",
     href: "/preview/hero-section/one",
     imageUrl: "/assets/2.jpeg",
-    tag: "Marketing",
     imagePosition: "object-right",
   },
   {
     title: "AI Input Form",
     href: "/preview/ai-interfaces/one",
     imageUrl: "/assets/3.jpeg",
-    tag: "AI Interfaces",
     imagePosition: "object-right",
   },
   {
     title: "Bento Grid",
     href: "/preview/bento/one",
     imageUrl: "/assets/1.jpeg",
-    tag: "Layout",
   },
   {
     title: "Features Section",
     href: "/preview/features/one",
     imageUrl: "/assets/4.jpeg",
-    tag: "Features",
   },
   {
     title: "Integrations",
     href: "/preview/integrations/one",
     imageUrl: "/assets/6.jpeg",
-    tag: "Integrations",
   },
   {
     title: "Logo-Cloud",
     href: "/preview/logo-cloud/five",
     imageUrl: "/assets/5.jpeg",
-    tag: "Logo Cloud",
   },
 ];
 
@@ -120,14 +114,12 @@ const ComponentPreviewCard = ({
   title,
   href,
   imageUrl,
-  tag,
   className,
   imagePosition = "object-top",
 }: {
   title: string;
   href: string;
   imageUrl: string;
-  tag: string;
   className?: string;
   imagePosition?: string;
 }) => {
@@ -149,9 +141,6 @@ const ComponentPreviewCard = ({
             className={`object-cover ${imagePosition} transition-transform duration-500 ease-out group-hover:scale-[1.02]`}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          <span className="absolute left-3 top-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-xs font-medium text-white backdrop-blur-sm">
-            {tag}
-          </span>
         </div>
 
         <div className="flex items-center justify-between gap-3 px-3 pb-1 pt-2">
